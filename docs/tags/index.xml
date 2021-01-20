@@ -2,36 +2,36 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Aomi</title>
-    <link>https://example.com/tags/</link>
+    <link>https://aomi.run/tags/</link>
     <description>Recent content in Tags on Aomi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Wed, 20 Jan 2021 23:42:51 +0800</lastBuildDate><atom:link href="https://example.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 20 Jan 2021 23:42:51 +0800</lastBuildDate><atom:link href="https://aomi.run/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>cors</title>
-      <link>https://example.com/tags/cors/</link>
+      <link>https://aomi.run/tags/cors/</link>
       <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
       
-      <guid>https://example.com/tags/cors/</guid>
+      <guid>https://aomi.run/tags/cors/</guid>
       <description></description>
     </item>
     
     <item>
       <title>edge</title>
-      <link>https://example.com/tags/edge/</link>
+      <link>https://aomi.run/tags/edge/</link>
       <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
       
-      <guid>https://example.com/tags/edge/</guid>
+      <guid>https://aomi.run/tags/edge/</guid>
       <description></description>
     </item>
     
     <item>
       <title>跨域</title>
-      <link>https://example.com/tags/%E8%B7%A8%E5%9F%9F/</link>
+      <link>https://aomi.run/tags/%E8%B7%A8%E5%9F%9F/</link>
       <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
       
-      <guid>https://example.com/tags/%E8%B7%A8%E5%9F%9F/</guid>
+      <guid>https://aomi.run/tags/%E8%B7%A8%E5%9F%9F/</guid>
       <description></description>
     </item>
     
