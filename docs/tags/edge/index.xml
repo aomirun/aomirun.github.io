@@ -14,7 +14,7 @@
       <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
       
       <guid>https://aomi.run/posts/edge-cors-1000/</guid>
-      <description>找了一个比较简单的解决办法 去应用商店直接下载一个插件 Access-Control-Allow-Origin</description>
+      <description>找了一个比较简单的解决办法 去应用商店直接下载一个插件 Access-Control-Allow-Origin,装好了之后点图标，点击toggle把上面的logo点成彩色，然后刷新一下需要跨域的页面，完成 </description>
     </item>
     
   </channel>
