@@ -2,8 +2,13 @@
 title: "edge如何解决跨域问题"
 date: 2021-01-20T23:42:51+08:00
 draft: false
-toc: true
+toc: false
 images:
+categories: 
+  - errors
+series:
+  - edge
+  - javascript
 tags: 
   - edge 
   - cors 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>专题列表 on Aomi</title>
+    <link>https://aomi.run/series/</link>
+    <description>Recent content in 专题列表 on Aomi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh_CN</language>
+    <copyright>aomi.run</copyright>
+    <lastBuildDate>Wed, 20 Jan 2021 23:42:51 +0800</lastBuildDate>
+    
+	<atom:link href="https://aomi.run/series/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>edge</title>
+      <link>https://aomi.run/series/edge/</link>
+      <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
+      
+      <guid>https://aomi.run/series/edge/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>javascript</title>
+      <link>https://aomi.run/series/javascript/</link>
+      <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
+      
+      <guid>https://aomi.run/series/javascript/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

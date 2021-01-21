@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>跨域 on Aomi</title>
-    <link>https://aomi.run/tags/%E8%B7%A8%E5%9F%9F/</link>
-    <description>Recent content in 跨域 on Aomi</description>
+    <title>javascript on Aomi</title>
+    <link>https://aomi.run/series/javascript/</link>
+    <description>Recent content in javascript on Aomi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
     <lastBuildDate>Wed, 20 Jan 2021 23:42:51 +0800</lastBuildDate>
     
-	<atom:link href="https://aomi.run/tags/%E8%B7%A8%E5%9F%9F/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://aomi.run/series/javascript/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>

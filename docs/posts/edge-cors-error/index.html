@@ -9,19 +9,20 @@
 	<meta name="msapplication-TileColor" content="#494f5c">
 <meta itemprop="name" content="edge如何解决跨域问题">
 <meta itemprop="description" content="找了一个比较简单的解决办法 去应用商店直接下载一个插件 Access-Control-Allow-Origin,装好了之后点图标，点击toggle把上面的logo点成彩色，然后刷新一下需要跨域的页面，完成 ">
-<meta itemprop="datePublished" content="2021-01-20T23:42:51+08:00" />
-<meta itemprop="dateModified" content="2021-01-20T23:42:51+08:00" />
+<meta itemprop="datePublished" content="2021-01-20T23:42:51&#43;08:00" />
+<meta itemprop="dateModified" content="2021-01-20T23:42:51&#43;08:00" />
 <meta itemprop="wordCount" content="3">
 
 
 
-<meta itemprop="keywords" content="edge,cors,跨域," />
-<meta property="og:title" content="edge如何解决跨域问题" />
+<meta itemprop="keywords" content="edge,cors,跨域," /><meta property="og:title" content="edge如何解决跨域问题" />
 <meta property="og:description" content="找了一个比较简单的解决办法 去应用商店直接下载一个插件 Access-Control-Allow-Origin,装好了之后点图标，点击toggle把上面的logo点成彩色，然后刷新一下需要跨域的页面，完成 " />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://aomi.run/posts/edge-cors-1000/" />
+<meta property="og:url" content="https://aomi.run/posts/edge-cors-error/" />
 <meta property="article:published_time" content="2021-01-20T23:42:51+08:00" />
 <meta property="article:modified_time" content="2021-01-20T23:42:51+08:00" />
+
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="edge如何解决跨域问题"/>
 <meta name="twitter:description" content="找了一个比较简单的解决办法 去应用商店直接下载一个插件 Access-Control-Allow-Origin,装好了之后点图标，点击toggle把上面的logo点成彩色，然后刷新一下需要跨域的页面，完成 "/>
@@ -50,12 +51,14 @@
 					
 				<a href="https://aomi.run/about/">关于</a>
 				<a href="https://aomi.run/posts/">日志</a>
+				<a href="https://aomi.run/categories/">分类</a>
+				<a href="https://aomi.run/series/">专栏</a>
 				<a href="https://aomi.run/tags/">TAGS</a>
 
 				</nav>
 			</div>
 			<div class="hdr-right hdr-icons">
-				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 			</div>
 		</div>
 	</header>
@@ -63,6 +66,8 @@
 		<ul>
 			<li><a href="https://aomi.run/about/">关于</a></li>
 			<li><a href="https://aomi.run/posts/">日志</a></li>
+			<li><a href="https://aomi.run/categories/">分类</a></li>
+			<li><a href="https://aomi.run/series/">专栏</a></li>
 			<li><a href="https://aomi.run/tags/">TAGS</a></li>
 		</ul>
 	</div>
@@ -89,15 +94,10 @@
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-01-20 23:42 &#43;0800</p>
 			</footer>
 		</article>
-		<aside id="toc">
-			<div class="toc-title">目录</div>
-			<nav id="TableOfContents">
-  <ul>
-    <li><a href="#找了一个比较简单的解决办法">找了一个比较简单的解决办法</a></li>
-  </ul>
-</nav>
-		</aside>
 		<div class="post-nav thin">
+			<a class="next-post" href="https://aomi.run/posts/document/markdown-readme/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Markdown 中文说明</span>
+			</a>
 		</div>
 		<div id="comments" class="thin">
 </div>

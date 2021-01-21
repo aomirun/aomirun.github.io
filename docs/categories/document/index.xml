@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Aomi</title>
-    <link>https://aomi.run/</link>
-    <description>Recent content on Aomi</description>
+    <title>中文文档 on Aomi</title>
+    <link>https://aomi.run/categories/document/</link>
+    <description>Recent content in 中文文档 on Aomi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Wed, 20 Jan 2021 23:42:51 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 21 Jan 2021 14:33:04 +0800</lastBuildDate>
     
-	<atom:link href="https://aomi.run/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://aomi.run/categories/document/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -26,24 +26,6 @@
 Markdown 不是想要取代 HTML，甚至也没有要和它相近，它的语法种类很少，只对应 HTML 标记的一小部分。Markdown 的构想_不是_要使得 HTML 文档更容易书写。在我看来， HTML 已经很容易写了。Markdown 的理念是，能让文档更容易读、写和随意改。HTML 是一种_发布_的格式，Markdown 是一种_书写_的格式。就这样，Markdown 的格式语法只涵盖纯文本可以涵盖的范围。
 不在 Markdown 涵盖范围之内的标签，都可以直接在文档里面用 HTML 撰写。不需要额外标注这是 HTML 或是 Markdown；只要直接加标签就可以了。
 要制约的只有一些 HTML 区块元素――比如 、、、 等标签，必须在前后加上空行与其它内容区隔开，还要求它们的开始标签与结尾标签不能用制表符或空格来缩进。Markdown 的生成器有足够智能，不会在 HTML 区块标签外加上不必要的 `` 标签。</description>
-    </item>
-    
-    <item>
-      <title>edge如何解决跨域问题</title>
-      <link>https://aomi.run/posts/edge-cors-error/</link>
-      <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
-      
-      <guid>https://aomi.run/posts/edge-cors-error/</guid>
-      <description>找了一个比较简单的解决办法 去应用商店直接下载一个插件 Access-Control-Allow-Origin,装好了之后点图标，点击toggle把上面的logo点成彩色，然后刷新一下需要跨域的页面，完成 </description>
-    </item>
-    
-    <item>
-      <title>关于</title>
-      <link>https://aomi.run/about/</link>
-      <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
-      
-      <guid>https://aomi.run/about/</guid>
-      <description>年级大了，容易忘记事情，写个博客记录一下，方便自己查找。</description>
     </item>
     
   </channel>

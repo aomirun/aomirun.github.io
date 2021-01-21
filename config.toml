@@ -24,6 +24,8 @@ enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/func
 
 [taxonomies]
   tag = "tags"
+  category = "categories"
+  series = "series"
   # Categories are disabled by default.
 
 [params]
@@ -74,16 +76,27 @@ enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/func
 [menu]
 
   [[menu.main]]
+    name = "关于"
+    url = "about/"
+    weight = 10
+
+  [[menu.main]]
     name = "日志"
     url = "posts/"
     weight = 20
+
+  [[menu.main]]
+    name = "分类"
+    url = "categories/"
+    weight = 21
+
+  [[menu.main]]
+    name = "专栏"
+    url = "series/"
+    weight = 22
 
   [[menu.main]]
     name = "TAGS"
     url = "tags/"
     weight = 100
 
-  [[menu.main]]
-    name = "关于"
-    url = "about/"
-    weight = 10
