@@ -86,19 +86,6 @@ enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/func
     url = "posts/"
     weight = 20
 
-    [[menu.main]]
-      identifier = "golang"
-      name = "golang"
-      url = "posts/golang/"
-      weight = 200
-      parent = "posts"
-
-    [[menu.main]]
-      name = "php"
-      url = "posts/golang/"
-      weight = 200
-      parent = "golang"
-
   [[menu.main]]
     name = "分类"
     url = "categories/"
