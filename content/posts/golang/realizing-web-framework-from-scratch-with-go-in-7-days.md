@@ -516,202 +516,201 @@ HTTP请求的路径恰好是由`/`分隔的多段构成的，因此，每一段�
 *   通配`*`。例如 `/static/*filepath`，可以匹配`/static/fav.ico`，也可以匹配`/static/js/jQuery.js`，这种模式常用于静态服务器，能够递归地匹配子路径。
 
 ### Trie 树实现
---------------------------------
 
 首先我们需要设计树节点上应该存储那些信息。
 
-**[day3-router/gee/trie.go](https://github.com/geektutu/7days-golang/tree/master/gee-web/day3-router)**
+trie.go
 
 ```go
-type node struct {  
- pattern  string // 待匹配路由，例如 /p/:lang  
- part     string // 路由中的一部分，例如 :lang  
- children []*node // 子节点，例如 [doc, tutorial, intro]  
- isWild   bool // 是否精确匹配，part 含有 : 或 * 时为true  
-}  
-
+type node struct {
+	pattern  string  // 待匹配路由，例如 /p/:lang
+	part     string  // 路由中的一部分，例如 :lang
+	children []*node // 子节点，例如 [doc, tutorial, intro]
+	isWild   bool    // 是否精确匹配，part 含有 : 或 * 时为true
+}
 ```
 
 与普通的树不同，为了实现动态路由匹配，加上了`isWild`这个参数。即当我们匹配 `/p/go/doc/`这个路由时，第一层节点，`p`精准匹配到了`p`，第二层节点，`go`模糊匹配到`:lang`，那么将会把`lang`这个参数赋值为`go`，继续下一层匹配。我们将匹配的逻辑，包装为一个辅助函数。
 
 ```go
-// 第一个匹配成功的节点，用于插入  
-func (n *node) matchChild(part string) *node {  
- for _, child := range n.children {  
- if child.part == part || child.isWild {  
- return child  
- }  
- }  
- return nil  
-}  
-// 所有匹配成功的节点，用于查找  
-func (n *node) matchChildren(part string) []*node {  
- nodes := make([]*node, 0)  
- for _, child := range n.children {  
- if child.part == part || child.isWild {  
- nodes = append(nodes, child)  
- }  
- }  
- return nodes  
-}  
+// 第一个匹配成功的节点，用于插入
+func (n *node) matchChild(part string) *node {
+	for _, child := range n.children {
+		if child.part == part || child.isWild {
+			return child
+		}
+	}
+	return nil
+}
+
+// 所有匹配成功的节点，用于查找
+func (n *node) matchChildren(part string) []*node {
+	nodes := make([]*node, 0)
+	for _, child := range n.children {
+		if child.part == part || child.isWild {
+			nodes = append(nodes, child)
+		}
+	}
+	return nodes
+}
 ```
 
 对于路由来说，最重要的当然是注册与匹配了。开发服务时，注册路由规则，映射handler；访问时，匹配路由规则，查找到对应的handler。因此，Trie 树需要支持节点的插入与查询。插入功能很简单，递归查找每一层的节点，如果没有匹配到当前`part`的节点，则新建一个，有一点需要注意，`/p/:lang/doc`只有在第三层节点，即`doc`节点，`pattern`才会设置为`/p/:lang/doc`。`p`和`:lang`节点的`pattern`属性皆为空。因此，当匹配结束时，我们可以使用`n.pattern == ""`来判断路由规则是否匹配成功。例如，`/p/python`虽能成功匹配到`:lang`，但`:lang`的`pattern`值为空，因此匹配失败。查询功能，同样也是递归查询每一层的节点，退出规则是，匹配到了`*`，匹配失败，或者匹配到了第`len(parts)`层节点。
 
 ```go
-func (n *node) insert(pattern string, parts []string, height int) {  
- if len(parts) == height {  
- n.pattern = pattern  
- return  
- }  
-  
- part := parts[height]  
- child := n.matchChild(part)  
- if child == nil {  
- child = &node{part: part, isWild: part[0] == ':' || part[0] == '*'}  
- n.children = append(n.children, child)  
- }  
- child.insert(pattern, parts, height+1)  
-}  
-  
-func (n *node) search(parts []string, height int) *node {  
- if len(parts) == height || strings.HasPrefix(n.part, "*") {  
- if n.pattern == "" {  
- return nil  
- }  
- return n  
- }  
-  
- part := parts[height]  
- children := n.matchChildren(part)  
-  
- for _, child := range children {  
- result := child.search(parts, height+1)  
- if result != nil {  
- return result  
- }  
- }  
-  
- return nil  
-}  
+func (n *node) insert(pattern string, parts []string, height int) {
+	if len(parts) == height {
+		n.pattern = pattern
+		return
+	}
+
+	part := parts[height]
+	child := n.matchChild(part)
+	if child == nil {
+		child = &node{part: part, isWild: part[0] == ':' || part[0] == '*'}
+		n.children = append(n.children, child)
+	}
+	child.insert(pattern, parts, height+1)
+}
+
+func (n *node) search(parts []string, height int) *node {
+	if len(parts) == height || strings.HasPrefix(n.part, "*") {
+		if n.pattern == "" {
+			return nil
+		}
+		return n
+	}
+
+	part := parts[height]
+	children := n.matchChildren(part)
+
+	for _, child := range children {
+		result := child.search(parts, height+1)
+		if result != nil {
+			return result
+		}
+	}
+
+	return nil
+}
 ```
 
 ### Router
 
 Trie 树的插入与查找都成功实现了，接下来我们将 Trie 树应用到路由中去吧。我们使用 roots 来存储每种请求方式的Trie 树根节点。使用 handlers 存储每种请求方式的 HandlerFunc 。getRoute 函数中，还解析了`:`和`*`两种匹配符的参数，返回一个 map 。例如`/p/go/doc`匹配到`/p/:lang/doc`，解析结果为：`{lang: "go"}`，`/static/css/geektutu.css`匹配到`/static/*filepath`，解析结果为`{filepath: "css/geektutu.css"}`。
 
-**day3-router/gee/router.go**
+router.go
 
 ```go
-type router struct {  
- roots    map[string]*node  
- handlers map[string]HandlerFunc  
-}  
-  
-// roots key eg, roots['GET'] roots['POST']  
-// handlers key eg, handlers['GET-/p/:lang/doc'], handlers['POST-/p/book']  
-   
-func newRouter() *router {  
- return &router{  
- roots:    make(map[string]*node),  
- handlers: make(map[string]HandlerFunc),  
- }  
-}  
-  
-// Only one * is allowed  
-func parsePattern(pattern string) []string {  
- vs := strings.Split(pattern, "/")  
-  
- parts := make([]string, 0)  
- for _, item := range vs {  
- if item != "" {  
- parts = append(parts, item)  
- if item[0] == '*' {  
- break  
- }  
- }  
- }  
- return parts  
-}  
-  
-func (r *router) addRoute(method string, pattern string, handler HandlerFunc) {  
- parts := parsePattern(pattern)  
-  
- key := method + "-" + pattern  
- _, ok := r.roots[method]  
- if !ok {  
- r.roots[method] = &node{}  
- }  
- r.roots[method].insert(pattern, parts, 0)  
- r.handlers[key] = handler  
-}  
-  
-func (r *router) getRoute(method string, path string) (*node, map[string]string) {  
- searchParts := parsePattern(path)  
- params := make(map[string]string)  
- root, ok := r.roots[method]  
-  
- if !ok {  
- return nil, nil  
- }  
-  
- n := root.search(searchParts, 0)  
-  
- if n != nil {  
- parts := parsePattern(n.pattern)  
- for index, part := range parts {  
- if part[0] == ':' {  
- params[part[1:]] = searchParts[index]  
- }  
- if part[0] == '*' && len(part) > 1 {  
- params[part[1:]] = strings.Join(searchParts[index:], "/")  
- break  
- }  
- }  
- return n, params  
- }  
-  
- return nil, nil  
-}  
+type router struct {
+	roots    map[string]*node
+	handlers map[string]HandlerFunc
+}
+
+// roots key eg, roots['GET'] roots['POST']
+// handlers key eg, handlers['GET-/p/:lang/doc'], handlers['POST-/p/book']
+
+func newRouter() *router {
+	return &router{
+		roots:    make(map[string]*node),
+		handlers: make(map[string]HandlerFunc),
+	}
+}
+
+// Only one * is allowed
+func parsePattern(pattern string) []string {
+	vs := strings.Split(pattern, "/")
+
+	parts := make([]string, 0)
+	for _, item := range vs {
+		if item != "" {
+			parts = append(parts, item)
+			if item[0] == '*' {
+				break
+			}
+		}
+	}
+	return parts
+}
+
+func (r *router) addRoute(method string, pattern string, handler HandlerFunc) {
+	parts := parsePattern(pattern)
+
+	key := method + "-" + pattern
+	_, ok := r.roots[method]
+	if !ok {
+		r.roots[method] = &node{}
+	}
+	r.roots[method].insert(pattern, parts, 0)
+	r.handlers[key] = handler
+}
+
+func (r *router) getRoute(method string, path string) (*node, map[string]string) {
+	searchParts := parsePattern(path)
+	params := make(map[string]string)
+	root, ok := r.roots[method]
+
+	if !ok {
+		return nil, nil
+	}
+
+	n := root.search(searchParts, 0)
+
+	if n != nil {
+		parts := parsePattern(n.pattern)
+		for index, part := range parts {
+			if part[0] == ':' {
+				params[part[1:]] = searchParts[index]
+			}
+			if part[0] == '*' && len(part) > 1 {
+				params[part[1:]] = strings.Join(searchParts[index:], "/")
+				break
+			}
+		}
+		return n, params
+	}
+
+	return nil, nil
+}
 ```
 
 ### Context与handle的变化
 
 在 HandlerFunc 中，希望能够访问到解析的参数，因此，需要对 Context 对象增加一个属性和方法，来提供对路由参数的访问。我们将解析后的参数存储到`Params`中，通过`c.Param("lang")`的方式获取到对应的值。
 
-**day3-router/gee/context.go**
+context.go
 
 ```go
-type Context struct {  
- // origin objects  
- Writer http.ResponseWriter  
- Req    *http.Request  
- // request info  
- Path   string  
- Method string  
- Params map[string]string  
- // response info  
- StatusCode int  
-}  
-  
-func (c *Context) Param(key string) string {  
- value, _ := c.Params[key]  
- return value  
-}  
+type Context struct {
+	// origin objects
+	Writer http.ResponseWriter
+	Req    *http.Request
+	// request info
+	Path   string
+	Method string
+	Params map[string]string
+	// response info
+	StatusCode int
+}
+
+func (c *Context) Param(key string) string {
+	value, _ := c.Params[key]
+	return value
+}
 ```
 
-**day3-router/gee/router.go**
+router.go
 ```go
-func (r *router) handle(c *Context) {  
- n, params := r.getRoute(c.Method, c.Path)  
- if n != nil {  
- c.Params = params  
- key := c.Method + "-" + n.pattern  
- r.handlers[key](c)  
- } else {  
- c.String(http.StatusNotFound, "404 NOT FOUND: %sn", c.Path)  
- }  
-}  
+func (r *router) handle(c *Context) {
+	n, params := r.getRoute(c.Method, c.Path)
+	if n != nil {
+		c.Params = params
+		key := c.Method + "-" + n.pattern
+		r.handlers[key](c)
+	} else {
+		c.String(http.StatusNotFound, "404 NOT FOUND: %sn", c.Path)
+	}
+}
 ```
 
 `router.go`的变化比较小，比较重要的一点是，在调用匹配到的`handler`前，将解析出来的路由参数赋值给了`c.Params`。这样就能够在`handler`中，通过`Context`对象访问到具体的值了。
@@ -719,75 +718,75 @@ func (r *router) handle(c *Context) {
 ### 单元测试
 
 ```go
-func newTestRouter() *router {  
- r := newRouter()  
- r.addRoute("GET", "/", nil)  
- r.addRoute("GET", "/hello/:name", nil)  
- r.addRoute("GET", "/hello/b/c", nil)  
- r.addRoute("GET", "/hi/:name", nil)  
- r.addRoute("GET", "/assets/*filepath", nil)  
- return r  
-}  
-  
-func TestParsePattern(t *testing.T) {  
- ok := reflect.DeepEqual(parsePattern("/p/:name"), []string{"p", ":name"})  
- ok = ok && reflect.DeepEqual(parsePattern("/p/*"), []string{"p", "*"})  
- ok = ok && reflect.DeepEqual(parsePattern("/p/*name/*"), []string{"p", "*name"})  
- if !ok {  
- t.Fatal("test parsePattern failed")  
- }  
-}  
-  
-func TestGetRoute(t *testing.T) {  
- r := newTestRouter()  
- n, ps := r.getRoute("GET", "/hello/geektutu")  
-  
- if n == nil {  
- t.Fatal("nil shouldn't be returned")  
- }  
-  
- if n.pattern != "/hello/:name" {  
- t.Fatal("should match /hello/:name")  
- }  
-  
- if ps["name"] != "geektutu" {  
- t.Fatal("name should be equal to 'geektutu'")  
- }  
-  
- fmt.Printf("matched path: %s, params['name']: %sn", n.pattern, ps["name"])  
-  
-}  
+func newTestRouter() *router {
+	r := newRouter()
+	r.addRoute("GET", "/", nil)
+	r.addRoute("GET", "/hello/:name", nil)
+	r.addRoute("GET", "/hello/b/c", nil)
+	r.addRoute("GET", "/hi/:name", nil)
+	r.addRoute("GET", "/assets/*filepath", nil)
+	return r
+}
+
+func TestParsePattern(t *testing.T) {
+	ok := reflect.DeepEqual(parsePattern("/p/:name"), []string{"p", ":name"})
+	ok = ok && reflect.DeepEqual(parsePattern("/p/*"), []string{"p", "*"})
+	ok = ok && reflect.DeepEqual(parsePattern("/p/*name/*"), []string{"p", "*name"})
+	if !ok {
+		t.Fatal("test parsePattern failed")
+	}
+}
+
+func TestGetRoute(t *testing.T) {
+	r := newTestRouter()
+	n, ps := r.getRoute("GET", "/hello/geektutu")
+
+	if n == nil {
+		t.Fatal("nil shouldn't be returned")
+	}
+
+	if n.pattern != "/hello/:name" {
+		t.Fatal("should match /hello/:name")
+	}
+
+	if ps["name"] != "geektutu" {
+		t.Fatal("name should be equal to 'geektutu'")
+	}
+
+	fmt.Printf("matched path: %s, params['name']: %sn", n.pattern, ps["name"])
+
+}
 ```
 
 ### 使用Demo
 
 看看框架使用的样例吧。
 
-**day3-router/main.go**
+main.go
 
 ```go
-func main() {  
- r := gee.New()  
- r.GET("/", func(c *gee.Context) {  
- c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")  
- })  
-  
- r.GET("/hello", func(c *gee.Context) {  
- // expect /hello?name=geektutu  
- c.String(http.StatusOK, "hello %s, you're at %sn", c.Query("name"), c.Path)  
- })  
-  
- r.GET("/hello/:name", func(c *gee.Context) {  
- // expect /hello/geektutu  
- c.String(http.StatusOK, "hello %s, you're at %sn", c.Param("name"), c.Path)  
- })  
-  
- r.GET("/assets/*filepath", func(c *gee.Context) {  
- c.JSON(http.StatusOK, gee.H{"filepath": c.Param("filepath")})  
- })  
-  
- r.Run(":9999")  
-}  
+func main() {
+	r := gee.New()
+	r.GET("/", func(c *gee.Context) {
+		c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")
+	})
+
+	r.GET("/hello", func(c *gee.Context) {
+		// expect /hello?name=geektutu
+		c.String(http.StatusOK, "hello %s, you're at %sn", c.Query("name"), c.Path)
+	})
+
+	r.GET("/hello/:name", func(c *gee.Context) {
+		// expect /hello/geektutu
+		c.String(http.StatusOK, "hello %s, you're at %sn", c.Param("name"), c.Path)
+	})
+
+	r.GET("/assets/*filepath", func(c *gee.Context) {
+		c.JSON(http.StatusOK, gee.H{"filepath": c.Param("filepath")})
+	})
+
+	r.Run(":9999")
+}
 ```
 
 使用`curl`工具，测试结果。
@@ -804,7 +803,6 @@ $ curl "http://localhost:9999/assets/css/geektutu.css"
 *   实现路由分组控制(Route Group Control)，**代码约50行**
 
 ### 分组的意义
------------------------
 
 分组控制(Group Control)是 Web 框架应提供的基础功能之一。所谓分组，是指路由的分组。如果没有路由分组，我们需要针对每一个路由进行控制。但是真实的业务场景中，往往某一组路由需要相似的处理。例如：
 
@@ -834,65 +832,65 @@ v1.GET("/", func(c *gee.Context) {
 
 所以，最后的 Group 的定义是这样的：
 
-**[day4-group/gee/gee.go](https://github.com/geektutu/7days-golang/tree/master/gee-web/day4-group)**
+gee.go
 
 ```go
-RouterGroup struct {  
- prefix      string  
- middlewares []HandlerFunc // support middleware  
- parent      *RouterGroup  // support nesting  
- engine      *Engine       // all groups share a Engine instance  
-}  
+type RouterGroup struct {
+	prefix      string
+	middlewares []HandlerFunc // support middleware
+	parent      *RouterGroup  // support nesting
+	engine      *Engine       // all groups share a Engine instance
+}
 ```
 我们还可以进一步地抽象，将`Engine`作为最顶层的分组，也就是说`Engine`拥有`RouterGroup`所有的能力。
 
 ```go
-Engine struct {  
- *RouterGroup  
- router *router  
- groups []*RouterGroup // store all groups  
-}  
+type Engine struct {
+	*RouterGroup
+	router *router
+	groups []*RouterGroup // store all groups
+}
 ```
 
 那我们就可以将和路由有关的函数，都交给`RouterGroup`实现了。
 
 ```go
-// New is the constructor of gee.Engine  
-func New() *Engine {  
- engine := &Engine{router: newRouter()}  
- engine.RouterGroup = &RouterGroup{engine: engine}  
- engine.groups = []*RouterGroup{engine.RouterGroup}  
- return engine  
-}  
-  
-// Group is defined to create a new RouterGroup  
-// remember all groups share the same Engine instance  
-func (group *RouterGroup) Group(prefix string) *RouterGroup {  
- engine := group.engine  
- newGroup := &RouterGroup{  
- prefix: group.prefix + prefix,  
- parent: group,  
- engine: engine,  
- }  
- engine.groups = append(engine.groups, newGroup)  
- return newGroup  
-}  
-  
-func (group *RouterGroup) addRoute(method string, comp string, handler HandlerFunc) {  
- pattern := group.prefix + comp  
- log.Printf("Route %4s - %s", method, pattern)  
- group.engine.router.addRoute(method, pattern, handler)  
-}  
-  
-// GET defines the method to add GET request  
-func (group *RouterGroup) GET(pattern string, handler HandlerFunc) {  
- group.addRoute("GET", pattern, handler)  
-}  
-  
-// POST defines the method to add POST request  
-func (group *RouterGroup) POST(pattern string, handler HandlerFunc) {  
- group.addRoute("POST", pattern, handler)  
-}  
+// New is the constructor of gee.Engine
+func New() *Engine {
+	engine := &Engine{router: newRouter()}
+	engine.RouterGroup = &RouterGroup{engine: engine}
+	engine.groups = []*RouterGroup{engine.RouterGroup}
+	return engine
+}
+
+// Group is defined to create a new RouterGroup
+// remember all groups share the same Engine instance
+func (group *RouterGroup) Group(prefix string) *RouterGroup {
+	engine := group.engine
+	newGroup := &RouterGroup{
+		prefix: group.prefix + prefix,
+		parent: group,
+		engine: engine,
+	}
+	engine.groups = append(engine.groups, newGroup)
+	return newGroup
+}
+
+func (group *RouterGroup) addRoute(method string, comp string, handler HandlerFunc) {
+	pattern := group.prefix + comp
+	log.Printf("Route %4s - %s", method, pattern)
+	group.engine.router.addRoute(method, pattern, handler)
+}
+
+// GET defines the method to add GET request
+func (group *RouterGroup) GET(pattern string, handler HandlerFunc) {
+	group.addRoute("GET", pattern, handler)
+}
+
+// POST defines the method to add POST request
+func (group *RouterGroup) POST(pattern string, handler HandlerFunc) {
+	group.addRoute("POST", pattern, handler)
+}
 ```
 
 可以仔细观察下`addRoute`函数，调用了`group.engine.router.addRoute`来实现了路由的映射。由于`Engine`从某种意义上继承了`RouterGroup`的所有属性和方法，因为 (*Engine).engine 是指向自己的。这样实现，我们既可以像原来一样添加路由，也可以通过分组添加路由。
@@ -902,39 +900,39 @@ func (group *RouterGroup) POST(pattern string, handler HandlerFunc) {
 测试框架的Demo就可以这样写了：
 
 ```go
-func main() {  
- r := gee.New()  
- r.GET("/index", func(c *gee.Context) {  
- c.HTML(http.StatusOK, "<h1>Index Page</h1>")  
- })  
- v1 := r.Group("/v1")  
- {  
- v1.GET("/", func(c *gee.Context) {  
- c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")  
- })  
-  
- v1.GET("/hello", func(c *gee.Context) {  
- // expect /hello?name=geektutu  
- c.String(http.StatusOK, "hello %s, you're at %sn", c.Query("name"), c.Path)  
- })  
- }  
- v2 := r.Group("/v2")  
- {  
- v2.GET("/hello/:name", func(c *gee.Context) {  
- // expect /hello/geektutu  
- c.String(http.StatusOK, "hello %s, you're at %sn", c.Param("name"), c.Path)  
- })  
- v2.POST("/login", func(c *gee.Context) {  
- c.JSON(http.StatusOK, gee.H{  
- "username": c.PostForm("username"),  
- "password": c.PostForm("password"),  
- })  
- })  
-  
- }  
-  
- r.Run(":9999")  
-}  
+func main() {
+	r := gee.New()
+	r.GET("/index", func(c *gee.Context) {
+		c.HTML(http.StatusOK, "<h1>Index Page</h1>")
+	})
+	v1 := r.Group("/v1")
+	{
+		v1.GET("/", func(c *gee.Context) {
+			c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")
+		})
+
+		v1.GET("/hello", func(c *gee.Context) {
+			// expect /hello?name=geektutu
+			c.String(http.StatusOK, "hello %s, you're at %sn", c.Query("name"), c.Path)
+		})
+	}
+	v2 := r.Group("/v2")
+	{
+		v2.GET("/hello/:name", func(c *gee.Context) {
+			// expect /hello/geektutu
+			c.String(http.StatusOK, "hello %s, you're at %sn", c.Param("name"), c.Path)
+		})
+		v2.POST("/login", func(c *gee.Context) {
+			c.JSON(http.StatusOK, gee.H{
+				"username": c.PostForm("username"),
+				"password": c.PostForm("password"),
+			})
+		})
+
+	}
+
+	r.Run(":9999")
+}
 ```
 
 通过 curl 简单测试：
@@ -964,79 +962,78 @@ hello geektutu, you're at /hello/geektutu
 
 Gee 的中间件的定义与路由映射的 Handler 一致，处理的输入是`Context`对象。插入点是框架接收到请求初始化`Context`对象后，允许用户使用自己定义的中间件做一些额外的处理，例如记录日志等，以及对`Context`进行二次加工。另外通过调用`(*Context).Next()`函数，中间件可等待用户自己定义的 `Handler`处理结束后，再做一些额外的操作，例如计算本次处理所用时间等。即 Gee 的中间件支持用户在请求被处理的前后，做一些额外的操作。举个例子，我们希望最终能够支持如下定义的中间件，`c.Next()`表示等待执行其他的中间件或用户的`Handler`：
 
-****[day4-group/gee/logger.go](https://github.com/geektutu/7days-golang/tree/master/gee-web/day5-middleware)****
+logger.go
 
 ```go
-func Logger() HandlerFunc {  
- return func(c *Context) {  
-   
- t := time.Now()  
-   
- c.Next()  
-   
- log.Printf("[%d] %s in %v", c.StatusCode, c.Req.RequestURI, time.Since(t))  
- }  
-}  
+func Logger() HandlerFunc {
+	return func(c *Context) {
+
+		t := time.Now()
+
+		c.Next()
+
+		log.Printf("[%d] %s in %v", c.StatusCode, c.Req.RequestURI, time.Since(t))
+	}
+}
 ```
 
 另外，支持设置多个中间件，依次进行调用。
 
-我们上一篇文章[分组控制 Group Control](https://geektutu.com/post/gee-day4.html)中讲到，中间件是应用在`RouterGroup`上的，应用在最顶层的 Group，相当于作用于全局，所有的请求都会被中间件处理。那为什么不作用在每一条路由规则上呢？作用在某条路由规则，那还不如用户直接在 Handler 中调用直观。只作用在某条路由规则的功能通用性太差，不适合定义为中间件。
+分组控制中讲到，中间件是应用在`RouterGroup`上的，应用在最顶层的 Group，相当于作用于全局，所有的请求都会被中间件处理。那为什么不作用在每一条路由规则上呢？作用在某条路由规则，那还不如用户直接在 Handler 中调用直观。只作用在某条路由规则的功能通用性太差，不适合定义为中间件。
 
 我们之前的框架设计是这样的，当接收到请求后，匹配路由，该请求的所有信息都保存在`Context`中。中间件也不例外，接收到请求后，应查找所有应作用于该路由的中间件，保存在`Context`中，依次进行调用。为什么依次调用后，还需要在`Context`中保存呢？因为在设计中，中间件不仅作用在处理流程前，也可以作用在处理流程后，即在用户定义的 Handler 处理完毕后，还可以执行剩下的操作。
 
 为此，我们给`Context`添加了2个参数，定义了`Next`方法：
 
-**[day4-group/gee/context.go](https://github.com/geektutu/7days-golang/tree/master/gee-web/day5-middleware)**
+context.go
 
 ```go
-type Context struct {  
-   
- Writer http.ResponseWriter  
- Req    *http.Request  
-   
- Path   string  
- Method string  
- Params map[string]string  
-   
- StatusCode int  
-   
- handlers []HandlerFunc  
- index    int  
-}  
-  
-func newContext(w http.ResponseWriter, req *http.Request) *Context {  
- return &Context{  
- Path:   req.URL.Path,  
- Method: req.Method,  
- Req:    req,  
- Writer: w,  
- index:  -1,  
- }  
-}  
-  
-func (c *Context) Next() {  
- c.index++  
- s := len(c.handlers)  
- for ; c.index < s; c.index++ {  
- c.handlers[c.index](c)  
- }  
-}  
+type Context struct {
+	Writer http.ResponseWriter
+	Req    *http.Request
+
+	Path   string
+	Method string
+	Params map[string]string
+
+	StatusCode int
+
+	handlers []HandlerFunc
+	index    int
+}
+
+func newContext(w http.ResponseWriter, req *http.Request) *Context {
+	return &Context{
+		Path:   req.URL.Path,
+		Method: req.Method,
+		Req:    req,
+		Writer: w,
+		index:  -1,
+	}
+}
+
+func (c *Context) Next() {
+	c.index++
+	s := len(c.handlers)
+	for ; c.index < s; c.index++ {
+		c.handlers[c.index](c)
+	}
+}
 ```
 
 `index`是记录当前执行到第几个中间件，当在中间件中调用`Next`方法时，控制权交给了下一个中间件，直到调用到最后一个中间件，然后再从后往前，调用每个中间件在`Next`方法之后定义的部分。如果我们将用户在映射路由时定义的`Handler`添加到`c.handlers`列表中，结果会怎么样呢？想必你已经猜到了。
 
 ```go
-func A(c *Context) {  
- part1  
- c.Next()  
- part2  
-}  
-func B(c *Context) {  
- part3  
- c.Next()  
- part4  
-}  
+func A(c *Context) {
+	part1
+	c.Next()
+	part2
+}
+func B(c *Context) {
+	part3
+	c.Next()
+	part4
+}
 ```
 
 假设我们应用了中间件 A 和 B，和路由映射的 Handler。`c.handlers`是这样的[A, B, Handler]，`c.index`初始化为-1。调用`c.Next()`，接下来的流程是这样的：
@@ -1059,80 +1056,88 @@ func B(c *Context) {
 
 *   定义`Use`函数，将中间件应用到某个 Group 。
 
-**[day4-group/gee/gee.go](https://github.com/geektutu/7days-golang/tree/master/gee-web/day5-middleware)**
+gee.go
 
 ```go  
-func (group *RouterGroup) Use(middlewares ...HandlerFunc) {  
- group.middlewares = append(group.middlewares, middlewares...)  
-}  
-  
-func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {  
- var middlewares []HandlerFunc  
- for _, group := range engine.groups {  
- if strings.HasPrefix(req.URL.Path, group.prefix) {  
- middlewares = append(middlewares, group.middlewares...)  
- }  
- }  
- c := newContext(w, req)  
- c.handlers = middlewares  
- engine.router.handle(c)  
-}  
+func (group *RouterGroup) Use(middlewares ...HandlerFunc) {
+	group.middlewares = append(group.middlewares, middlewares...)
+}
+
+func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	var middlewares []HandlerFunc
+	for _, group := range engine.groups {
+		if strings.HasPrefix(req.URL.Path, group.prefix) {
+			middlewares = append(middlewares, group.middlewares...)
+		}
+	}
+	c := newContext(w, req)
+	c.handlers = middlewares
+	engine.router.handle(c)
+}
 ```
 ServeHTTP 函数也有变化，当我们接收到一个具体请求时，要判断该请求适用于哪些中间件，在这里我们简单通过 URL 的前缀来判断。得到中间件列表后，赋值给 `c.handlers`。
 
 *   handle 函数中，将从路由匹配得到的 Handler 添加到 `c.handlers`列表中，执行`c.Next()`。
 
-**[day4-group/gee/router.go](https://github.com/geektutu/7days-golang/tree/master/gee-web/day5-middleware)**
+router.go
 
 ```go
-func (r *router) handle(c *Context) {  
- n, params := r.getRoute(c.Method, c.Path)  
-  
- if n != nil {  
- key := c.Method + "-" + n.pattern  
- c.Params = params  
- c.handlers = append(c.handlers, r.handlers[key])  
- } else {  
- c.handlers = append(c.handlers, func(c *Context) {  
- c.String(http.StatusNotFound, "404 NOT FOUND: %sn", c.Path)  
- })  
- }  
- c.Next()  
-}  
+func (r *router) handle(c *Context) {
+	n, params := r.getRoute(c.Method, c.Path)
+
+	if n != nil {
+		key := c.Method + "-" + n.pattern
+		c.Params = params
+		c.handlers = append(c.handlers, r.handlers[key])
+	} else {
+		c.handlers = append(c.handlers, func(c *Context) {
+			c.String(http.StatusNotFound, "404 NOT FOUND: %sn", c.Path)
+		})
+	}
+	c.Next()
+}
+```
+
+context.go
+```go
+func (c *Context) Fail(code int, err string) {
+	c.index = len(c.handlers)
+	c.JSON(code, H{"message": err})
+}
 ```
 
 ### 使用 Demo
 
 ```go
-func onlyForV2() gee.HandlerFunc {  
- return func(c *gee.Context) {  
-   
- t := time.Now()  
-   
- c.Fail(500, "Internal Server Error")  
-   
- log.Printf("[%d] %s in %v for group v2", c.StatusCode, c.Req.RequestURI, time.Since(t))  
- }  
-}  
-  
-func main() {  
- r := gee.New()  
- r.Use(gee.Logger())   
- r.GET("/", func(c *gee.Context) {  
- c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")  
- })  
-  
- v2 := r.Group("/v2")  
- v2.Use(onlyForV2())   
- {  
- v2.GET("/hello/:name", func(c *gee.Context) {  
-   
- c.String(http.StatusOK, "hello %s, you're at %sn", c.Param("name"), c.Path)  
- })  
- }  
-  
- r.Run(":9999")  
-}  
+func onlyForV2() gee.HandlerFunc {
+	return func(c *gee.Context) {
+
+		t := time.Now()
+
+		c.Fail(500, "Internal Server Error")
+
+		log.Printf("[%d] %s in %v for group v2", c.StatusCode, c.Req.RequestURI, time.Since(t))
+	}
+}
+
+func main() {
+	r := gee.New()
+	r.Use(gee.Logger())
+	r.GET("/", func(c *gee.Context) {
+		c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")
+	})
+
+	v2 := r.Group("/v2")
+	v2.Use(onlyForV2())
+	{
+		v2.GET("/hello/:name", func(c *gee.Context) {
+
+			c.String(http.StatusOK, "hello %s, you're at %sn", c.Param("name"), c.Path)
+		})
+	}
+
+	r.Run(":9999")
+}
 ```
 
 `gee.Logger()`即我们一开始就介绍的中间件，我们将这个中间件和框架代码放在了一起，作为框架默认提供的中间件。在这个例子中，我们将`gee.Logger()`应用在了全局，所有的路由都会应用该中间件。`onlyForV2()`是用来测试功能的，仅在`v2`对应的 Group 中应用了。
@@ -1147,7 +1152,7 @@ $ curl http://localhost:9999/
 (2) global + group middleware  
 $ curl http://localhost:9999/v2/hello/geektutu  
 >>> log  
-2019/08/17 01:38:48 [200] /v2/hello/geektutu in 61.467µs for group v2  
+2019/08/17 01:38:48 [500] /v2/hello/geektutu in 61.467µs for group v2  
 2019/08/17 01:38:48 [200] /v2/hello/geektutu in 281µs  
 ```
 
@@ -1247,15 +1252,15 @@ func (c *Context) HTML(code int, name string, data interface{}) {
 
 ##### gee.go
 ```go
-type student struct {  
- Name string  
- Age  int8  
-}  
-  
-func FormatAsDate(t time.Time) string {  
- year, month, day := t.Date()  
- return fmt.Sprintf("%d-%02d-%02d", year, month, day)  
-}  
+type student struct {
+	Name string
+	Age  int8
+}
+
+func FormatAsDate(t time.Time) string {
+	year, month, day := t.Date()
+	return fmt.Sprintf("%d-%02d-%02d", year, month, day)
+}
 ```
 使用Demo
 最终的目录结构
@@ -1272,7 +1277,7 @@ func FormatAsDate(t time.Time) string {
 ---main.go
 ```
 ```html
-<!-- day6-template/templates/css.tmpl -->
+<!-- templates/css.tmpl -->
 <html>
     <link rel="stylesheet" href="/assets/css/geektutu.css">
     <p>geektutu.css is loaded</p>
@@ -1281,35 +1286,35 @@ func FormatAsDate(t time.Time) string {
 ##### main.go
 
 ```go
-func main() {  
- r := gee.New()  
- r.Use(gee.Logger())  
- r.SetFuncMap(template.FuncMap{  
- "FormatAsDate": FormatAsDate,  
- })  
- r.LoadHTMLGlob("templates/*")  
- r.Static("/assets", "./static")  
-  
- stu1 := &student{Name: "Geektutu", Age: 20}  
- stu2 := &student{Name: "Jack", Age: 22}  
- r.GET("/", func(c *gee.Context) {  
- c.HTML(http.StatusOK, "css.tmpl", nil)  
- })  
- r.GET("/students", func(c *gee.Context) {  
- c.HTML(http.StatusOK, "arr.tmpl", gee.H{  
- "title":  "gee",  
- "stuArr": [2]*student{stu1, stu2},  
- })  
- })  
-  
- r.GET("/date", func(c *gee.Context) {  
- c.HTML(http.StatusOK, "custom_func.tmpl", gee.H{  
- "title": "gee",  
- "now":   time.Date(2019, 8, 17, 0, 0, 0, 0, time.UTC),  
- })  
- })  
-  
- r.Run(":9999")  
+func main() {
+	r := gee.New()
+	r.Use(gee.Logger())
+	r.SetFuncMap(template.FuncMap{
+		"FormatAsDate": FormatAsDate,
+	})
+	r.LoadHTMLGlob("templates/*")
+	r.Static("/assets", "./static")
+
+	stu1 := &student{Name: "Geektutu", Age: 20}
+	stu2 := &student{Name: "Jack", Age: 22}
+	r.GET("/", func(c *gee.Context) {
+		c.HTML(http.StatusOK, "css.tmpl", nil)
+	})
+	r.GET("/students", func(c *gee.Context) {
+		c.HTML(http.StatusOK, "arr.tmpl", gee.H{
+			"title":  "gee",
+			"stuArr": [2]*student{stu1, stu2},
+		})
+	})
+
+	r.GET("/date", func(c *gee.Context) {
+		c.HTML(http.StatusOK, "custom_func.tmpl", gee.H{
+			"title": "gee",
+			"now":   time.Date(2019, 8, 17, 0, 0, 0, 0, time.UTC),
+		})
+	})
+
+	r.Run(":9999")
 }
 ```
 访问下主页，模板正常渲染，CSS 静态文件加载成功。
@@ -1449,7 +1454,7 @@ Recovery 的实现非常简单，使用 defer 挂载上错误恢复的函数，�
 
 你可能注意到，这里有一个 trace() 函数，这个函数是用来获取触发 panic 的堆栈信息，完整代码如下：
 
-day7-panic-recover/gee/recovery.go
+recovery.go
 ```go
 package gee
 
@@ -1494,9 +1499,20 @@ func Recovery() HandlerFunc {
 
 接下来，通过 runtime.FuncForPC(pc) 获取对应的函数，在通过 fn.FileLine(pc) 获取到调用该函数的文件名和行号，打印在日志中。
 
+### 加一个工厂方法
+gee.go
+```go
+// Default use Logger() & Recovery middlewares
+func Default() *Engine {
+	engine := New()
+	engine.Use(Logger(), Recovery())
+	return engine
+}
+```
+
 至此，gee 框架的错误处理机制就完成了。
 ### 使用 Demo
-day7-panic-recover/main.go
+main.go
 ```go
 package main
 
