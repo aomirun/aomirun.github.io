@@ -16,13 +16,14 @@
 Markdown 不是想要取代 HTML，甚至也没有要和它相近，它的语法种类很少，只对应 HTML 标记的一小部分。Markdown 的构想_不是_要使得 HTML 文档更容易书写。在我看来， HTML 已经很容易写了。Markdown 的理念是，能让文档更容易读、写和随意改。HTML 是一种_发布_的格式，Markdown 是一种_书写_的格式。就这样，Markdown 的格式语法只涵盖纯文本可以涵盖的范围。
 不在 Markdown 涵盖范围之内的标签，都可以直接在文档里面用 HTML 撰写。不需要额外标注这是 HTML 或是 Markdown；只要直接加标签就可以了。
 要制约的只有一些 HTML 区块元素――比如 、、、 等标签，必须在前后加上空行与其它内容区隔开，还要求它们的开始标签与结尾标签不能用制表符或空格来缩进。Markdown 的生成器有足够智能，不会在 HTML 区块标签外加上不必要的 `` 标签。">
-<meta itemprop="datePublished" content="2021-01-21T14:33:04&#43;08:00" />
-<meta itemprop="dateModified" content="2021-01-21T14:33:04&#43;08:00" />
+<meta itemprop="datePublished" content="2021-01-21T14:33:04+08:00" />
+<meta itemprop="dateModified" content="2021-01-21T14:33:04+08:00" />
 <meta itemprop="wordCount" content="1432">
 
 
 
-<meta itemprop="keywords" content="markdown,md,中文文档," /><meta property="og:title" content="Markdown 中文说明" />
+<meta itemprop="keywords" content="markdown,md,中文文档," />
+<meta property="og:title" content="Markdown 中文说明" />
 <meta property="og:description" content="NOTE: This is Simplelified Chinese Edition Document of Markdown Syntax. If you are seeking for English Edition Document. Please refer to Markdown: Syntax.
  概述 宗旨 Markdown 的目标是实现「易读易写」。
 可读性，无论如何，都是最重要的。一份使用 Markdown 格式撰写的文件应该可以直接以纯文本发布，并且看起来不会像是由许多标签或是格式指令所构成。Markdown 语法受到一些既有 text-to-HTML 格式的影响，包括 Setext、atx、Textile、reStructuredText、Grutatext 和 EtText，而最大灵感来源其实是纯文本电子邮件的格式。
@@ -114,11 +115,11 @@ Markdown 不是想要取代 HTML，甚至也没有要和它相近，它的语法
 <p>例子如下，在 Markdown 文件里加上一段 HTML 表格：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">这是一个普通段落。
 ​
-&lt;table&gt;
-    &lt;tr&gt;
-        &lt;td&gt;Foo&lt;/td&gt;
-    &lt;/tr&gt;
-&lt;/table&gt;
+<span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>Foo<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
 ​
 这是另一个普通段落。
 </code></pre></div><p>请注意，在 HTML 区块标签间的 Markdown 格式语法将不会被处理。比如，你在 HTML 区块内使用 Markdown 样式的<code>*强调*</code>会没有效果。</p>
@@ -127,21 +128,21 @@ Markdown 不是想要取代 HTML，甚至也没有要和它相近，它的语法
 <h3 id="特殊字符自动转换">特殊字符自动转换<a href="#特殊字符自动转换" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>在 HTML 文件中，有两个字符需要特殊处理： <code>&lt;</code> 和 <code>&amp;</code> 。 <code>&lt;</code> 符号用于起始标签，<code>&amp;</code> 符号则用于标记 HTML 实体，如果你只是想要显示这些字符的原型，你必须要使用实体的形式，像是 <code>&lt;</code> 和 <code>&amp;</code>。</p>
 <p><code>&amp;</code> 字符尤其让网络文档编写者受折磨，如果你要打「<code>AT&amp;T</code>」 ，你必须要写成「<code>AT&amp;T</code>」。而网址中的 <code>&amp;</code> 字符也要转换。比如你要链接到：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">http://images.google.com/images?num=30&amp;q=larry+bird
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">http://images.google.com/images?num=30<span class="err">&amp;</span>q=larry+bird
 </code></pre></div><p>你必须要把网址转换写为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">http://images.google.com/images?num=30&amp;amp;q=larry+bird
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">http://images.google.com/images?num=30<span class="ni">&amp;amp;</span>q=larry+bird
 </code></pre></div><p>才能放到链接标签的 <code>href</code> 属性里。不用说也知道这很容易忽略，这也可能是 HTML 标准检验所检查到的错误中，数量最多的。</p>
 <p>Markdown 让你可以自然地书写字符，需要转换的由它来处理好了。如果你使用的 <code>&amp;</code> 字符是 HTML 字符实体的一部分，它会保留原状，否则它会被转换成 <code>&amp;amp</code>;。</p>
 <p>所以你如果要在文档中插入一个版权符号 <code>©</code>，你可以这样写：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&amp;copy;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="ni">&amp;copy;</span>
 </code></pre></div><p>Markdown 会保留它不动。而若你写：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">AT&amp;T
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">AT<span class="err">&amp;</span>T
 </code></pre></div><p>Markdown 就会将它转为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">AT&amp;amp;T
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">AT<span class="ni">&amp;amp;</span>T
 </code></pre></div><p>类似的状况也会发生在 <code>&lt;</code> 符号上，因为 Markdown 允许 <a href="https://www.appinn.com/markdown/#html">兼容 HTML</a> ，如果你是把 <code>&lt;</code> 符号作为 HTML 标签的定界符使用，那 Markdown 也不会对它做任何转换，但是如果你写：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">4 &lt; 5
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">4 <span class="p">&lt;</span> <span class="nt">5</span>
 </code></pre></div><p>Markdown 将会把它转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">4 &amp;lt; 5
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">4 <span class="ni">&amp;lt;</span> 5
 </code></pre></div><p>不过需要注意的是，code 范围内，不论是行内还是区块， <code>&lt;</code> 和 <code>&amp;</code> 两个符号都_一定_会被转换成 HTML 实体，这项特性让你可以很容易地用 Markdown 写 HTML code （和 HTML 相对而言， HTML 语法中，你要把所有的 <code>&lt;</code> 和 <code>&amp;</code> 都转换为 HTML 实体，才能在 HTML 文件里面写出 HTML code。）</p>
 <hr>
 <h2 id="区块元素">区块元素<a href="#区块元素" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
@@ -221,11 +222,11 @@ Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
 <span class="k">2.</span>  McHale
 <span class="k">3.</span>  Parish
 </code></pre></div><p>很重要的一点是，你在列表标记上使用的数字并不会影响输出的 HTML 结果，上面的列表所产生的 HTML 标记为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;ol&gt;
-&lt;li&gt;Bird&lt;/li&gt;
-&lt;li&gt;McHale&lt;/li&gt;
-&lt;li&gt;Parish&lt;/li&gt;
-&lt;/ol&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">ol</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Bird<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>McHale<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Parish<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ol</span><span class="p">&gt;</span>
 </code></pre></div><p>如果你的列表标记写成：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">1.</span>  Bird
 <span class="k">1.</span>  McHale
@@ -253,19 +254,19 @@ Suspendisse id sem consectetuer libero luctus adipiscing.
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   Bird
 <span class="k">*</span>   Magic
 </code></pre></div><p>会被转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;ul&gt;
-&lt;li&gt;Bird&lt;/li&gt;
-&lt;li&gt;Magic&lt;/li&gt;
-&lt;/ul&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Bird<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Magic<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </code></pre></div><p>但是这个：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   Bird
 ​
 <span class="k">*</span>   Magic
 </code></pre></div><p>会被转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Bird&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Magic&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Bird<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Magic<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </code></pre></div><p>列表项目可以包含多个段落，每个项目下的段落都必须缩进 4 个空格或是 1 个制表符：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">1.</span>  This is a list item with two paragraphs. Lorem ipsum dolor
     sit amet, consectetuer adipiscing elit. Aliquam hendrerit
@@ -292,7 +293,7 @@ sit amet, consectetuer adipiscing elit.
 </span></code></pre></div><p>如果要放代码区块的话，该区块就需要缩进_两次_，也就是 8 个空格或是 2 个制表符：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   一列表项包含一个列表区块：
 ​
-        &lt;代码写在这&gt;
+        <span class="p">&lt;</span><span class="nt">代码写在这</span><span class="p">&gt;</span>
 </code></pre></div><p>当然，项目列表很可能会不小心产生，像是下面这样的写法：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">1986.</span> What a great season.
 </code></pre></div><p>换句话说，也就是在行首出现_数字-句点-空白_，要避免这样的状况，你可以在句点前面加上反斜杠。</p>
@@ -304,10 +305,10 @@ sit amet, consectetuer adipiscing elit.
 ​
     这是一个代码区块。
 </code></pre></div><p>Markdown 会转换成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;这是一个普通段落：&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>这是一个普通段落：<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 ​
-&lt;pre&gt;&lt;code&gt;这是一个代码区块。
-&lt;/code&gt;&lt;/pre&gt;
+<span class="p">&lt;</span><span class="nt">pre</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span>这是一个代码区块。
+<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
 </code></pre></div><p>这个每行一阶的缩进（4 个空格或是 1 个制表符），都会被移除，例如：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">Here is an example of AppleScript:
 ​
@@ -315,22 +316,22 @@ sit amet, consectetuer adipiscing elit.
         beep
     end tell
 </code></pre></div><p>会被转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;Here is an example of AppleScript:&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Here is an example of AppleScript:<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 ​
-&lt;pre&gt;&lt;code&gt;tell application &#34;Foo&#34;
+<span class="p">&lt;</span><span class="nt">pre</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span>tell application &#34;Foo&#34;
     beep
 end tell
-&lt;/code&gt;&lt;/pre&gt;
+<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
 </code></pre></div><p>一个代码区块会一直持续到没有缩进的那一行（或是文件结尾）。</p>
 <p>在代码区块里面， <code>&amp;</code> 、 <code>&lt;</code> 和 <code>&gt;</code> 会自动转成 HTML 实体，这样的方式让你非常容易使用 Markdown 插入范例用的 HTML 原始码，只需要复制贴上，再加上缩进就可以了，剩下的 Markdown 都会帮你处理，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">    &lt;div class=&#34;footer&#34;&gt;
-        &amp;copy; 2004 Foo Corporation
-    &lt;/div&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;footer&#34;</span><span class="p">&gt;</span>
+        <span class="ni">&amp;copy;</span> 2004 Foo Corporation
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </code></pre></div><p>会被转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&#34;footer&#34;&amp;gt;
-    &amp;amp;copy; 2004 Foo Corporation
-&amp;lt;/div&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">pre</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span><span class="ni">&amp;lt;</span>div class=&#34;footer&#34;<span class="ni">&amp;gt;</span>
+    <span class="ni">&amp;amp;</span>copy; 2004 Foo Corporation
+<span class="ni">&amp;lt;</span>/div<span class="ni">&amp;gt;</span>
+<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
 </code></pre></div><p>代码区块中，一般的 Markdown 语法不会被转换，像是星号便只是星号，这表示你可以很容易地以 Markdown 语法撰写 Markdown 语法相关的文件。</p>
 <h3 id="分隔线">分隔线<a href="#分隔线" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>你可以在一行中用三个以上的星号、减号、底线来建立一个分隔线，行内不能有其他东西。你也可以在星号或是减号中间插入空格。下面每种写法都可以建立分隔线：</p>
@@ -353,11 +354,11 @@ end tell
 ​
 [<span class="nt">This link</span>](<span class="na">http://example.net/</span>) has no title attribute.
 </code></pre></div><p>会产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;This is &lt;a href=&#34;http://example.com/&#34; title=&#34;Title&#34;&gt;
-an example&lt;/a&gt; inline link.&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>This is <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://example.com/&#34;</span> <span class="na">title</span><span class="o">=</span><span class="s">&#34;Title&#34;</span><span class="p">&gt;</span>
+an example<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span> inline link.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 ​
-&lt;p&gt;&lt;a href=&#34;http://example.net/&#34;&gt;This link&lt;/a&gt; has no
-title attribute.&lt;/p&gt;
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://example.net/&#34;</span><span class="p">&gt;</span>This link<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span> has no
+title attribute.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 </code></pre></div><p>如果你是要链接到同样主机的资源，你可以使用相对路径：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">See my [<span class="nt">About</span>](<span class="na">/about/</span>) page for details.
 </code></pre></div><p>_参考式_的链接是在链接文字的括号后面再接上另一个方括号，而在第二个方括号里面要填入用以辨识链接的标记：</p>
@@ -380,7 +381,7 @@ title attribute.&lt;/p&gt;
 [foo]: http://example.com/  (Optional Title Here)
 </code></pre></div><p>**请注意：**有一个已知的问题是 Markdown.pl 1.0.1 会忽略单引号包起来的链接 title。</p>
 <p>链接网址也可以用方括号包起来：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[id]: &lt;http://example.com/&gt;  &#34;Optional Title Here&#34;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[id]: <span class="p">&lt;</span><span class="nt">http:</span><span class="err">//</span><span class="na">example</span><span class="err">.</span><span class="na">com</span><span class="p">/&gt;</span>  &#34;Optional Title Here&#34;
 </code></pre></div><p>你也可以把 title 属性放到下一行，也可以加一些缩进，若网址太长的话，这样会比较好看：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[id]: http://example.com/longish/path/to/resource/here
     &#34;Optional Title Here&#34;
@@ -412,10 +413,10 @@ title attribute.&lt;/p&gt;
   [yahoo]:  http://search.yahoo.com/  &#34;Yahoo Search&#34;
   [msn]:    http://search.msn.com/    &#34;MSN Search&#34;
 </code></pre></div><p>上面两种写法都会产生下面的 HTML。</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;I get 10 times more traffic from &lt;a href=&#34;http://google.com/&#34;
-title=&#34;Google&#34;&gt;Google&lt;/a&gt; than from
-&lt;a href=&#34;http://search.yahoo.com/&#34; title=&#34;Yahoo Search&#34;&gt;Yahoo&lt;/a&gt;
-or &lt;a href=&#34;http://search.msn.com/&#34; title=&#34;MSN Search&#34;&gt;MSN&lt;/a&gt;.&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>I get 10 times more traffic from <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://google.com/&#34;</span>
+<span class="na">title</span><span class="o">=</span><span class="s">&#34;Google&#34;</span><span class="p">&gt;</span>Google<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span> than from
+<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://search.yahoo.com/&#34;</span> <span class="na">title</span><span class="o">=</span><span class="s">&#34;Yahoo Search&#34;</span><span class="p">&gt;</span>Yahoo<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+or <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://search.msn.com/&#34;</span> <span class="na">title</span><span class="o">=</span><span class="s">&#34;MSN Search&#34;</span><span class="p">&gt;</span>MSN<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 </code></pre></div><p>下面是用行内式写的同样一段内容的 Markdown 文件，提供作为比较之用：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">I get 10 times more traffic from [<span class="nt">Google</span>](<span class="na">http://google.com/ &#34;Google&#34;</span>)
 than from [<span class="nt">Yahoo</span>](<span class="na">http://search.yahoo.com/ &#34;Yahoo Search&#34;</span>) or
@@ -432,13 +433,13 @@ than from [<span class="nt">Yahoo</span>](<span class="na">http://search.yahoo.c
 ​
 <span class="gs">__double underscores__</span>
 </code></pre></div><p>会转成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;em&gt;single asterisks&lt;/em&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">em</span><span class="p">&gt;</span>single asterisks<span class="p">&lt;/</span><span class="nt">em</span><span class="p">&gt;</span>
 ​
-&lt;em&gt;single underscores&lt;/em&gt;
+<span class="p">&lt;</span><span class="nt">em</span><span class="p">&gt;</span>single underscores<span class="p">&lt;/</span><span class="nt">em</span><span class="p">&gt;</span>
 ​
-&lt;strong&gt;double asterisks&lt;/strong&gt;
+<span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;</span>double asterisks<span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span>
 ​
-&lt;strong&gt;double underscores&lt;/strong&gt;
+<span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;</span>double underscores<span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span>
 </code></pre></div><p>你可以随便用你喜欢的样式，唯一的限制是，你用什么符号开启标签，就要用什么符号结束。</p>
 <p>强调也可以直接插在文字中间：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">un*frigging*believable
@@ -449,28 +450,28 @@ than from [<span class="nt">Yahoo</span>](<span class="na">http://search.yahoo.c
 <p>如果要标记一小段行内代码，你可以用反引号把它包起来（```），例如：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">Use the <span class="sb">`printf()`</span> function.
 </code></pre></div><p>会产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;Use the &lt;code&gt;printf()&lt;/code&gt; function.&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Use the <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span>printf()<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;</span> function.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 </code></pre></div><p>如果要在代码区段内插入反引号，你可以用多个反引号来开启和结束代码区段：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">``There is a literal backtick (`) here.``
 </code></pre></div><p>这段语法会产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;&lt;code&gt;There is a literal backtick (`) here.&lt;/code&gt;&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span>There is a literal backtick (`) here.<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 </code></pre></div><p>代码区段的起始和结束端都可以放入一个空白，起始端后面一个，结束端前面一个，这样你就可以在区段的一开始就插入反引号：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">A single backtick in a code span: `` <span class="sb">` ``
 </span><span class="sb">​
 </span><span class="sb">A backtick-delimited string in a code span: `` `</span>foo` ``
 </code></pre></div><p>会产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;A single backtick in a code span: &lt;code&gt;`&lt;/code&gt;&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>A single backtick in a code span: <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span>`<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 ​
-&lt;p&gt;A backtick-delimited string in a code span: &lt;code&gt;`foo`&lt;/code&gt;&lt;/p&gt;
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>A backtick-delimited string in a code span: <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span>`foo`<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 </code></pre></div><p>在代码区段内，<code>&amp;</code> 和方括号<strong>都</strong>会被自动地转成 HTML 实体，这使得插入 HTML 原始码变得很容易，Markdown 会把下面这段：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">Please don&#39;t use any <span class="sb">`&lt;blink&gt;`</span> tags.
 </code></pre></div><p>转为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;Please don&#39;t use any &lt;code&gt;&amp;lt;blink&amp;gt;&lt;/code&gt; tags.&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Please don&#39;t use any <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span><span class="ni">&amp;lt;</span>blink<span class="ni">&amp;gt;</span><span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;</span> tags.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 </code></pre></div><p>你也可以这样写：</p>
 <div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="sb">`&amp;#8212;`</span> is the decimal-encoded equivalent of <span class="sb">`&amp;mdash;`</span>.
 </code></pre></div><p>以产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;p&gt;&lt;code&gt;&amp;amp;#8212;&lt;/code&gt; is the decimal-encoded
-equivalent of &lt;code&gt;&amp;amp;mdash;&lt;/code&gt;.&lt;/p&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span><span class="ni">&amp;amp;</span>#8212;<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;</span> is the decimal-encoded
+equivalent of <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span><span class="ni">&amp;amp;</span>mdash;<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;</span>.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 </code></pre></div><h3 id="图片">图片<a href="#图片" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>很明显地，要在纯文字应用中设计一个「自然」的语法来插入图片是有一定难度的。</p>
 <p>Markdown 使用一种和链接很相似的语法来标记图片，同样也允许两种样式： <em>行内式_和_参考式</em>。</p>
@@ -493,16 +494,16 @@ equivalent of &lt;code&gt;&amp;amp;mdash;&lt;/code&gt;.&lt;/p&gt;
 <h2 id="其它">其它<a href="#其它" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h3 id="自动链接">自动链接<a href="#自动链接" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Markdown 支持以比较简短的自动链接形式来处理网址和电子邮件信箱，只要是用方括号包起来， Markdown 就会自动把它转成链接。一般网址的链接文字就和链接地址一样，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;http://example.com/&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">http:</span><span class="err">//</span><span class="na">example</span><span class="err">.</span><span class="na">com</span><span class="p">/&gt;</span>
 </code></pre></div><p>Markdown 会转为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;a href=&#34;http://example.com/&#34;&gt;http://example.com/&lt;/a&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://example.com/&#34;</span><span class="p">&gt;</span>http://example.com/<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
 </code></pre></div><p>邮址的自动链接也很类似，只是 Markdown 会先做一个编码转换的过程，把文字字符转成 16 进位码的 HTML 实体，这样的格式可以糊弄一些不好的邮址收集机器人，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;address@example.com&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">address</span><span class="err">@</span><span class="na">example</span><span class="err">.</span><span class="na">com</span><span class="p">&gt;</span>
 </code></pre></div><p>Markdown 会转成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">&lt;a href=&#34;&amp;#x6D;&amp;#x61;i&amp;#x6C;&amp;#x74;&amp;#x6F;:&amp;#x61;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#x65;
-&amp;#115;&amp;#115;&amp;#64;&amp;#101;&amp;#120;&amp;#x61;&amp;#109;&amp;#x70;&amp;#x6C;e&amp;#x2E;&amp;#99;&amp;#111;
-&amp;#109;&#34;&gt;&amp;#x61;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#x65;&amp;#115;&amp;#115;&amp;#64;&amp;#101;&amp;#120;&amp;#x61;
-&amp;#109;&amp;#x70;&amp;#x6C;e&amp;#x2E;&amp;#99;&amp;#111;&amp;#109;&lt;/a&gt;
+<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;&amp;#x6D;&amp;#x61;i&amp;#x6C;&amp;#x74;&amp;#x6F;:&amp;#x61;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#x65;
+</span><span class="s">&amp;#115;&amp;#115;&amp;#64;&amp;#101;&amp;#120;&amp;#x61;&amp;#109;&amp;#x70;&amp;#x6C;e&amp;#x2E;&amp;#99;&amp;#111;
+</span><span class="s">&amp;#109;&#34;</span><span class="p">&gt;</span><span class="ni">&amp;#x61;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#x65;&amp;#115;&amp;#115;&amp;#64;&amp;#101;&amp;#120;&amp;#x61;</span>
+<span class="ni">&amp;#109;&amp;#x70;&amp;#x6C;</span>e<span class="ni">&amp;#x2E;&amp;#99;&amp;#111;&amp;#109;</span><span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
 </code></pre></div><p>在浏览器里面，这段字串（其实是 <code>[address@example.com](mailto:address@example.com)</code>）会变成一个可以点击的「<a href="mailto:address@example.com">address@example.com</a>」链接。</p>
 <p>（这种作法虽然可以糊弄不少的机器人，但并不能全部挡下来，不过总比什么都不做好些。不管怎样，公开你的信箱终究会引来广告信件的。）</p>
 <h3 id="反斜杠">反斜杠<a href="#反斜杠" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
@@ -571,6 +572,9 @@ equivalent of &lt;code&gt;&amp;amp;mdash;&lt;/code&gt;.&lt;/p&gt;
 </nav>
 		</aside>
 		<div class="post-nav thin">
+			<a class="next-post" href="https://aomi.run/posts/golang/realizing-web-framework-from-scratch-with-go-in-7-days/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>7天用Go从零实现Web框架</span>
+			</a>
 			<a class="prev-post" href="https://aomi.run/posts/edge-cors-error/">
 				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>edge如何解决跨域问题</span>
 			</a>

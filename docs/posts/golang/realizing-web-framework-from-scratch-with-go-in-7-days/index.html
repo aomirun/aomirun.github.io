@@ -1,30 +1,105 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-	<channel>
-		<title>文章列表 on Aomi</title>
-		<link>https://aomi.run/posts/</link>
-		<description>Recent content in 文章列表 on Aomi</description>
-		<generator>Hugo -- gohugo.io</generator>
-		<language>zh_CN</language>
-		<copyright>aomi.run</copyright>
-		<lastBuildDate>Thu, 21 Jan 2021 17:35:50 +0800</lastBuildDate>
-		<atom:link href="https://aomi.run/posts/index.xml" rel="self" type="application/rss+xml" />
-		
-		<item>
-			<title>7天用Go从零实现Web框架</title>
-			<link>https://aomi.run/posts/golang/realizing-web-framework-from-scratch-with-go-in-7-days/</link>
-			<pubDate>Thu, 21 Jan 2021 17:35:50 +0800</pubDate>
-			
-			<guid>https://aomi.run/posts/golang/realizing-web-framework-from-scratch-with-go-in-7-days/</guid>
-			<description>序言 在网上看到一个不错的教程，为了自己记录方便，转载一下。源站地址 极客兔兔
+<!DOCTYPE html>
+<html lang="zh_CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="7天用Go从零实现Web框架">
+<meta itemprop="description" content="序言 在网上看到一个不错的教程，为了自己记录方便，转载一下。源站地址 极客兔兔
 设计一个框架 大部分时候，我们需要实现一个 Web 应用，第一反应是应该使用哪个框架。不同的框架设计理念和提供的功能有很大的差别。比如 Python 语言的 django和flask，前者大而全，后者小而美。Go语言/golang 也是如此，新框架层出不穷，比如Beego，Gin，Iris等。那为什么不直接使用标准库，而必须使用框架呢？在设计一个框架之前，我们需要回答框架核心为我们解决了什么问题。只有理解了这一点，才能想明白我们需要在框架中实现什么功能。
 我们先看看标准库net/http如何处理一个请求。
-func main() { http.HandleFunc(&amp;#34;/&amp;#34;, handler) http.HandleFunc(&amp;#34;/count&amp;#34;, counter) log.Fatal(http.ListenAndServe(&amp;#34;localhost:8000&amp;#34;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, &amp;#34;URL.Path = %qn&amp;#34;, r.URL.Path) } net/http提供了基础的Web功能，即监听端口，映射静态路由，解析HTTP报文。一些Web开发中简单的需求并不支持，需要手工实现。
+func main() { http.HandleFunc(&#34;/&#34;, handler) http.HandleFunc(&#34;/count&#34;, counter) log.Fatal(http.ListenAndServe(&#34;localhost:8000&#34;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, &#34;URL.Path = %qn&#34;, r.URL.Path) } net/http提供了基础的Web功能，即监听端口，映射静态路由，解析HTTP报文。一些Web开发中简单的需求并不支持，需要手工实现。
  动态路由：例如hello/:name，hello/*这类的规则。 鉴权：没有分组/统一鉴权的能力，需要在每个路由映射的handler中实现。 模板：没有统一简化的HTML机制。 …  当我们离开框架，使用基础库时，需要频繁手工处理的地方，就是框架的价值所在。但并不是每一个频繁处理的地方都适合在框架中完成。Python有一个很著名的Web框架，名叫bottle，整个框架由bottle.py一个文件构成，共4400行，可以说是一个微框架。那么理解这个微框架提供的特性，可以帮助我们理解框架的核心能力。
  路由(Routing)：将请求映射到函数，支持动态路由。例如&#39;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
-package main import ( &amp;#34;fmt&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; ) func main() { http.HandleFunc(&amp;#34;/&amp;#34;, indexHandler) http.</description>
-			<content type="html"><![CDATA[<h2 id="序言">序言</h2>
+package main import ( &#34;fmt&#34; &#34;log&#34; &#34;net/http&#34; ) func main() { http.HandleFunc(&#34;/&#34;, indexHandler) http.">
+<meta itemprop="datePublished" content="2021-01-21T17:35:50+08:00" />
+<meta itemprop="dateModified" content="2021-01-21T17:35:50+08:00" />
+<meta itemprop="wordCount" content="3505">
+
+
+
+<meta itemprop="keywords" content="go,web," />
+<meta property="og:title" content="7天用Go从零实现Web框架" />
+<meta property="og:description" content="序言 在网上看到一个不错的教程，为了自己记录方便，转载一下。源站地址 极客兔兔
+设计一个框架 大部分时候，我们需要实现一个 Web 应用，第一反应是应该使用哪个框架。不同的框架设计理念和提供的功能有很大的差别。比如 Python 语言的 django和flask，前者大而全，后者小而美。Go语言/golang 也是如此，新框架层出不穷，比如Beego，Gin，Iris等。那为什么不直接使用标准库，而必须使用框架呢？在设计一个框架之前，我们需要回答框架核心为我们解决了什么问题。只有理解了这一点，才能想明白我们需要在框架中实现什么功能。
+我们先看看标准库net/http如何处理一个请求。
+func main() { http.HandleFunc(&#34;/&#34;, handler) http.HandleFunc(&#34;/count&#34;, counter) log.Fatal(http.ListenAndServe(&#34;localhost:8000&#34;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, &#34;URL.Path = %qn&#34;, r.URL.Path) } net/http提供了基础的Web功能，即监听端口，映射静态路由，解析HTTP报文。一些Web开发中简单的需求并不支持，需要手工实现。
+ 动态路由：例如hello/:name，hello/*这类的规则。 鉴权：没有分组/统一鉴权的能力，需要在每个路由映射的handler中实现。 模板：没有统一简化的HTML机制。 …  当我们离开框架，使用基础库时，需要频繁手工处理的地方，就是框架的价值所在。但并不是每一个频繁处理的地方都适合在框架中完成。Python有一个很著名的Web框架，名叫bottle，整个框架由bottle.py一个文件构成，共4400行，可以说是一个微框架。那么理解这个微框架提供的特性，可以帮助我们理解框架的核心能力。
+ 路由(Routing)：将请求映射到函数，支持动态路由。例如&#39;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
+package main import ( &#34;fmt&#34; &#34;log&#34; &#34;net/http&#34; ) func main() { http.HandleFunc(&#34;/&#34;, indexHandler) http." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://aomi.run/posts/golang/realizing-web-framework-from-scratch-with-go-in-7-days/" />
+<meta property="article:published_time" content="2021-01-21T17:35:50+08:00" />
+<meta property="article:modified_time" content="2021-01-21T17:35:50+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="7天用Go从零实现Web框架"/>
+<meta name="twitter:description" content="序言 在网上看到一个不错的教程，为了自己记录方便，转载一下。源站地址 极客兔兔
+设计一个框架 大部分时候，我们需要实现一个 Web 应用，第一反应是应该使用哪个框架。不同的框架设计理念和提供的功能有很大的差别。比如 Python 语言的 django和flask，前者大而全，后者小而美。Go语言/golang 也是如此，新框架层出不穷，比如Beego，Gin，Iris等。那为什么不直接使用标准库，而必须使用框架呢？在设计一个框架之前，我们需要回答框架核心为我们解决了什么问题。只有理解了这一点，才能想明白我们需要在框架中实现什么功能。
+我们先看看标准库net/http如何处理一个请求。
+func main() { http.HandleFunc(&#34;/&#34;, handler) http.HandleFunc(&#34;/count&#34;, counter) log.Fatal(http.ListenAndServe(&#34;localhost:8000&#34;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, &#34;URL.Path = %qn&#34;, r.URL.Path) } net/http提供了基础的Web功能，即监听端口，映射静态路由，解析HTTP报文。一些Web开发中简单的需求并不支持，需要手工实现。
+ 动态路由：例如hello/:name，hello/*这类的规则。 鉴权：没有分组/统一鉴权的能力，需要在每个路由映射的handler中实现。 模板：没有统一简化的HTML机制。 …  当我们离开框架，使用基础库时，需要频繁手工处理的地方，就是框架的价值所在。但并不是每一个频繁处理的地方都适合在框架中完成。Python有一个很著名的Web框架，名叫bottle，整个框架由bottle.py一个文件构成，共4400行，可以说是一个微框架。那么理解这个微框架提供的特性，可以帮助我们理解框架的核心能力。
+ 路由(Routing)：将请求映射到函数，支持动态路由。例如&#39;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
+package main import ( &#34;fmt&#34; &#34;log&#34; &#34;net/http&#34; ) func main() { http.HandleFunc(&#34;/&#34;, indexHandler) http."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>7天用Go从零实现Web框架</title>
+	<link rel="stylesheet" href="https://aomi.run/css/style.min.eac77496566fd7d5768fd650ddb0b2b181ca6a2d7c5fdd6fe6b8ba4bf47e566f.css" integrity="sha256-6sd0llZv19V2j9ZQ3bCysYHKai18X91v5ri6S/R+Vm8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://aomi.run">Aomi</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://aomi.run/about/">关于</a>
+				<a href="https://aomi.run/posts/">日志</a>
+				<a href="https://aomi.run/categories/">分类</a>
+				<a href="https://aomi.run/series/">专栏</a>
+				<a href="https://aomi.run/tags/">TAGS</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://aomi.run/about/">关于</a></li>
+			<li><a href="https://aomi.run/posts/">日志</a></li>
+			<li><a href="https://aomi.run/categories/">分类</a></li>
+			<li><a href="https://aomi.run/series/">专栏</a></li>
+			<li><a href="https://aomi.run/tags/">TAGS</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>2021-01-21</span></div>
+				<h1>7天用Go从零实现Web框架</h1>
+			</header>
+			<div class="content">
+				<h2 id="序言">序言<a href="#序言" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>在网上看到一个不错的教程，为了自己记录方便，转载一下。源站地址 <a href="https://geektutu.com/post/gee.html" title="7天用Go从零实现Web框架Gee教程">极客兔兔</a></p>
-<h3 id="设计一个框架">设计一个框架</h3>
+<h3 id="设计一个框架">设计一个框架<a href="#设计一个框架" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>大部分时候，我们需要实现一个 Web 应用，第一反应是应该使用哪个框架。不同的框架设计理念和提供的功能有很大的差别。比如 <code>Python</code> 语言的 <code>django</code>和<code>flask</code>，前者大而全，后者小而美。<code>Go</code>语言/<code>golang</code> 也是如此，新框架层出不穷，比如<code>Beego</code>，<code>Gin</code>，<code>Iris</code>等。那为什么不直接使用标准库，而必须使用框架呢？在设计一个框架之前，我们需要回答框架核心为我们解决了什么问题。只有理解了这一点，才能想明白我们需要在框架中实现什么功能。</p>
 <p>我们先看看标准库<code>net/http</code>如何处理一个请求。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
@@ -51,8 +126,8 @@ package main import ( &amp;#34;fmt&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/h
 <li>插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。</li>
 <li>…</li>
 </ul>
-<h2 id="http-基础">HTTP 基础</h2>
-<h3 id="标准库启动web服务">标准库启动Web服务</h3>
+<h2 id="http-基础">HTTP 基础<a href="#http-基础" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="标准库启动web服务">标准库启动Web服务<a href="#标准库启动web服务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Go语言内置了 <code>net/http</code>库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于<code>net/http</code>的。我们接下来通过一个例子，简单介绍下这个库的使用。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
 
@@ -87,7 +162,7 @@ $ curl http://localhost:9999/hello
 Header[&quot;Accept&quot;] = [&quot;*/*&quot;]
 Header[&quot;User-Agent&quot;] = [&quot;curl/7.54.0&quot;]
 </code></pre><p>main 函数的最后一行，是用来启动 Web 服务的，第一个参数是地址，<code>:9999</code>表示在 9999 端口监听。而第二个参数则代表处理所有的HTTP请求的实例，nil 代表使用标准库中的实例处理。第二个参数，则是我们基于<code>net/http</code>标准库实现Web框架的入口。</p>
-<h3 id="实现httphandler接口">实现http.Handler接口</h3>
+<h3 id="实现httphandler接口">实现http.Handler接口<a href="#实现httphandler接口" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">http</span>
 
 <span class="kd">type</span> <span class="nx">Handler</span> <span class="kd">interface</span> <span class="p">{</span>
@@ -135,7 +210,7 @@ Header[&quot;User-Agent&quot;] = [&quot;curl/7.54.0&quot;]
 <p>代码的运行结果与之前的是一致的。</p>
 </li>
 </ul>
-<h3 id="gee框架的雏形">Gee框架的雏形</h3>
+<h3 id="gee框架的雏形">Gee框架的雏形<a href="#gee框架的雏形" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>我们接下来重新组织上面的代码，搭建出整个框架的雏形。</p>
 <p>最终的代码目录结构是这样的。</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">gee/
@@ -143,7 +218,7 @@ Header[&quot;User-Agent&quot;] = [&quot;curl/7.54.0&quot;]
   <span class="p">|</span>--go.mod
 main.go
 go.mod
-</code></pre></div><h5 id="gomod">go.mod</h5>
+</code></pre></div><h5 id="gomod">go.mod<a href="#gomod" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">module</span> <span class="nx">example</span>
 
 <span class="k">go</span> <span class="mf">1.13</span>
@@ -157,7 +232,7 @@ go.mod
 <blockquote>
 <p>从 go 1.11 版本开始，引用相对路径的 package 需要使用上述方式。</p>
 </blockquote>
-<h5 id="maingo">main.go</h5>
+<h5 id="maingo">main.go<a href="#maingo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="p">(</span>
@@ -182,7 +257,7 @@ go.mod
 	<span class="nx">r</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="s">&#34;:9999&#34;</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div><p>看到这里，如果你使用过gin框架的话，肯定会觉得无比的亲切。gee框架的设计以及API均参考了gin。使用New()创建 gee 的实例，使用 GET()方法添加路由，最后使用Run()启动Web服务。这里的路由，只是静态路由，不支持/hello/:name这样的动态路由，动态路由我们将在下一次实现。</p>
-<h5 id="geego">gee.go</h5>
+<h5 id="geego">gee.go<a href="#geego" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">gee</span>
 
 <span class="kn">import</span> <span class="p">(</span>
@@ -252,15 +327,15 @@ Header[&quot;User-Agent&quot;] = [&quot;curl/7.54.0&quot;]
 curl http://localhost:9999/world
 404 NOT FOUND: /world
 </code></pre><p>至此，整个Gee框架的原型已经出来了。实现了路由映射表，提供了用户注册静态路由的方法，包装了启动服务的函数。当然，到目前为止，我们还没有实现比net/http标准库更强大的能力，不用担心，很快就可以将动态路由、中间件等功能添加上去了。</p>
-<h2 id="上下文context">上下文Context</h2>
+<h2 id="上下文context">上下文Context<a href="#上下文context" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>将路由(router)独立出来，方便之后增强。</li>
 <li>设计上下文(Context)，封装 Request 和 Response ，提供对 JSON、HTML 等返回类型的支持。</li>
 <li>动手写 Gee 框架的第二天，框架代码140行，新增代码约90行</li>
 </ul>
-<h3 id="使用效果">使用效果</h3>
+<h3 id="使用效果">使用效果<a href="#使用效果" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>为了展示第二天的成果，我们看一看在使用时的效果。</p>
-<h5 id="maingo-1">main.go</h5>
+<h5 id="maingo-1">main.go<a href="#maingo-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 	<span class="nx">r</span> <span class="o">:=</span> <span class="nx">gee</span><span class="p">.</span><span class="nf">New</span><span class="p">()</span>
 	<span class="nx">r</span><span class="p">.</span><span class="nf">GET</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">gee</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
@@ -284,8 +359,8 @@ curl http://localhost:9999/world
 <li>Handler的参数变成成了gee.Context，提供了查询Query/PostForm参数的功能。</li>
 <li>gee.Context封装了HTML/String/JSON函数，能够快速构造HTTP响应。</li>
 </ul>
-<h3 id="设计context">设计Context</h3>
-<h5 id="必要性">必要性</h5>
+<h3 id="设计context">设计Context<a href="#设计context" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h5 id="必要性">必要性<a href="#必要性" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <ol>
 <li>对Web服务来说，无非是根据请求<code>*http.Request</code>，构造响应<code>http.ResponseWriter</code>。但是这两个对象提供的接口粒度太细，比如我们要构造一个完整的响应，需要考虑消息头(Header)和消息体(Body)，而 Header 包含了状态码(StatusCode)，消息类型(ContentType)等几乎每次请求都需要设置的信息。因此，如果不进行有效的封装，那么框架的用户将需要写大量重复，繁杂的代码，而且容易出错。针对常用场景，能够高效地构造出 HTTP 响应是一个好的框架必须考虑的点。
 用返回 JSON 数据作比较，感受下封装前后的差距。</li>
@@ -309,7 +384,7 @@ curl http://localhost:9999/world
 </code></pre></div><ol start="2">
 <li>针对使用场景，封装<code>*http.Request</code>和<code>http.ResponseWriter</code>的方法，简化相关接口的调用，只是设计 Context 的原因之一。对于框架来说，还需要支撑额外的功能。例如，将来解析动态路由<code>/hello/:name</code>，参数:name的值放在哪呢？再比如，框架需要支持中间件，那中间件产生的信息放在哪呢？Context 随着每一个请求的出现而产生，请求的结束而销毁，和当前请求强相关的信息都应由 Context 承载。因此，设计 Context 结构，扩展性和复杂性留在了内部，而对外简化了接口。路由的处理函数，以及将要实现的中间件，参数都统一使用 Context 实例， Context 就像一次会话的百宝箱，可以找到任何东西。</li>
 </ol>
-<h5 id="具体实现-contextgo">具体实现 context.go</h5>
+<h5 id="具体实现-contextgo">具体实现 context.go<a href="#具体实现-contextgo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">H</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
 
 <span class="kd">type</span> <span class="nx">Context</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -380,7 +455,7 @@ curl http://localhost:9999/world
 <li>提供了访问Query和PostForm参数的方法。</li>
 <li>提供了快速构造String/Data/JSON/HTML响应的方法。</li>
 </ul>
-<h5 id="路由router-routergo">路由(Router) router.go</h5>
+<h5 id="路由router-routergo">路由(Router) router.go<a href="#路由router-routergo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <p>我们将和路由相关的方法和结构提取了出来，放到了一个新的文件中router.go，方便我们下一次对 router 的功能进行增强，例如提供动态路由的支持。 router 的 handle 方法作了一个细微的调整，即 handler 的参数，变成了 Context。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">router</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span class="nx">handlers</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">HandlerFunc</span>
@@ -404,7 +479,7 @@ curl http://localhost:9999/world
 		<span class="nx">c</span><span class="p">.</span><span class="nf">String</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusNotFound</span><span class="p">,</span> <span class="s">&#34;404 NOT FOUND: %sn&#34;</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Path</span><span class="p">)</span>
 	<span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div><h5 id="框架入口-geego">框架入口 gee.go</h5>
+</code></pre></div><h5 id="框架入口-geego">框架入口 gee.go<a href="#框架入口-geego" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// HandlerFunc defines the request handler used by gee
 </span><span class="c1"></span><span class="kd">type</span> <span class="nx">HandlerFunc</span> <span class="kd">func</span><span class="p">(</span><span class="o">*</span><span class="nx">Context</span><span class="p">)</span>
 
@@ -458,12 +533,12 @@ $ curl &quot;http://localhost:9999/login&quot; -X POST -d 'username=geektutu&amp
 
 $ curl &quot;http://localhost:9999/xxx&quot;
 404 NOT FOUND: /xxx
-</code></pre><h2 id="前缀树路由">前缀树路由</h2>
+</code></pre><h2 id="前缀树路由">前缀树路由<a href="#前缀树路由" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>使用 Trie 树实现动态路由(dynamic route)解析。</li>
 <li>支持两种模式<code>:name</code>和<code>*filepath</code>，<strong>代码约150行</strong>。</li>
 </ul>
-<h3 id="trie-树简介">Trie 树简介</h3>
+<h3 id="trie-树简介">Trie 树简介<a href="#trie-树简介" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>之前，我们用了一个非常简单的<code>map</code>结构存储了路由表，使用<code>map</code>存储键值对，索引非常高效，但是有一个弊端，键值对的存储的方式，只能用来索引静态路由。那如果我们想支持类似于<code>/hello/:name</code>这样的动态路由怎么办呢？所谓动态路由，即一条路由规则可以匹配某一类型而非某一条固定的路由。例如<code>/hello/:name</code>，可以匹配<code>/hello/geektutu</code>、<code>hello/jack</code>等。</p>
 <p>动态路由有很多种实现方式，支持的规则、性能等有很大的差异。例如开源的路由实现<code>gorouter</code>支持在路由规则中嵌入正则表达式，例如<code>/p/[0-9A-Za-z]+</code>，即路径中的参数仅匹配数字和字母；另一个开源实现<code>httprouter</code>就不支持正则表达式。著名的Web开源框架<code>gin</code> 在早期的版本，并没有实现自己的路由，而是直接使用了<code>httprouter</code>，后来不知道什么原因，放弃了<code>httprouter</code>，自己实现了一个版本。</p>
 <p><img src="https://geektutu.com/post/gee-day3/trie_eg.jpg" alt="trie tree"></p>
@@ -484,7 +559,7 @@ $ curl &quot;http://localhost:9999/xxx&quot;
 <li>参数匹配<code>:</code>。例如 <code>/p/:lang/doc</code>，可以匹配 <code>/p/c/doc</code> 和 <code>/p/go/doc</code>。</li>
 <li>通配<code>*</code>。例如 <code>/static/*filepath</code>，可以匹配<code>/static/fav.ico</code>，也可以匹配<code>/static/js/jQuery.js</code>，这种模式常用于静态服务器，能够递归地匹配子路径。</li>
 </ul>
-<h3 id="trie-树实现">Trie 树实现</h3>
+<h3 id="trie-树实现">Trie 树实现<a href="#trie-树实现" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <hr>
 <p>首先我们需要设计树节点上应该存储那些信息。</p>
 <p><strong><a href="https://github.com/geektutu/7days-golang/tree/master/gee-web/day3-router">day3-router/gee/trie.go</a></strong></p>
@@ -551,7 +626,7 @@ $ curl &quot;http://localhost:9999/xxx&quot;
   
  <span class="k">return</span> <span class="kc">nil</span>  
 <span class="p">}</span>  
-</code></pre></div><h3 id="router">Router</h3>
+</code></pre></div><h3 id="router">Router<a href="#router" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Trie 树的插入与查找都成功实现了，接下来我们将 Trie 树应用到路由中去吧。我们使用 roots 来存储每种请求方式的Trie 树根节点。使用 handlers 存储每种请求方式的 HandlerFunc 。getRoute 函数中，还解析了<code>:</code>和<code>*</code>两种匹配符的参数，返回一个 map 。例如<code>/p/go/doc</code>匹配到<code>/p/:lang/doc</code>，解析结果为：<code>{lang: &quot;go&quot;}</code>，<code>/static/css/geektutu.css</code>匹配到<code>/static/*filepath</code>，解析结果为<code>{filepath: &quot;css/geektutu.css&quot;}</code>。</p>
 <p><strong>day3-router/gee/router.go</strong></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">router</span> <span class="kd">struct</span> <span class="p">{</span>  
@@ -624,7 +699,7 @@ $ curl &quot;http://localhost:9999/xxx&quot;
   
  <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">nil</span>  
 <span class="p">}</span>  
-</code></pre></div><h3 id="context与handle的变化">Context与handle的变化</h3>
+</code></pre></div><h3 id="context与handle的变化">Context与handle的变化<a href="#context与handle的变化" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>在 HandlerFunc 中，希望能够访问到解析的参数，因此，需要对 Context 对象增加一个属性和方法，来提供对路由参数的访问。我们将解析后的参数存储到<code>Params</code>中，通过<code>c.Param(&quot;lang&quot;)</code>的方式获取到对应的值。</p>
 <p><strong>day3-router/gee/context.go</strong></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Context</span> <span class="kd">struct</span> <span class="p">{</span>  
@@ -655,7 +730,7 @@ $ curl &quot;http://localhost:9999/xxx&quot;
  <span class="p">}</span>  
 <span class="p">}</span>  
 </code></pre></div><p><code>router.go</code>的变化比较小，比较重要的一点是，在调用匹配到的<code>handler</code>前，将解析出来的路由参数赋值给了<code>c.Params</code>。这样就能够在<code>handler</code>中，通过<code>Context</code>对象访问到具体的值了。</p>
-<h3 id="单元测试">单元测试</h3>
+<h3 id="单元测试">单元测试<a href="#单元测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">newTestRouter</span><span class="p">()</span> <span class="o">*</span><span class="nx">router</span> <span class="p">{</span>  
  <span class="nx">r</span> <span class="o">:=</span> <span class="nf">newRouter</span><span class="p">()</span>  
  <span class="nx">r</span><span class="p">.</span><span class="nf">addRoute</span><span class="p">(</span><span class="s">&#34;GET&#34;</span><span class="p">,</span> <span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>  
@@ -694,7 +769,7 @@ $ curl &quot;http://localhost:9999/xxx&quot;
  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;matched path: %s, params[&#39;name&#39;]: %sn&#34;</span><span class="p">,</span> <span class="nx">n</span><span class="p">.</span><span class="nx">pattern</span><span class="p">,</span> <span class="nx">ps</span><span class="p">[</span><span class="s">&#34;name&#34;</span><span class="p">])</span>  
   
 <span class="p">}</span>  
-</code></pre></div><h3 id="使用demo">使用Demo</h3>
+</code></pre></div><h3 id="使用demo">使用Demo<a href="#使用demo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>看看框架使用的样例吧。</p>
 <p><strong>day3-router/main.go</strong></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>  
@@ -725,11 +800,11 @@ hello geektutu, you're at /hello/geektutu
   
 $ curl &quot;http://localhost:9999/assets/css/geektutu.css&quot;  
 {&quot;filepath&quot;:&quot;css/geektutu.css&quot;}
-</code></pre><h2 id="分组控制group">分组控制Group</h2>
+</code></pre><h2 id="分组控制group">分组控制Group<a href="#分组控制group" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>实现路由分组控制(Route Group Control)，<strong>代码约50行</strong></li>
 </ul>
-<h3 id="分组的意义">分组的意义</h3>
+<h3 id="分组的意义">分组的意义<a href="#分组的意义" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <hr>
 <p>分组控制(Group Control)是 Web 框架应提供的基础功能之一。所谓分组，是指路由的分组。如果没有路由分组，我们需要针对每一个路由进行控制。但是真实的业务场景中，往往某一组路由需要相似的处理。例如：</p>
 <ul>
@@ -740,7 +815,7 @@ $ curl &quot;http://localhost:9999/assets/css/geektutu.css&quot;
 <p>大部分情况下的路由分组，是以相同的前缀来区分的。因此，我们今天实现的分组控制也是以前缀来区分，并且支持分组的嵌套。例如<code>/post</code>是一个分组，<code>/post/a</code>和<code>/post/b</code>可以是该分组下的子分组。作用在<code>/post</code>分组上的中间件(middleware)，也都会作用在子分组，子分组还可以应用自己特有的中间件。</p>
 <p>中间件可以给框架提供无限的扩展能力，应用在分组上，可以使得分组控制的收益更为明显，而不是共享相同的路由前缀这么简单。例如<code>/admin</code>的分组，可以应用鉴权中间件；<code>/</code>分组应用日志中间件，<code>/</code>是默认的最顶层的分组，也就意味着给所有的路由，即整个框架增加了记录日志的能力。</p>
 <p>提供扩展能力支持中间件的内容，我们将在下一节当中介绍。</p>
-<h3 id="分组嵌套">分组嵌套</h3>
+<h3 id="分组嵌套">分组嵌套<a href="#分组嵌套" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>一个 Group 对象需要具备哪些属性呢？首先是前缀(prefix)，比如<code>/</code>，或者<code>/api</code>；要支持分组嵌套，那么需要知道当前分组的父亲(parent)是谁；当然了，按照我们一开始的分析，中间件是应用在分组上的，那还需要存储应用在该分组上的中间件(middlewares)。还记得，我们之前调用函数<code>(*Engine).addRoute()</code>来映射所有的路由规则和 Handler 。如果Group对象需要直接映射路由规则的话，比如我们想在使用框架时，这么调用：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">r</span> <span class="o">:=</span> <span class="nx">gee</span><span class="p">.</span><span class="nf">New</span><span class="p">()</span>  
 <span class="nx">v1</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nf">Group</span><span class="p">(</span><span class="s">&#34;/v1&#34;</span><span class="p">)</span>  
@@ -800,7 +875,7 @@ $ curl &quot;http://localhost:9999/assets/css/geektutu.css&quot;
  <span class="nx">group</span><span class="p">.</span><span class="nf">addRoute</span><span class="p">(</span><span class="s">&#34;POST&#34;</span><span class="p">,</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>  
 <span class="p">}</span>  
 </code></pre></div><p>可以仔细观察下<code>addRoute</code>函数，调用了<code>group.engine.router.addRoute</code>来实现了路由的映射。由于<code>Engine</code>从某种意义上继承了<code>RouterGroup</code>的所有属性和方法，因为 (*Engine).engine 是指向自己的。这样实现，我们既可以像原来一样添加路由，也可以通过分组添加路由。</p>
-<h3 id="使用-demo">使用 Demo</h3>
+<h3 id="使用-demo">使用 Demo<a href="#使用-demo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>测试框架的Demo就可以这样写了：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>  
  <span class="nx">r</span> <span class="o">:=</span> <span class="nx">gee</span><span class="p">.</span><span class="nf">New</span><span class="p">()</span>  
@@ -845,14 +920,14 @@ hello geektutu, you're at /hello/geektutu
 <li>设计并实现 Web 框架的中间件(Middlewares)机制。</li>
 <li>实现通用的<code>Logger</code>中间件，能够记录请求到响应所花费的时间，<strong>代码约50行</strong></li>
 </ul>
-<h2 id="中间件是什么">中间件是什么</h2>
+<h2 id="中间件是什么">中间件是什么<a href="#中间件是什么" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>中间件(middlewares)，简单说，就是非业务的技术类组件。Web 框架本身不可能去理解所有的业务，因而不可能实现所有的功能。因此，框架需要有一个插口，允许用户自己定义功能，嵌入到框架中，仿佛这个功能是框架原生支持的一样。因此，对中间件而言，需要考虑2个比较关键的点：</p>
 <ul>
 <li>插入点在哪？使用框架的人并不关心底层逻辑的具体实现，如果插入点太底层，中间件逻辑就会非常复杂。如果插入点离用户太近，那和用户直接定义一组函数，每次在 Handler 中手工调用没有多大的优势了。</li>
 <li>中间件的输入是什么？中间件的输入，决定了扩展能力。暴露的参数太少，用户发挥空间有限。</li>
 </ul>
 <p>那对于一个 Web 框架而言，中间件应该设计成什么样呢？接下来的实现，基本参考了 Gin 框架。</p>
-<h3 id="中间件设计">中间件设计</h3>
+<h3 id="中间件设计">中间件设计<a href="#中间件设计" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Gee 的中间件的定义与路由映射的 Handler 一致，处理的输入是<code>Context</code>对象。插入点是框架接收到请求初始化<code>Context</code>对象后，允许用户使用自己定义的中间件做一些额外的处理，例如记录日志等，以及对<code>Context</code>进行二次加工。另外通过调用<code>(*Context).Next()</code>函数，中间件可等待用户自己定义的 <code>Handler</code>处理结束后，再做一些额外的操作，例如计算本次处理所用时间等。即 Gee 的中间件支持用户在请求被处理的前后，做一些额外的操作。举个例子，我们希望最终能够支持如下定义的中间件，<code>c.Next()</code>表示等待执行其他的中间件或用户的<code>Handler</code>：</p>
 <p><strong><strong><a href="https://github.com/geektutu/7days-golang/tree/master/gee-web/day5-middleware">day4-group/gee/logger.go</a></strong></strong></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">Logger</span><span class="p">()</span> <span class="nx">HandlerFunc</span> <span class="p">{</span>  
@@ -928,7 +1003,7 @@ hello geektutu, you're at /hello/geektutu
 <li>part2 执行完毕，结束。</li>
 </ul>
 <p>一句话说清楚重点，最终的顺序是<code>part1 -&gt; part3 -&gt; Handler -&gt; part 4 -&gt; part2</code>。恰恰满足了我们对中间件的要求，接下来看调用部分的代码，就能全部串起来了。</p>
-<h3 id="代码实现">代码实现</h3>
+<h3 id="代码实现">代码实现<a href="#代码实现" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <ul>
 <li>定义<code>Use</code>函数，将中间件应用到某个 Group 。</li>
 </ul>
@@ -967,7 +1042,7 @@ hello geektutu, you're at /hello/geektutu
  <span class="p">}</span>  
  <span class="nx">c</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span>  
 <span class="p">}</span>  
-</code></pre></div><h3 id="使用-demo-1">使用 Demo</h3>
+</code></pre></div><h3 id="使用-demo-1">使用 Demo<a href="#使用-demo-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">onlyForV2</span><span class="p">()</span> <span class="nx">gee</span><span class="p">.</span><span class="nx">HandlerFunc</span> <span class="p">{</span>  
  <span class="k">return</span> <span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">gee</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>  
    
@@ -1008,19 +1083,19 @@ $ curl http://localhost:9999/v2/hello/geektutu
 &gt;&gt;&gt; log  
 2019/08/17 01:38:48 [200] /v2/hello/geektutu in 61.467µs for group v2  
 2019/08/17 01:38:48 [200] /v2/hello/geektutu in 281µs  
-</code></pre><h2 id="模板html-template">模板(HTML Template)</h2>
+</code></pre><h2 id="模板html-template">模板(HTML Template)<a href="#模板html-template" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>实现静态资源服务(Static Resource)。</li>
 <li>支持HTML模板渲染。</li>
 </ul>
-<h3 id="服务端渲染">服务端渲染</h3>
+<h3 id="服务端渲染">服务端渲染<a href="#服务端渲染" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>现在越来越流行前后端分离的开发模式，即 Web 后端提供 RESTful 接口，返回结构化的数据(通常为 JSON 或者 XML)。前端使用 AJAX 技术请求到所需的数据，利用 JavaScript 进行渲染。Vue/React 等前端框架持续火热，这种开发模式前后端解耦，优势非常突出。后端童鞋专心解决资源利用，并发，数据库等问题，只需要考虑数据如何生成；前端童鞋专注于界面设计实现，只需要考虑拿到数据后如何渲染即可。使用 JSP 写过网站的童鞋，应该能感受到前后端耦合的痛苦。JSP 的表现力肯定是远不如 Vue/React 等专业做前端渲染的框架的。而且前后端分离在当前还有另外一个不可忽视的优势。因为后端只关注于数据，接口返回值是结构化的，与前端解耦。同一套后端服务能够同时支撑小程序、移动APP、PC端 Web 页面，以及对外提供的接口。随着前端工程化的不断地发展，Webpack，gulp 等工具层出不穷，前端技术越来越自成体系了。</p>
 <p>但前后分离的一大问题在于，页面是在客户端渲染的，比如浏览器，这对于爬虫并不友好。Google 爬虫已经能够爬取渲染后的网页，但是短期内爬取服务端直接渲染的 HTML 页面仍是主流。</p>
 <p>今天的内容便是介绍 Web 框架如何支持服务端渲染的场景。</p>
-<h3 id="静态文件serve-static-files">静态文件(Serve Static Files)</h3>
+<h3 id="静态文件serve-static-files">静态文件(Serve Static Files)<a href="#静态文件serve-static-files" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>网页的三剑客，JavaScript、CSS 和 HTML。要做到服务端渲染，第一步便是要支持 JS、CSS 等静态文件。还记得我们之前设计动态路由的时候，支持通配符<code>*</code>匹配多级子路径。比如路由规则<code>/assets/*filepath</code>，可以匹配<code>/assets/</code>开头的所有的地址。例如<code>/assets/js/geektutu.js</code>，匹配后，参数<code>filepath</code>就赋值为<code>js/geektutu.js</code>。</p>
 <p>找到文件后，如何返回这一步，<code>net/http</code>库已经实现了。因此，gee 框架要做的，仅仅是解析请求的地址，映射到服务器上文件的真实地址，交给<code>http.FileServer</code>处理就好了。</p>
-<h5 id="geego-1">gee.go</h5>
+<h5 id="geego-1">gee.go<a href="#geego-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// create static handler
 </span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">group</span> <span class="o">*</span><span class="nx">RouterGroup</span><span class="p">)</span> <span class="nf">createStaticHandler</span><span class="p">(</span><span class="nx">relativePath</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">fs</span> <span class="nx">http</span><span class="p">.</span><span class="nx">FileSystem</span><span class="p">)</span> <span class="nx">HandlerFunc</span> <span class="p">{</span>
 	<span class="nx">absolutePath</span> <span class="o">:=</span> <span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">group</span><span class="p">.</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">relativePath</span><span class="p">)</span>
@@ -1050,7 +1125,7 @@ $ curl http://localhost:9999/v2/hello/geektutu
 <span class="c1">// 或相对路径 r.Static(&#34;/assets&#34;, &#34;./static&#34;)
 </span><span class="c1"></span><span class="nx">r</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="s">&#34;:9999&#34;</span><span class="p">)</span>
 </code></pre></div><p>用户访问<code>localhost:9999/assets/js/geektutu.js</code>，最终返回<code>/usr/geektutu/blog/static/js/geektutu.js</code>。</p>
-<h3 id="html-模板渲染">HTML 模板渲染</h3>
+<h3 id="html-模板渲染">HTML 模板渲染<a href="#html-模板渲染" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Go语言内置了<code>text/template</code>和<code>html/template</code>2个模板标准库，其中<a href="https://golang.org/pkg/html/template/">html/template</a>为 HTML 提供了较为完整的支持。包括普通变量渲染、列表渲染、对象渲染等。gee 框架的模板渲染直接使用了<code>html/template</code>提供的能力。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">Engine</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span class="o">*</span><span class="nx">RouterGroup</span>
@@ -1070,7 +1145,7 @@ $ curl http://localhost:9999/v2/hello/geektutu
 </code></pre></div><p>首先为 Engine 示例添加了 <code>*template.Template</code> 和 <code>template.FuncMap</code>对象，前者将所有的模板加载进内存，后者是所有的自定义模板渲染函数。</p>
 <p>另外，给用户分别提供了设置自定义渲染函数funcMap和加载模板的方法。</p>
 <p>接下来，对原来的 (*Context).HTML()方法做了些小修改，使之支持根据模板文件名选择模板进行渲染。</p>
-<h5 id="contextgo">context.go</h5>
+<h5 id="contextgo">context.go<a href="#contextgo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Context</span> <span class="kd">struct</span> <span class="p">{</span>
     <span class="c1">// ...
 </span><span class="c1"></span>	<span class="c1">// engine pointer
@@ -1085,7 +1160,7 @@ $ curl http://localhost:9999/v2/hello/geektutu
 	<span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div><p>我们在 <code>Context</code> 中添加了成员变量 <code>engine *Engine</code>，这样就能够通过 Context 访问 Engine 中的 HTML 模板。实例化 Context 时，还需要给 <code>c.engine</code> 赋值。</p>
-<h5 id="geego-2">gee.go</h5>
+<h5 id="geego-2">gee.go<a href="#geego-2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">student</span> <span class="kd">struct</span> <span class="p">{</span>  
  <span class="nx">Name</span> <span class="kt">string</span>  
  <span class="nx">Age</span>  <span class="kt">int8</span>  
@@ -1112,7 +1187,7 @@ $ curl http://localhost:9999/v2/hello/geektutu
     <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;/assets/css/geektutu.css&#34;</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>geektutu.css is loaded<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
-</code></pre></div><h5 id="maingo-2">main.go</h5>
+</code></pre></div><h5 id="maingo-2">main.go<a href="#maingo-2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>  
  <span class="nx">r</span> <span class="o">:=</span> <span class="nx">gee</span><span class="p">.</span><span class="nf">New</span><span class="p">()</span>  
  <span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">gee</span><span class="p">.</span><span class="nf">Logger</span><span class="p">())</span>  
@@ -1145,11 +1220,11 @@ $ curl http://localhost:9999/v2/hello/geektutu
 <span class="p">}</span>
 </code></pre></div><p>访问下主页，模板正常渲染，CSS 静态文件加载成功。</p>
 <p><img src="https://geektutu.com/post/gee-day6/static.jpg" alt="demo"></p>
-<h2 id="错误恢复panic-recover">错误恢复(Panic Recover)</h2>
+<h2 id="错误恢复panic-recover">错误恢复(Panic Recover)<a href="#错误恢复panic-recover" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>实现错误处理机制。</li>
 </ul>
-<h3 id="panic">panic</h3>
+<h3 id="panic">panic<a href="#panic" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Go 语言中，比较常见的错误处理方法是返回 error，由调用者决定后续如何处理。但是如果是无法恢复的错误，可以手动触发 panic，当然如果在程序运行过程中出现了类似于数组越界的错误，panic 也会被触发。panic 会中止当前执行的程序，退出。</p>
 <p>下面是主动触发的例子：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// hello.go
@@ -1175,7 +1250,7 @@ exit status 2
 <span class="p">}</span>
 </code></pre></div><pre><code>$ go run hello.go
 panic: runtime error: index out of range [4] with length 3
-</code></pre><h3 id="defer">defer</h3>
+</code></pre><h3 id="defer">defer<a href="#defer" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>panic 会导致程序被中止，但是在退出前，会先处理完当前协程上已经defer 的任务，执行完成后再退出。效果类似于 java 语言的 try&hellip;catch。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// hello.go
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
@@ -1191,7 +1266,7 @@ defer func
 panic: runtime error: index out of range [4] with length 3
 </code></pre><p>可以 defer 多个任务，在同一个函数中 defer 多个任务，会逆序执行。即先执行最后 defer 的任务。</p>
 <p>在这里，defer 的任务执行完成之后，panic 还会继续被抛出，导致程序非正常结束。</p>
-<h3 id="recover">recover</h3>
+<h3 id="recover">recover<a href="#recover" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Go 语言还提供了 recover 函数，可以避免因为 panic 发生而导致整个程序终止，recover 函数只在 defer 中生效。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// hello.go
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">test_recover</span><span class="p">()</span> <span class="p">{</span>
@@ -1216,7 +1291,7 @@ defer func
 recover success
 after recover
 </code></pre><p>我们可以看到，recover 捕获了 panic，程序正常结束。test_recover() 中的 after panic 没有打印，这是正确的，当 panic 被触发时，控制权就被交给了 defer 。就像在 java 中，try代码块中发生了异常，控制权交给了 catch，接下来执行 catch 代码块中的代码。而在 main() 中打印了 after recover，说明程序已经恢复正常，继续往下执行直到结束。</p>
-<h3 id="gee-的错误处理机制">Gee 的错误处理机制</h3>
+<h3 id="gee-的错误处理机制">Gee 的错误处理机制<a href="#gee-的错误处理机制" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>对一个 Web 框架而言，错误处理机制是非常必要的。可能是框架本身没有完备的测试，导致在某些情况下出现空指针异常等情况。也有可能用户不正确的参数，触发了某些异常，例如数组越界，空指针等。如果因为这些原因导致系统宕机，必然是不可接受的。</p>
 <p>我们在第六天实现的框架并没有加入异常处理机制，如果代码中存在会触发 panic 的 BUG，很容易宕掉。</p>
 <p>例如下面的代码：</p>
@@ -1289,7 +1364,7 @@ after recover
 </code></pre></div><p>在 trace() 中，调用了 runtime.Callers(3, pcs[:])，Callers 用来返回调用栈的程序计数器, 第 0 个 Caller 是 Callers 本身，第 1 个是上一层 trace，第 2 个是再上一层的 defer func。因此，为了日志简洁一点，我们跳过了前 3 个 Caller。</p>
 <p>接下来，通过 runtime.FuncForPC(pc) 获取对应的函数，在通过 fn.FileLine(pc) 获取到调用该函数的文件名和行号，打印在日志中。</p>
 <p>至此，gee 框架的错误处理机制就完成了。</p>
-<h3 id="使用-demo-2">使用 Demo</h3>
+<h3 id="使用-demo-2">使用 Demo<a href="#使用-demo-2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>day7-panic-recover/main.go</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
 
@@ -1341,460 +1416,102 @@ Traceback:
 
 2020/01/09 01:00:32 [500] /panic in 395.846µs
 2020/01/09 01:00:38 [200] / in 6.985µs
-</code></pre>]]></content>
-		</item>
-		
-		<item>
-			<title>Markdown 中文说明</title>
-			<link>https://aomi.run/posts/document/markdown-readme/</link>
-			<pubDate>Thu, 21 Jan 2021 14:33:04 +0800</pubDate>
-			
-			<guid>https://aomi.run/posts/document/markdown-readme/</guid>
-			<description>NOTE: This is Simplelified Chinese Edition Document of Markdown Syntax. If you are seeking for English Edition Document. Please refer to Markdown: Syntax.
- 概述 宗旨 Markdown 的目标是实现「易读易写」。
-可读性，无论如何，都是最重要的。一份使用 Markdown 格式撰写的文件应该可以直接以纯文本发布，并且看起来不会像是由许多标签或是格式指令所构成。Markdown 语法受到一些既有 text-to-HTML 格式的影响，包括 Setext、atx、Textile、reStructuredText、Grutatext 和 EtText，而最大灵感来源其实是纯文本电子邮件的格式。
-总之， Markdown 的语法全由一些符号所组成，这些符号经过精挑细选，其作用一目了然。比如：在文字两旁加上星号，看起来就像_强调_。Markdown 的列表看起来，嗯，就是列表。Markdown 的区块引用看起来就真的像是引用一段文字，就像你曾在电子邮件中见过的那样。
-兼容 HTML Markdown 语法的目标是：成为一种适用于网络的_书写_语言。
-Markdown 不是想要取代 HTML，甚至也没有要和它相近，它的语法种类很少，只对应 HTML 标记的一小部分。Markdown 的构想_不是_要使得 HTML 文档更容易书写。在我看来， HTML 已经很容易写了。Markdown 的理念是，能让文档更容易读、写和随意改。HTML 是一种_发布_的格式，Markdown 是一种_书写_的格式。就这样，Markdown 的格式语法只涵盖纯文本可以涵盖的范围。
-不在 Markdown 涵盖范围之内的标签，都可以直接在文档里面用 HTML 撰写。不需要额外标注这是 HTML 或是 Markdown；只要直接加标签就可以了。
-要制约的只有一些 HTML 区块元素――比如 、、、 等标签，必须在前后加上空行与其它内容区隔开，还要求它们的开始标签与结尾标签不能用制表符或空格来缩进。Markdown 的生成器有足够智能，不会在 HTML 区块标签外加上不必要的 `` 标签。</description>
-			<content type="html"><![CDATA[<p><strong>NOTE:</strong> This is Simplelified Chinese Edition Document of Markdown Syntax. If you are seeking for English Edition Document. Please refer to <a href="https://daringfireball.net/projects/markdown/syntax">Markdown: Syntax</a>.</p>
-<hr>
-<h2 id="概述">概述</h2>
-<h3 id="宗旨">宗旨</h3>
-<p>Markdown 的目标是实现「易读易写」。</p>
-<p>可读性，无论如何，都是最重要的。一份使用 Markdown 格式撰写的文件应该可以直接以纯文本发布，并且看起来不会像是由许多标签或是格式指令所构成。Markdown 语法受到一些既有 text-to-HTML 格式的影响，包括 <a href="http://docutils.sourceforge.net/mirror/setext.html">Setext</a>、<a href="http://www.aaronsw.com/2002/atx/">atx</a>、<a href="http://textism.com/tools/textile/">Textile</a>、<a href="http://docutils.sourceforge.net/rst.html">reStructuredText</a>、<a href="http://www.triptico.com/software/grutatxt.html">Grutatext</a> 和 <a href="http://ettext.taint.org/doc/">EtText</a>，而最大灵感来源其实是纯文本电子邮件的格式。</p>
-<p>总之， Markdown 的语法全由一些符号所组成，这些符号经过精挑细选，其作用一目了然。比如：在文字两旁加上星号，看起来就像_强调_。Markdown 的列表看起来，嗯，就是列表。Markdown 的区块引用看起来就真的像是引用一段文字，就像你曾在电子邮件中见过的那样。</p>
-<h3 id="兼容-html">兼容 HTML</h3>
-<p>Markdown 语法的目标是：成为一种适用于网络的_书写_语言。</p>
-<p>Markdown 不是想要取代 HTML，甚至也没有要和它相近，它的语法种类很少，只对应 HTML 标记的一小部分。Markdown 的构想_不是_要使得 HTML 文档更容易书写。在我看来， HTML 已经很容易写了。Markdown 的理念是，能让文档更容易读、写和随意改。HTML 是一种_发布_的格式，Markdown 是一种_书写_的格式。就这样，Markdown 的格式语法只涵盖纯文本可以涵盖的范围。</p>
-<p>不在 Markdown 涵盖范围之内的标签，都可以直接在文档里面用 HTML 撰写。不需要额外标注这是 HTML 或是 Markdown；只要直接加标签就可以了。</p>
-<p>要制约的只有一些 HTML 区块元素――比如 <code>、</code>、<code>、</code> 等标签，必须在前后加上空行与其它内容区隔开，还要求它们的开始标签与结尾标签不能用制表符或空格来缩进。Markdown 的生成器有足够智能，不会在 HTML 区块标签外加上不必要的 `` 标签。</p>
-<p>例子如下，在 Markdown 文件里加上一段 HTML 表格：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">这是一个普通段落。
-​
-<span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>Foo<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-    <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
-​
-这是另一个普通段落。
-</code></pre></div><p>请注意，在 HTML 区块标签间的 Markdown 格式语法将不会被处理。比如，你在 HTML 区块内使用 Markdown 样式的<code>*强调*</code>会没有效果。</p>
-<p>HTML 的区段（行内）标签如 <code>、</code>、<code>~~</code>~~ 可以在 Markdown 的段落、列表或是标题里随意使用。依照个人习惯，甚至可以不用 Markdown 格式，而直接采用 HTML 标签来格式化。举例说明：如果比较喜欢 HTML 的 <code>或</code> 标签，可以直接使用这些标签，而不用 Markdown 提供的链接或是图像标签语法。</p>
-<p>和处在 HTML 区块标签间不同，Markdown 语法在 HTML 区段标签间是有效的。</p>
-<h3 id="特殊字符自动转换">特殊字符自动转换</h3>
-<p>在 HTML 文件中，有两个字符需要特殊处理： <code>&lt;</code> 和 <code>&amp;</code> 。 <code>&lt;</code> 符号用于起始标签，<code>&amp;</code> 符号则用于标记 HTML 实体，如果你只是想要显示这些字符的原型，你必须要使用实体的形式，像是 <code>&lt;</code> 和 <code>&amp;</code>。</p>
-<p><code>&amp;</code> 字符尤其让网络文档编写者受折磨，如果你要打「<code>AT&amp;T</code>」 ，你必须要写成「<code>AT&amp;T</code>」。而网址中的 <code>&amp;</code> 字符也要转换。比如你要链接到：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">http://images.google.com/images?num=30<span class="err">&amp;</span>q=larry+bird
-</code></pre></div><p>你必须要把网址转换写为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">http://images.google.com/images?num=30<span class="ni">&amp;amp;</span>q=larry+bird
-</code></pre></div><p>才能放到链接标签的 <code>href</code> 属性里。不用说也知道这很容易忽略，这也可能是 HTML 标准检验所检查到的错误中，数量最多的。</p>
-<p>Markdown 让你可以自然地书写字符，需要转换的由它来处理好了。如果你使用的 <code>&amp;</code> 字符是 HTML 字符实体的一部分，它会保留原状，否则它会被转换成 <code>&amp;amp</code>;。</p>
-<p>所以你如果要在文档中插入一个版权符号 <code>©</code>，你可以这样写：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="ni">&amp;copy;</span>
-</code></pre></div><p>Markdown 会保留它不动。而若你写：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">AT<span class="err">&amp;</span>T
-</code></pre></div><p>Markdown 就会将它转为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">AT<span class="ni">&amp;amp;</span>T
-</code></pre></div><p>类似的状况也会发生在 <code>&lt;</code> 符号上，因为 Markdown 允许 <a href="https://www.appinn.com/markdown/#html">兼容 HTML</a> ，如果你是把 <code>&lt;</code> 符号作为 HTML 标签的定界符使用，那 Markdown 也不会对它做任何转换，但是如果你写：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">4 <span class="p">&lt;</span> <span class="nt">5</span>
-</code></pre></div><p>Markdown 将会把它转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">4 <span class="ni">&amp;lt;</span> 5
-</code></pre></div><p>不过需要注意的是，code 范围内，不论是行内还是区块， <code>&lt;</code> 和 <code>&amp;</code> 两个符号都_一定_会被转换成 HTML 实体，这项特性让你可以很容易地用 Markdown 写 HTML code （和 HTML 相对而言， HTML 语法中，你要把所有的 <code>&lt;</code> 和 <code>&amp;</code> 都转换为 HTML 实体，才能在 HTML 文件里面写出 HTML code。）</p>
-<hr>
-<h2 id="区块元素">区块元素</h2>
-<h3 id="段落和换行">段落和换行</h3>
-<p>一个 Markdown 段落是由一个或多个连续的文本行组成，它的前后要有一个以上的空行（空行的定义是显示上看起来像是空的，便会被视为空行。比方说，若某一行只包含空格和制表符，则该行也会被视为空行）。普通段落不该用空格或制表符来缩进。</p>
-<p>「由一个或多个连续的文本行组成」这句话其实暗示了 Markdown 允许段落内的强迫换行（插入换行符），这个特性和其他大部分的 text-to-HTML 格式不一样（包括 Movable Type 的「Convert Line Breaks」选项），其它的格式会把每个换行符都转成 ``标签。</p>
-<p>如果你_确实_想要依赖 Markdown 来插入 ``标签的话，在插入处先按入两个以上的空格然后回车。</p>
-<p>的确，需要多费点事（多加空格）来产生 <code>，但是简单地「每个换行都转换为</code>」的方法在 Markdown 中并不适合， Markdown 中 email 式的 <a href="https://www.appinn.com/markdown/#blockquote">区块引用</a> 和多段落的 <a href="https://www.appinn.com/markdown/#list">列表</a> 在使用换行来排版的时候，不但更好用，还更方便阅读。</p>
-<h3 id="标题">标题</h3>
-<p>Markdown 支持两种标题的语法，类 <a href="http://docutils.sourceforge.net/mirror/setext.html">Setext</a> 和类 <a href="http://www.aaronsw.com/2002/atx/">atx</a> 形式。</p>
-<p>类 Setext 形式是用底线的形式，利用 <code>=</code> （最高阶标题）和 <code>-</code> （第二阶标题），例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">This is an H1
-=============
-​
-This is an H2
--------------
-</code></pre></div><p>任何数量的 <code>=</code> 和 <code>-</code> 都可以有效果。</p>
-<p>类 Atx 形式则是在行首插入 1 到 6 个 <code>#</code> ，对应到标题 1 到 6 阶，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="gh"># 这是 H1
-</span><span class="gh"></span>​
-<span class="gu">## 这是 H2
-</span><span class="gu"></span>​
-<span class="gu">###### 这是 H6
-</span></code></pre></div><p>你可以选择性地「闭合」类 atx 样式的标题，这纯粹只是美观用的，若是觉得这样看起来比较舒适，你就可以在行尾加上 <code>#</code>，而行尾的 <code>#</code> 数量也不用和开头一样（行首的井字符数量决定标题的阶数）：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="gh"># 这是 H1 #
-</span><span class="gh"></span>​
-<span class="gu">## 这是 H2 ##
-</span><span class="gu"></span>​
-<span class="gu">### 这是 H3 ######
-</span></code></pre></div><h3 id="区块引用-blockquotes">区块引用 Blockquotes</h3>
-<p>Markdown 标记区块引用是使用类似 email 中用 <code>&gt;</code> 的引用方式。如果你还熟悉在 email 信件中的引言部分，你就知道怎么在 Markdown 文件中建立一个区块引用，那会看起来像是你自己先断好行，然后在每行的最前面加上 <code>&gt;</code> ：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">&gt; </span><span class="ge">This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
-</span><span class="ge"></span><span class="k">&gt; </span><span class="ge">consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
-</span><span class="ge"></span><span class="k">&gt; </span><span class="ge">Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
-</span><span class="ge"></span>&gt; 
-<span class="k">&gt; </span><span class="ge">Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
-</span><span class="ge"></span><span class="k">&gt; </span><span class="ge">id sem consectetuer libero luctus adipiscing.
-</span></code></pre></div><p>Markdown 也允许你偷懒只在整个段落的第一行最前面加上 <code>&gt;</code> ：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">&gt; </span><span class="ge">This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
-</span><span class="ge"></span>consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
-Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
-​
-<span class="k">&gt; </span><span class="ge">Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
-</span><span class="ge"></span>id sem consectetuer libero luctus adipiscing.
-</code></pre></div><p>区块引用可以嵌套（例如：引用内的引用），只要根据层次加上不同数量的 <code>&gt;</code> ：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">&gt; </span><span class="ge">This is the first level of quoting.
-</span><span class="ge"></span><span class="k">&gt;
-</span><span class="k"></span><span class="ge">&gt; &gt; This is nested blockquote.
-</span><span class="ge"></span><span class="k">&gt;
-</span><span class="k"></span><span class="ge">&gt; Back to the first level.
-</span></code></pre></div><p>引用的区块内也可以使用其他的 Markdown 语法，包括标题、列表、代码区块等：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">&gt; </span><span class="ge">## 这是一个标题。
-</span><span class="ge"></span>&gt; 
-<span class="k">&gt; </span><span class="ge">1.   这是第一行列表项。
-</span><span class="ge"></span><span class="k">&gt; </span><span class="ge">2.   这是第二行列表项。
-</span><span class="ge"></span>&gt; 
-<span class="k">&gt; </span><span class="ge">给出一些例子代码：
-</span><span class="ge"></span>&gt; 
-<span class="k">&gt; </span><span class="ge">    return shell_exec(&#34;echo $input | $markdown_script&#34;);
-</span></code></pre></div><p>任何像样的文本编辑器都能轻松地建立 email 型的引用。例如在 BBEdit 中，你可以选取文字后然后从选单中选择_增加引用阶层_。</p>
-<h3 id="列表">列表</h3>
-<p>Markdown 支持有序列表和无序列表。</p>
-<p>无序列表使用星号、加号或是减号作为列表标记：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   Red
-<span class="k">*</span>   Green
-<span class="k">*</span>   Blue
-</code></pre></div><p>等同于：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">+   Red
-+   Green
-+   Blue
-</code></pre></div><p>也等同于：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">-</span>   Red
-<span class="k">-</span>   Green
-<span class="k">-</span>   Blue
-</code></pre></div><p>有序列表则使用数字接着一个英文句点：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">1.</span>  Bird
-<span class="k">2.</span>  McHale
-<span class="k">3.</span>  Parish
-</code></pre></div><p>很重要的一点是，你在列表标记上使用的数字并不会影响输出的 HTML 结果，上面的列表所产生的 HTML 标记为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">ol</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Bird<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>McHale<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Parish<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">ol</span><span class="p">&gt;</span>
-</code></pre></div><p>如果你的列表标记写成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">1.</span>  Bird
-<span class="k">1.</span>  McHale
-<span class="k">1.</span>  Parish
-</code></pre></div><p>或甚至是：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">3.</span> Bird
-<span class="k">1.</span> McHale
-<span class="k">8.</span> Parish
-</code></pre></div><p>你都会得到完全相同的 HTML 输出。重点在于，你可以让 Markdown 文件的列表数字和输出的结果相同，或是你懒一点，你可以完全不用在意数字的正确性。</p>
-<p>如果你使用懒惰的写法，建议第一个项目最好还是从 1. 开始，因为 Markdown 未来可能会支持有序列表的 start 属性。</p>
-<p>列表项目标记通常是放在最左边，但是其实也可以缩进，最多 3 个空格，项目标记后面则一定要接着至少一个空格或制表符。</p>
-<p>要让列表看起来更漂亮，你可以把内容用固定的缩进整理好：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-    Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,
-    viverra nec, fringilla in, laoreet vitae, risus.
-<span class="k">*</span>   Donec sit amet nisl. Aliquam semper ipsum sit amet velit.
-    Suspendisse id sem consectetuer libero luctus adipiscing.
-</code></pre></div><p>但是如果你懒，那也行：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,
-viverra nec, fringilla in, laoreet vitae, risus.
-<span class="k">*</span>   Donec sit amet nisl. Aliquam semper ipsum sit amet velit.
-Suspendisse id sem consectetuer libero luctus adipiscing.
-</code></pre></div><p>如果列表项目间用空行分开，在输出 HTML 时 Markdown 就会将项目内容用 `` 标签包起来，举例来说：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   Bird
-<span class="k">*</span>   Magic
-</code></pre></div><p>会被转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Bird<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Magic<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
-</code></pre></div><p>但是这个：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   Bird
-​
-<span class="k">*</span>   Magic
-</code></pre></div><p>会被转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Bird<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Magic<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
-</code></pre></div><p>列表项目可以包含多个段落，每个项目下的段落都必须缩进 4 个空格或是 1 个制表符：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">1.</span>  This is a list item with two paragraphs. Lorem ipsum dolor
-    sit amet, consectetuer adipiscing elit. Aliquam hendrerit
-    mi posuere lectus.
-​
-    Vestibulum enim wisi, viverra nec, fringilla in, laoreet
-    vitae, risus. Donec sit amet nisl. Aliquam semper ipsum
-    sit amet velit.
-​
-<span class="k">2.</span>  Suspendisse id sem consectetuer libero luctus adipiscing.
-</code></pre></div><p>如果你每行都有缩进，看起来会看好很多，当然，再次地，如果你很懒惰，Markdown 也允许：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   This is a list item with two paragraphs.
-​
-    This is the second paragraph in the list item. You&#39;re
-only required to indent the first line. Lorem ipsum dolor
-sit amet, consectetuer adipiscing elit.
-​
-<span class="k">*</span>   Another item in the same list.
-</code></pre></div><p>如果要在列表项目内放进引用，那 <code>&gt;</code> 就需要缩进：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   A list item with a blockquote:
-​
-<span class="k">    &gt; </span><span class="ge">This is a blockquote
-</span><span class="ge"></span><span class="k">    &gt; </span><span class="ge">inside a list item.
-</span></code></pre></div><p>如果要放代码区块的话，该区块就需要缩进_两次_，也就是 8 个空格或是 2 个制表符：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span>   一列表项包含一个列表区块：
-​
-        <span class="p">&lt;</span><span class="nt">代码写在这</span><span class="p">&gt;</span>
-</code></pre></div><p>当然，项目列表很可能会不小心产生，像是下面这样的写法：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">1986.</span> What a great season.
-</code></pre></div><p>换句话说，也就是在行首出现_数字-句点-空白_，要避免这样的状况，你可以在句点前面加上反斜杠。</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">1986\. What a great season.
-</code></pre></div><h3 id="代码区块">代码区块</h3>
-<p>和程序相关的写作或是标签语言原始码通常会有已经排版好的代码区块，通常这些区块我们并不希望它以一般段落文件的方式去排版，而是照原来的样子显示，Markdown 会用 <code>和</code> 标签来把代码区块包起来。</p>
-<p>要在 Markdown 中建立代码区块很简单，只要简单地缩进 4 个空格或是 1 个制表符就可以，例如，下面的输入：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">这是一个普通段落：
-​
-    这是一个代码区块。
-</code></pre></div><p>Markdown 会转换成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>这是一个普通段落：<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-​
-<span class="p">&lt;</span><span class="nt">pre</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span>这是一个代码区块。
-<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
-</code></pre></div><p>这个每行一阶的缩进（4 个空格或是 1 个制表符），都会被移除，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">Here is an example of AppleScript:
-​
-    tell application &#34;Foo&#34;
-        beep
-    end tell
-</code></pre></div><p>会被转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Here is an example of AppleScript:<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-​
-<span class="p">&lt;</span><span class="nt">pre</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span>tell application &#34;Foo&#34;
-    beep
-end tell
-<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
-</code></pre></div><p>一个代码区块会一直持续到没有缩进的那一行（或是文件结尾）。</p>
-<p>在代码区块里面， <code>&amp;</code> 、 <code>&lt;</code> 和 <code>&gt;</code> 会自动转成 HTML 实体，这样的方式让你非常容易使用 Markdown 插入范例用的 HTML 原始码，只需要复制贴上，再加上缩进就可以了，剩下的 Markdown 都会帮你处理，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;footer&#34;</span><span class="p">&gt;</span>
-        <span class="ni">&amp;copy;</span> 2004 Foo Corporation
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-</code></pre></div><p>会被转换为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">pre</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span><span class="ni">&amp;lt;</span>div class=&#34;footer&#34;<span class="ni">&amp;gt;</span>
-    <span class="ni">&amp;amp;</span>copy; 2004 Foo Corporation
-<span class="ni">&amp;lt;</span>/div<span class="ni">&amp;gt;</span>
-<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
-</code></pre></div><p>代码区块中，一般的 Markdown 语法不会被转换，像是星号便只是星号，这表示你可以很容易地以 Markdown 语法撰写 Markdown 语法相关的文件。</p>
-<h3 id="分隔线">分隔线</h3>
-<p>你可以在一行中用三个以上的星号、减号、底线来建立一个分隔线，行内不能有其他东西。你也可以在星号或是减号中间插入空格。下面每种写法都可以建立分隔线：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="k">*</span> * *
-​
-***
-​
-<span class="gs">****</span>*
-​
-<span class="k">-</span> - -
-​
----------------------------------------
-</code></pre></div><hr>
-<h2 id="区段元素">区段元素</h2>
-<h3 id="链接">链接</h3>
-<p>Markdown 支持两种形式的链接语法： _行内式_和_参考式_两种形式。</p>
-<p>不管是哪一种，链接文字都是用 [方括号] 来标记。</p>
-<p>要建立一个_行内式_的链接，只要在方块括号后面紧接着圆括号并插入网址链接即可，如果你还想要加上链接的 title 文字，只要在网址后面，用双引号把 title 文字包起来即可，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">This is [<span class="nt">an example</span>](<span class="na">http://example.com/ &#34;Title&#34;</span>) inline link.
-​
-[<span class="nt">This link</span>](<span class="na">http://example.net/</span>) has no title attribute.
-</code></pre></div><p>会产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>This is <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://example.com/&#34;</span> <span class="na">title</span><span class="o">=</span><span class="s">&#34;Title&#34;</span><span class="p">&gt;</span>
-an example<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span> inline link.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-​
-<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://example.net/&#34;</span><span class="p">&gt;</span>This link<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span> has no
-title attribute.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-</code></pre></div><p>如果你是要链接到同样主机的资源，你可以使用相对路径：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">See my [<span class="nt">About</span>](<span class="na">/about/</span>) page for details.
-</code></pre></div><p>_参考式_的链接是在链接文字的括号后面再接上另一个方括号，而在第二个方括号里面要填入用以辨识链接的标记：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">This is [an example][id] reference-style link.
-</code></pre></div><p>你也可以选择性地在两个方括号中间加上一个空格：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">This is [an example] [id] reference-style link.
-</code></pre></div><p>接着，在文件的任意处，你可以把这个标记的链接内容定义出来：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[id]: http://example.com/  &#34;Optional Title Here&#34;
-</code></pre></div><p>链接内容定义的形式为：</p>
-<ul>
-<li>方括号（前面可以选择性地加上至多三个空格来缩进），里面输入链接文字</li>
-<li>接着一个冒号</li>
-<li>接着一个以上的空格或制表符</li>
-<li>接着链接的网址</li>
-<li>选择性地接着 title 内容，可以用单引号、双引号或是括弧包着</li>
-</ul>
-<p>下面这三种链接的定义都是相同：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[foo]: http://example.com/  &#34;Optional Title Here&#34;
-[foo]: http://example.com/  &#39;Optional Title Here&#39;
-[foo]: http://example.com/  (Optional Title Here)
-</code></pre></div><p>**请注意：**有一个已知的问题是 Markdown.pl 1.0.1 会忽略单引号包起来的链接 title。</p>
-<p>链接网址也可以用方括号包起来：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[id]: <span class="p">&lt;</span><span class="nt">http:</span><span class="err">//</span><span class="na">example</span><span class="err">.</span><span class="na">com</span><span class="p">/&gt;</span>  &#34;Optional Title Here&#34;
-</code></pre></div><p>你也可以把 title 属性放到下一行，也可以加一些缩进，若网址太长的话，这样会比较好看：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[id]: http://example.com/longish/path/to/resource/here
-    &#34;Optional Title Here&#34;
-</code></pre></div><p>网址定义只有在产生链接的时候用到，并不会直接出现在文件之中。</p>
-<p>链接辨别标签可以有字母、数字、空白和标点符号，但是并_不_区分大小写，因此下面两个链接是一样的：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[link text][a]
-[link text][A]
-</code></pre></div><p>_隐式链接标记_功能让你可以省略指定链接标记，这种情形下，链接标记会视为等同于链接文字，要用隐式链接标记只要在链接文字后面加上一个空的方括号，如果你要让 &ldquo;Google&rdquo; 链接到 google.com，你可以简化成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[Google][]
-</code></pre></div><p>然后定义链接内容：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[Google]: http://google.com/
-</code></pre></div><p>由于链接文字可能包含空白，所以这种简化型的标记内也许包含多个单词：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">Visit [Daring Fireball][] for more information.
-</code></pre></div><p>然后接着定义链接：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[Daring Fireball]: http://daringfireball.net/
-</code></pre></div><p>链接的定义可以放在文件中的任何一个地方，我比较偏好直接放在链接出现段落的后面，你也可以把它放在文件最后面，就像是注解一样。</p>
-<p>下面是一个参考式链接的范例：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">I get 10 times more traffic from [Google] [1] than from
-[Yahoo] [2] or [MSN] [3].
-​
-  [1]: http://google.com/        &#34;Google&#34;
-  [2]: http://search.yahoo.com/  &#34;Yahoo Search&#34;
-  [3]: http://search.msn.com/    &#34;MSN Search&#34;
-</code></pre></div><p>如果改成用链接名称的方式写：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">I get 10 times more traffic from [Google][] than from
-[Yahoo][] or [MSN][].
-​
-  [google]: http://google.com/        &#34;Google&#34;
-  [yahoo]:  http://search.yahoo.com/  &#34;Yahoo Search&#34;
-  [msn]:    http://search.msn.com/    &#34;MSN Search&#34;
-</code></pre></div><p>上面两种写法都会产生下面的 HTML。</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>I get 10 times more traffic from <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://google.com/&#34;</span>
-<span class="na">title</span><span class="o">=</span><span class="s">&#34;Google&#34;</span><span class="p">&gt;</span>Google<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span> than from
-<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://search.yahoo.com/&#34;</span> <span class="na">title</span><span class="o">=</span><span class="s">&#34;Yahoo Search&#34;</span><span class="p">&gt;</span>Yahoo<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
-or <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://search.msn.com/&#34;</span> <span class="na">title</span><span class="o">=</span><span class="s">&#34;MSN Search&#34;</span><span class="p">&gt;</span>MSN<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-</code></pre></div><p>下面是用行内式写的同样一段内容的 Markdown 文件，提供作为比较之用：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">I get 10 times more traffic from [<span class="nt">Google</span>](<span class="na">http://google.com/ &#34;Google&#34;</span>)
-than from [<span class="nt">Yahoo</span>](<span class="na">http://search.yahoo.com/ &#34;Yahoo Search&#34;</span>) or
-[<span class="nt">MSN</span>](<span class="na">http://search.msn.com/ &#34;MSN Search&#34;</span>).
-</code></pre></div><p>参考式的链接其实重点不在于它比较好写，而是它比较好读，比较一下上面的范例，使用参考式的文章本身只有 81 个字符，但是用行内形式的却会增加到 176 个字元，如果是用纯 HTML 格式来写，会有 234 个字元，在 HTML 格式中，标签比文本还要多。</p>
-<p>使用 Markdown 的参考式链接，可以让文件更像是浏览器最后产生的结果，让你可以把一些标记相关的元数据移到段落文字之外，你就可以增加链接而不让文章的阅读感觉被打断。</p>
-<h3 id="强调">强调</h3>
-<p>Markdown 使用星号（<code>*</code>）和底线（<code>_</code>）作为标记强调字词的符号，被 <code>*</code> 或 <code>_</code> 包围的字词会被转成用 <code>标签包围，用两个</code>*<code>或</code>_<code>包起来的话，则会被转成</code>，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">*single asterisks*
-​
-<span class="ge">_single underscores_</span>
-​
-<span class="gs">**double asterisks**</span>
-​
-<span class="gs">__double underscores__</span>
-</code></pre></div><p>会转成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">em</span><span class="p">&gt;</span>single asterisks<span class="p">&lt;/</span><span class="nt">em</span><span class="p">&gt;</span>
-​
-<span class="p">&lt;</span><span class="nt">em</span><span class="p">&gt;</span>single underscores<span class="p">&lt;/</span><span class="nt">em</span><span class="p">&gt;</span>
-​
-<span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;</span>double asterisks<span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span>
-​
-<span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;</span>double underscores<span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span>
-</code></pre></div><p>你可以随便用你喜欢的样式，唯一的限制是，你用什么符号开启标签，就要用什么符号结束。</p>
-<p>强调也可以直接插在文字中间：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">un*frigging*believable
-</code></pre></div><p>但是<strong>如果你的 <code>\*</code> 和 <code>_</code> 两边都有空白的话，它们就只会被当成普通的符号</strong>。</p>
-<p>如果要在文字前后直接插入普通的星号或底线，你可以用反斜线：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">\*this text is surrounded by literal asterisks\*
-</code></pre></div><h3 id="代码">代码</h3>
-<p>如果要标记一小段行内代码，你可以用反引号把它包起来（```），例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">Use the <span class="sb">`printf()`</span> function.
-</code></pre></div><p>会产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Use the <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span>printf()<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;</span> function.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-</code></pre></div><p>如果要在代码区段内插入反引号，你可以用多个反引号来开启和结束代码区段：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">``There is a literal backtick (`) here.``
-</code></pre></div><p>这段语法会产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span>There is a literal backtick (`) here.<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-</code></pre></div><p>代码区段的起始和结束端都可以放入一个空白，起始端后面一个，结束端前面一个，这样你就可以在区段的一开始就插入反引号：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">A single backtick in a code span: `` <span class="sb">` ``
-</span><span class="sb">​
-</span><span class="sb">A backtick-delimited string in a code span: `` `</span>foo` ``
-</code></pre></div><p>会产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>A single backtick in a code span: <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span>`<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-​
-<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>A backtick-delimited string in a code span: <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span>`foo`<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-</code></pre></div><p>在代码区段内，<code>&amp;</code> 和方括号<strong>都</strong>会被自动地转成 HTML 实体，这使得插入 HTML 原始码变得很容易，Markdown 会把下面这段：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">Please don&#39;t use any <span class="sb">`&lt;blink&gt;`</span> tags.
-</code></pre></div><p>转为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Please don&#39;t use any <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span><span class="ni">&amp;lt;</span>blink<span class="ni">&amp;gt;</span><span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;</span> tags.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-</code></pre></div><p>你也可以这样写：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="sb">`&amp;#8212;`</span> is the decimal-encoded equivalent of <span class="sb">`&amp;mdash;`</span>.
-</code></pre></div><p>以产生：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">code</span><span class="p">&gt;</span><span class="ni">&amp;amp;</span>#8212;<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;</span> is the decimal-encoded
-equivalent of <span class="p">&lt;</span><span class="nt">code</span><span class="p">&gt;</span><span class="ni">&amp;amp;</span>mdash;<span class="p">&lt;/</span><span class="nt">code</span><span class="p">&gt;</span>.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-</code></pre></div><h3 id="图片">图片</h3>
-<p>很明显地，要在纯文字应用中设计一个「自然」的语法来插入图片是有一定难度的。</p>
-<p>Markdown 使用一种和链接很相似的语法来标记图片，同样也允许两种样式： <em>行内式_和_参考式</em>。</p>
-<p>行内式的图片语法看起来像是：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">![<span class="nt">Alt text</span>](<span class="na">/path/to/img.jpg</span>)
-​
-![<span class="nt">Alt text</span>](<span class="na">/path/to/img.jpg &#34;Optional title&#34;</span>)
-</code></pre></div><p>详细叙述如下：</p>
-<ul>
-<li>一个惊叹号 <code>!</code></li>
-<li>接着一个方括号，里面放上图片的替代文字</li>
-<li>接着一个普通括号，里面放上图片的网址，最后还可以用引号包住并加上 选择性的 &lsquo;title&rsquo; 文字。</li>
-</ul>
-<p>参考式的图片语法则长得像这样：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">![Alt text][id]
-</code></pre></div><p>「id」是图片参考的名称，图片参考的定义方式则和连结参考一样：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">[id]: url/to/image  &#34;Optional title attribute&#34;
-</code></pre></div><p>到目前为止， Markdown 还没有办法指定图片的宽高，如果你需要的话，你可以使用普通的 `` 标签。</p>
-<hr>
-<h2 id="其它">其它</h2>
-<h3 id="自动链接">自动链接</h3>
-<p>Markdown 支持以比较简短的自动链接形式来处理网址和电子邮件信箱，只要是用方括号包起来， Markdown 就会自动把它转成链接。一般网址的链接文字就和链接地址一样，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">http:</span><span class="err">//</span><span class="na">example</span><span class="err">.</span><span class="na">com</span><span class="p">/&gt;</span>
-</code></pre></div><p>Markdown 会转为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://example.com/&#34;</span><span class="p">&gt;</span>http://example.com/<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
-</code></pre></div><p>邮址的自动链接也很类似，只是 Markdown 会先做一个编码转换的过程，把文字字符转成 16 进位码的 HTML 实体，这样的格式可以糊弄一些不好的邮址收集机器人，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">address</span><span class="err">@</span><span class="na">example</span><span class="err">.</span><span class="na">com</span><span class="p">&gt;</span>
-</code></pre></div><p>Markdown 会转成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;&amp;#x6D;&amp;#x61;i&amp;#x6C;&amp;#x74;&amp;#x6F;:&amp;#x61;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#x65;
-</span><span class="s">&amp;#115;&amp;#115;&amp;#64;&amp;#101;&amp;#120;&amp;#x61;&amp;#109;&amp;#x70;&amp;#x6C;e&amp;#x2E;&amp;#99;&amp;#111;
-</span><span class="s">&amp;#109;&#34;</span><span class="p">&gt;</span><span class="ni">&amp;#x61;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#x65;&amp;#115;&amp;#115;&amp;#64;&amp;#101;&amp;#120;&amp;#x61;</span>
-<span class="ni">&amp;#109;&amp;#x70;&amp;#x6C;</span>e<span class="ni">&amp;#x2E;&amp;#99;&amp;#111;&amp;#109;</span><span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
-</code></pre></div><p>在浏览器里面，这段字串（其实是 <code>[address@example.com](mailto:address@example.com)</code>）会变成一个可以点击的「<a href="mailto:address@example.com">address@example.com</a>」链接。</p>
-<p>（这种作法虽然可以糊弄不少的机器人，但并不能全部挡下来，不过总比什么都不做好些。不管怎样，公开你的信箱终究会引来广告信件的。）</p>
-<h3 id="反斜杠">反斜杠</h3>
-<p>Markdown 可以利用反斜杠来插入一些在语法中有其它意义的符号，例如：如果你想要用星号加在文字旁边的方式来做出强调效果（但不用 `` 标签），你可以在星号的前面加上反斜杠：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">\*literal asterisks\*
-</code></pre></div><p>Markdown 支持以下这些符号前面加上反斜杠来帮助插入普通的符号：</p>
-<div class="highlight"><pre class="chroma"><code class="language-md" data-lang="md">\   反斜线
-`   反引号
-<span class="ge">*   星号
-</span><span class="ge">_</span>   底线
-{}  花括号
-[]  方括号
-()  括弧
-<span class="gh">#   井字号
-</span><span class="gh"></span>+   加号
-<span class="k">-</span>   减号
-.   英文句点
-!   惊叹号
-</code></pre></div>]]></content>
-		</item>
-		
-		<item>
-			<title>edge如何解决跨域问题</title>
-			<link>https://aomi.run/posts/edge-cors-error/</link>
-			<pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
-			
-			<guid>https://aomi.run/posts/edge-cors-error/</guid>
-			<description>找了一个比较简单的解决办法 去应用商店直接下载一个插件 Access-Control-Allow-Origin,装好了之后点图标，点击toggle把上面的logo点成彩色，然后刷新一下需要跨域的页面，完成 </description>
-			<content type="html"><![CDATA[<h2 id="找了一个比较简单的解决办法">找了一个比较简单的解决办法</h2>
-<p>去应用商店直接下载一个插件 Access-Control-Allow-Origin,装好了之后点图标，点击toggle把上面的logo点成彩色，然后刷新一下需要跨域的页面，完成
-<img src="https://img-blog.csdnimg.cn/20201102170424596.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3p6X0xYVw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-]]></content>
-		</item>
-		
-	</channel>
-</rss>
+</code></pre>
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://aomi.run/tags/go">go</a></span><span class="tag"><a href="https://aomi.run/tags/web">web</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3505 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-01-21 17:35 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#序言">序言</a>
+      <ul>
+        <li><a href="#设计一个框架">设计一个框架</a></li>
+      </ul>
+    </li>
+    <li><a href="#http-基础">HTTP 基础</a>
+      <ul>
+        <li><a href="#标准库启动web服务">标准库启动Web服务</a></li>
+        <li><a href="#实现httphandler接口">实现http.Handler接口</a></li>
+        <li><a href="#gee框架的雏形">Gee框架的雏形</a></li>
+      </ul>
+    </li>
+    <li><a href="#上下文context">上下文Context</a>
+      <ul>
+        <li><a href="#使用效果">使用效果</a></li>
+        <li><a href="#设计context">设计Context</a></li>
+      </ul>
+    </li>
+    <li><a href="#前缀树路由">前缀树路由</a>
+      <ul>
+        <li><a href="#trie-树简介">Trie 树简介</a></li>
+        <li><a href="#trie-树实现">Trie 树实现</a></li>
+        <li><a href="#router">Router</a></li>
+        <li><a href="#context与handle的变化">Context与handle的变化</a></li>
+        <li><a href="#单元测试">单元测试</a></li>
+        <li><a href="#使用demo">使用Demo</a></li>
+      </ul>
+    </li>
+    <li><a href="#分组控制group">分组控制Group</a>
+      <ul>
+        <li><a href="#分组的意义">分组的意义</a></li>
+        <li><a href="#分组嵌套">分组嵌套</a></li>
+        <li><a href="#使用-demo">使用 Demo</a></li>
+      </ul>
+    </li>
+    <li><a href="#中间件是什么">中间件是什么</a>
+      <ul>
+        <li><a href="#中间件设计">中间件设计</a></li>
+        <li><a href="#代码实现">代码实现</a></li>
+        <li><a href="#使用-demo-1">使用 Demo</a></li>
+      </ul>
+    </li>
+    <li><a href="#模板html-template">模板(HTML Template)</a>
+      <ul>
+        <li><a href="#服务端渲染">服务端渲染</a></li>
+        <li><a href="#静态文件serve-static-files">静态文件(Serve Static Files)</a></li>
+        <li><a href="#html-模板渲染">HTML 模板渲染</a></li>
+      </ul>
+    </li>
+    <li><a href="#错误恢复panic-recover">错误恢复(Panic Recover)</a>
+      <ul>
+        <li><a href="#panic">panic</a></li>
+        <li><a href="#defer">defer</a></li>
+        <li><a href="#recover">recover</a></li>
+        <li><a href="#gee-的错误处理机制">Gee 的错误处理机制</a></li>
+        <li><a href="#使用-demo-2">使用 Demo</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://aomi.run/posts/document/markdown-readme/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Markdown 中文说明</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://aomi.run">Aomi</a> &#183; <a href="https://aomi.run/about/" target="_blank" rel="noopener">run</a></p>
+		<p> &#183; <a href="https://aomi.run/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://aomi.run/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

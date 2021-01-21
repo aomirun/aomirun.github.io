@@ -3,6 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://aomi.run/posts/golang/realizing-web-framework-from-scratch-with-go-in-7-days/</loc>
+    <lastmod>2021-01-21T17:35:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/</loc>
+    <lastmod>2021-01-21T17:35:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/tags/go/</loc>
+    <lastmod>2021-01-21T17:35:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/tags/web/</loc>
+    <lastmod>2021-01-21T17:35:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/posts/</loc>
+    <lastmod>2021-01-21T17:35:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/tags/</loc>
+    <lastmod>2021-01-21T17:35:50+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://aomi.run/tags/markdown/</loc>
     <lastmod>2021-01-21T14:33:04+08:00</lastmod>
   </url>
@@ -30,21 +60,6 @@
   <url>
     <loc>https://aomi.run/categories/</loc>
     <lastmod>2021-01-21T14:33:04+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://aomi.run/posts/</loc>
-    <lastmod>2021-01-21T14:33:04+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://aomi.run/tags/</loc>
-    <lastmod>2021-01-21T14:33:04+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://aomi.run/</loc>
-    <lastmod>2021-01-20T23:42:51+08:00</lastmod>
   </url>
   
   <url>
