@@ -1,5 +1,4 @@
-{{ if and ( .Site.Params.utteranc.enable ) (and (not .Params.disable_comments) (or (eq .Kind "404") (and (not .IsHome) .Content))) }}
-<section class="comments">
+{{ if and ( .Site.Params.utteranc.enable ) (and (not .Params.Disable_comments) (or (eq .Kind "404") (and (not .IsHome) .Content))) }}
 <script src="https://utteranc.es/client.js"
         repo="{{ .Site.Params.utteranc.repo }}"
         issue-term="{{ .Site.Params.utteranc.issueTerm }}"
@@ -7,5 +6,9 @@
         crossorigin="anonymous"
         async>
 </script>
-</section>
+<style>
+    .utterances {
+        max-width:none
+    }
+</style>
 {{ end }}

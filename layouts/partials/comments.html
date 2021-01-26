@@ -1,0 +1,6 @@
+{{- if .Site.DisqusShortname }}
+{{ template "_internal/disqus.html" . }}
+{{- else }}
+{{ partial "utterances.html" . }}
+{{- end }}
+

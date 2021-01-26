@@ -32,8 +32,8 @@ enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/func
 [params.utteranc]
   enable = true
   repo = "aomirun/aomirun.github.io" ##换成自己得
-  issueTerm = "Comment"
-  theme = "icy-dark"
+  issueTerm = "pathname"
+  theme = "github-light"
 
 [params]
   dateform        = "2006-01-02"
