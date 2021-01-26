@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>openjdk on Aomi</title>
+    <link>https://aomi.run/tags/openjdk/</link>
+    <description>Recent content in openjdk on Aomi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh_CN</language>
+    <copyright>aomi.run</copyright>
+    <lastBuildDate>Mon, 25 Jan 2021 11:46:59 +0800</lastBuildDate>
+    
+	<atom:link href="https://aomi.run/tags/openjdk/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Wsl2 Vscode Openjdk Install</title>
+      <link>https://aomi.run/posts/wsl2-vscode-openjdk-install/</link>
+      <pubDate>Mon, 25 Jan 2021 11:46:59 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/wsl2-vscode-openjdk-install/</guid>
+      <description>准备 进入wsl命令行，先更新系统,更新慢的可以换apt源处理，换源自行搜索。
+$ sudo apt update -y $ sudo apt upgrade -y 安装JDK $ sudo apt install openjdk-8-jdk -y $ java -version openjdk version &amp;#34;1.8.0_275&amp;#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 再安装个 JDK 11
+$ sudo apt install openjdk-11-jdk -y 安装maven 安装maven
+$ sudo apt install maven -y $ mvn -v Apache Maven 3.6.3 Maven home: /usr/share/maven Java version: 1.8.0_275, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre Default locale: en, platform encoding: UTF-8 OS name: &amp;#34;linux&amp;#34;, version: &amp;#34;4.</description>
+    </item>
+    
+  </channel>
+</rss>
