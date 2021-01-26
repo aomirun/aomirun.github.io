@@ -28,6 +28,13 @@ enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/func
   series = "series"
   # Categories are disabled by default.
 
+## 配置 utteranc评论,教程参考 https://utteranc.es/
+[params.utteranc]
+  enable = true
+  repo = "aomirun/aomirun.github.io" ##换成自己得
+  issueTerm = "Comment"
+  theme = "icy-dark"
+
 [params]
   dateform        = "2006-01-02"
   dateformShort   = "01-02"
