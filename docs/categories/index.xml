@@ -7,10 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Thu, 21 Jan 2021 14:33:04 +0800</lastBuildDate>
-    
-	<atom:link href="https://aomi.run/categories/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Sat, 23 Jan 2021 00:15:05 +0800</lastBuildDate><atom:link href="https://aomi.run/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解决错误问题</title>
+      <link>https://aomi.run/categories/errors/</link>
+      <pubDate>Sat, 23 Jan 2021 00:15:05 +0800</pubDate>
+      
+      <guid>https://aomi.run/categories/errors/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>中文文档</title>
@@ -18,15 +23,6 @@
       <pubDate>Thu, 21 Jan 2021 14:33:04 +0800</pubDate>
       
       <guid>https://aomi.run/categories/document/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>解决错误问题</title>
-      <link>https://aomi.run/categories/errors/</link>
-      <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
-      
-      <guid>https://aomi.run/categories/errors/</guid>
       <description></description>
     </item>
     
