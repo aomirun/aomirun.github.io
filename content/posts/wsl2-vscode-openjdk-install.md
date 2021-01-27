@@ -3,6 +3,8 @@ title: "Wsl2 Vscode Openjdk Install"
 date: 2021-01-25T11:46:59+08:00
 draft: false
 toc: true
+categories: 
+  - java
 images:
 tags: 
   - java
@@ -34,7 +36,7 @@ $ sudo apt install openjdk-11-jdk -y
 
 ## 安装maven
 安装maven
-```shell
+```sh
 $ sudo apt install maven -y
 
 $ mvn -v
@@ -206,7 +208,7 @@ hello java of wsl
 ```
 
 ## 使用maven来创建Springboot项目
-创建项目前，要配置一下vscode中的maven选项，告诉vscode配置文件地址，好使用国内镜像下载包。在vscode的设置中，搜索maven，global settings path to maven's global settings.xml选项中，输入 /usr/share/maven/conf
+创建项目前，要配置一下vscode中的maven选项，告诉vscode配置文件地址，好使用国内镜像下载包。在vscode的设置中，搜索maven，global settings path to maven's global settings.xml选项中，输入 `/usr/share/maven/conf/settings.xml`
 
 之后在vscode界面按 crtl+shift+p 调出命令输出 spring init 智能提示中看到有 create maven project相关字样，通过这个来创建。之后会跳出选择Springboot版本，我选了2.4 项目所用开发语言选java，groupid com.example,project demo,package type jar,jdk 选8或11，根据自己的环境来定，之后就是选择要用到的springboot开发工具了。就做个简单的测试，我选了一个rest repositories包，选好工具包后，就是选项目根目录了,自己建一个空文件夹，作为该项目的根目录。
 
