@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Hello Java 1 Day 学习JAVA第1天">
+<meta itemprop="description" content="前言 先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
+tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
+创建 Docker 网络 $ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars 创建 docker 目录 $ mkdir ~/docker-app/tars/framework/data -p $ mkdir ~/docker-app/tars/framework-slave/data -p $ mkdir ~/docker-app/tars/node/data -p $ mkdir ~/docker-app/tars/mysql/data -p $ mkdir ~/docker-app/tars/mysql/conf -p 创建 ~/docker-app/tars/mysql/conf/my.cnf 文件 [mysqld] user=root default-storage-engine=INNODB character-set-server=utf8 [client] default-character-set=utf8 [mysql] default-character-set=utf8 创建 ~/docker-app/tars/docker-compose.yml 文件 version:&#34;3&#34;services:mysql:image:mysql:5.6container_name:tars-mysqlports:- &#34;3307:3306&#34;restart:alwaysprivileged:trueenvironment:MYSQL_ROOT_PASSWORD:&#34;123456&#34;volumes:- ./mysql/data:/var/lib/mysql- ./mysql/conf/my.cnf:/etc/my.cnf- /etc/localtime:/etc/localtimenetworks:tars:ipv4_address:172.25.0.2framework:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-frameworkports:- &#34;3000:3000&#34;- &#34;3001:3001&#34;restart:alwaysnetworks:tars:ipv4_address:172.25.0.3environment:MYSQL_HOST:&#34;172.25.0.2&#34;MYSQL_ROOT_PASSWORD:&#34;123456&#34;MYSQL_USER:&#34;root&#34;MYSQL_PORT:3306REBUILD:&#34;false&#34;INET:eth0SLAVE:&#34;false&#34;volumes:- ./framework/data:/data/tars:rw- /etc/localtime:/etc/localtimedepends_on:- mysqlframework-slave:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-framework-slaverestart:alwaysnetworks:tars:ipv4_address:172.">
+<meta itemprop="datePublished" content="2021-01-26T11:39:02&#43;08:00" />
+<meta itemprop="dateModified" content="2021-01-26T11:39:02&#43;08:00" />
+<meta itemprop="wordCount" content="814">
+
+
+
+<meta itemprop="keywords" content="java," /><meta property="og:title" content="Hello Java 1 Day 学习JAVA第1天" />
+<meta property="og:description" content="前言 先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
+tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
+创建 Docker 网络 $ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars 创建 docker 目录 $ mkdir ~/docker-app/tars/framework/data -p $ mkdir ~/docker-app/tars/framework-slave/data -p $ mkdir ~/docker-app/tars/node/data -p $ mkdir ~/docker-app/tars/mysql/data -p $ mkdir ~/docker-app/tars/mysql/conf -p 创建 ~/docker-app/tars/mysql/conf/my.cnf 文件 [mysqld] user=root default-storage-engine=INNODB character-set-server=utf8 [client] default-character-set=utf8 [mysql] default-character-set=utf8 创建 ~/docker-app/tars/docker-compose.yml 文件 version:&#34;3&#34;services:mysql:image:mysql:5.6container_name:tars-mysqlports:- &#34;3307:3306&#34;restart:alwaysprivileged:trueenvironment:MYSQL_ROOT_PASSWORD:&#34;123456&#34;volumes:- ./mysql/data:/var/lib/mysql- ./mysql/conf/my.cnf:/etc/my.cnf- /etc/localtime:/etc/localtimenetworks:tars:ipv4_address:172.25.0.2framework:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-frameworkports:- &#34;3000:3000&#34;- &#34;3001:3001&#34;restart:alwaysnetworks:tars:ipv4_address:172.25.0.3environment:MYSQL_HOST:&#34;172.25.0.2&#34;MYSQL_ROOT_PASSWORD:&#34;123456&#34;MYSQL_USER:&#34;root&#34;MYSQL_PORT:3306REBUILD:&#34;false&#34;INET:eth0SLAVE:&#34;false&#34;volumes:- ./framework/data:/data/tars:rw- /etc/localtime:/etc/localtimedepends_on:- mysqlframework-slave:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-framework-slaverestart:alwaysnetworks:tars:ipv4_address:172." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://aomi.run/posts/java/hello-java-1-day/" />
+<meta property="article:published_time" content="2021-01-26T11:39:02+08:00" />
+<meta property="article:modified_time" content="2021-01-26T11:39:02+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hello Java 1 Day 学习JAVA第1天"/>
+<meta name="twitter:description" content="前言 先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
+tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
+创建 Docker 网络 $ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars 创建 docker 目录 $ mkdir ~/docker-app/tars/framework/data -p $ mkdir ~/docker-app/tars/framework-slave/data -p $ mkdir ~/docker-app/tars/node/data -p $ mkdir ~/docker-app/tars/mysql/data -p $ mkdir ~/docker-app/tars/mysql/conf -p 创建 ~/docker-app/tars/mysql/conf/my.cnf 文件 [mysqld] user=root default-storage-engine=INNODB character-set-server=utf8 [client] default-character-set=utf8 [mysql] default-character-set=utf8 创建 ~/docker-app/tars/docker-compose.yml 文件 version:&#34;3&#34;services:mysql:image:mysql:5.6container_name:tars-mysqlports:- &#34;3307:3306&#34;restart:alwaysprivileged:trueenvironment:MYSQL_ROOT_PASSWORD:&#34;123456&#34;volumes:- ./mysql/data:/var/lib/mysql- ./mysql/conf/my.cnf:/etc/my.cnf- /etc/localtime:/etc/localtimenetworks:tars:ipv4_address:172.25.0.2framework:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-frameworkports:- &#34;3000:3000&#34;- &#34;3001:3001&#34;restart:alwaysnetworks:tars:ipv4_address:172.25.0.3environment:MYSQL_HOST:&#34;172.25.0.2&#34;MYSQL_ROOT_PASSWORD:&#34;123456&#34;MYSQL_USER:&#34;root&#34;MYSQL_PORT:3306REBUILD:&#34;false&#34;INET:eth0SLAVE:&#34;false&#34;volumes:- ./framework/data:/data/tars:rw- /etc/localtime:/etc/localtimedepends_on:- mysqlframework-slave:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-framework-slaverestart:alwaysnetworks:tars:ipv4_address:172."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Hello Java 1 Day 学习JAVA第1天</title>
+	<link rel="stylesheet" href="https://aomi.run/css/style.min.eac77496566fd7d5768fd650ddb0b2b181ca6a2d7c5fdd6fe6b8ba4bf47e566f.css" integrity="sha256-6sd0llZv19V2j9ZQ3bCysYHKai18X91v5ri6S/R+Vm8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://aomi.run">Aomi</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://aomi.run/about/">关于</a>
+				<a href="https://aomi.run/posts/">日志</a>
+				<a href="https://aomi.run/categories/">分类</a>
+				<a href="https://aomi.run/series/">专栏</a>
+				<a href="https://aomi.run/tags/">TAGS</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://aomi.run/about/">关于</a></li>
+			<li><a href="https://aomi.run/posts/">日志</a></li>
+			<li><a href="https://aomi.run/categories/">分类</a></li>
+			<li><a href="https://aomi.run/series/">专栏</a></li>
+			<li><a href="https://aomi.run/tags/">TAGS</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>2021-01-26</span></div>
+				<h1>Hello Java 1 Day 学习JAVA第1天</h1>
+			</header>
+			<div class="content">
+				<h2 id="前言">前言<a href="#前言" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于<a href="https://aomi.run/posts/wsl2-vscode-openjdk-install/">win10 wsl2 vscode</a> 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。</p>
+<h2 id="tars-环境搭建">tars 环境搭建<a href="#tars-环境搭建" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。</p>
+<h3 id="创建-docker-网络">创建 Docker 网络<a href="#创建-docker-网络" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker network create -d bridge --subnet<span class="o">=</span>172.25.0.0/16 --gateway<span class="o">=</span>172.25.0.1 tars
+</code></pre></div><h3 id="创建-docker-目录">创建 docker 目录<a href="#创建-docker-目录" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mkdir ~/docker-app/tars/framework/data -p
+$ mkdir ~/docker-app/tars/framework-slave/data -p
+$ mkdir ~/docker-app/tars/node/data -p
+$ mkdir ~/docker-app/tars/mysql/data -p
+$ mkdir ~/docker-app/tars/mysql/conf -p
+</code></pre></div><h3 id="创建-docker-apptarsmysqlconfmycnf-文件">创建 ~/docker-app/tars/mysql/conf/my.cnf 文件<a href="#创建-docker-apptarsmysqlconfmycnf-文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-ini" data-lang="ini"><span class="k">[mysqld]</span>
+<span class="na">user</span><span class="o">=</span><span class="s">root</span>
+<span class="na">default-storage-engine</span><span class="o">=</span><span class="s">INNODB</span>
+<span class="na">character-set-server</span><span class="o">=</span><span class="s">utf8</span>
+<span class="k">[client]</span>
+<span class="na">default-character-set</span><span class="o">=</span><span class="s">utf8</span>
+<span class="k">[mysql]</span>
+<span class="na">default-character-set</span><span class="o">=</span><span class="s">utf8</span>
+</code></pre></div><h3 id="创建-docker-apptarsdocker-composeyml-文件">创建 ~/docker-app/tars/docker-compose.yml 文件<a href="#创建-docker-apptarsdocker-composeyml-文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">services</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">mysql</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>mysql<span class="p">:</span><span class="m">5.6</span><span class="w">
+</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-mysql<span class="w">
+</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="s2">&#34;3307:3306&#34;</span><span class="w">
+</span><span class="w">    </span><span class="k">restart</span><span class="p">:</span><span class="w"> </span>always<span class="w">
+</span><span class="w">    </span><span class="k">privileged</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
+</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- ./mysql/data<span class="p">:</span>/var/lib/mysql<span class="w">
+</span><span class="w">      </span>- ./mysql/conf/my.cnf<span class="p">:</span>/etc/my.cnf<span class="w">
+</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
+</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.2</span><span class="w">
+</span><span class="w">  </span><span class="k">framework</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="c"># image: tarscloud/framework:stable</span><span class="w">
+</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>tarscloud/framework<span class="p">:</span>latest<span class="w">
+</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-framework<span class="w">
+</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="s2">&#34;3000:3000&#34;</span><span class="w">
+</span><span class="w">      </span>- <span class="s2">&#34;3001:3001&#34;</span><span class="w">
+</span><span class="w">    </span><span class="k">restart</span><span class="p">:</span><span class="w"> </span>always<span class="w">
+</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.3</span><span class="w">
+</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_HOST</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.25.0.2&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;root&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_PORT</span><span class="p">:</span><span class="w"> </span><span class="m">3306</span><span class="w">
+</span><span class="w">      </span><span class="k">REBUILD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">INET</span><span class="p">:</span><span class="w"> </span>eth0<span class="w">
+</span><span class="w">      </span><span class="k">SLAVE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
+</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- ./framework/data<span class="p">:</span>/data/tars<span class="p">:</span>rw<span class="w">
+</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
+</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- mysql<span class="w">
+</span><span class="w">  </span><span class="k">framework-slave</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="c"># image: tarscloud/framework:stable</span><span class="w">
+</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>tarscloud/framework<span class="p">:</span>latest<span class="w">
+</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-framework-slave<span class="w">
+</span><span class="w">    </span><span class="k">restart</span><span class="p">:</span><span class="w"> </span>always<span class="w">
+</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.4</span><span class="w">
+</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_HOST</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.25.0.2&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;root&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">MYSQL_PORT</span><span class="p">:</span><span class="w"> </span><span class="m">3306</span><span class="w">
+</span><span class="w">      </span><span class="k">REBUILD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">INET</span><span class="p">:</span><span class="w"> </span>eth0<span class="w">
+</span><span class="w">      </span><span class="k">SLAVE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;true&#34;</span><span class="w">
+</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- ./framework-slave/data<span class="p">:</span>/data/tars<span class="p">:</span>rw<span class="w">
+</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
+</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- mysql<span class="w">
+</span><span class="w">  </span><span class="k">node</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="c"># image: tarscloud/tars-node:stable</span><span class="w">
+</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>tarscloud/tars-node<span class="p">:</span>latest<span class="w">
+</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-node<span class="w">
+</span><span class="w">    </span><span class="k">restart</span><span class="p">:</span><span class="w"> </span>always<span class="w">
+</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.5</span><span class="w">
+</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- ./node/data<span class="p">:</span>/data/tars<span class="p">:</span>rw<span class="w">
+</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
+</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">INET</span><span class="p">:</span><span class="w"> </span>eth0<span class="w">
+</span><span class="w">      </span><span class="k">WEB_HOST</span><span class="p">:</span><span class="w"> </span>http<span class="p">:</span>//<span class="m">172.25.0.3</span><span class="p">:</span><span class="m">3000</span><span class="w">
+</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- framework<span class="w">
+</span><span class="w"></span><span class="k">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">external</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></code></pre></div><h3 id="运行-docker-compose">运行 docker-compose<a href="#运行-docker-compose" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ <span class="nb">cd</span> ~/docker-app/tars
+$ docker-compose up -d
+</code></pre></div><p>等一段时间，把镜像下载完后，会自动运行起来</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">Creating tars-mysql ... <span class="k">done</span>
+Creating tars-framework-slave ... <span class="k">done</span>
+Creating tars-framework       ... <span class="k">done</span>
+Creating tars-node            ... <span class="k">done</span>
+</code></pre></div><p>打开浏览器，访问 <code>http://localhost:3000/</code> 即可打开 <code>tars web</code>，关于Tars更详细的请查看 <a href="https://tarscloud.gitbook.io/">官方文档</a></p>
+<h2 id="创建java项目">创建JAVA项目<a href="#创建java项目" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>这是我是用<code>vscode + maven + tars</code>创建好的一个<code>IBM MQ CLIENT</code>的一个初始项目，关于vscode怎么设置Java开发环境及Maven的，请看我另外一篇文章 <a href="https://aomi.run/posts/wsl2-vscode-openjdk-install/">Wsl2 Vscode Openjdk Install</a> ，最后项目目录为</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">➜  jmq tree
+.
+├── HELP.md
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── run
+│   │   │       └── aomi
+│   │   │           └── jmq
+│   │   │               └── JmqApplication.java
+│   │   └── resources
+│   │       └── application.properties
+│   └── <span class="nb">test</span>
+│       └── java
+│           └── run
+│               └── aomi
+│                   └── jmq
+│                       └── JmqApplicationTests.java
+└── target
+    ├── classes
+    │   ├── application.properties
+    │   └── run
+    │       └── aomi
+    │           └── jmq
+    │               └── JmqApplication.class
+    └── test-classes
+        └── run
+            └── aomi
+                └── jmq
+                    └── JmqApplicationTests.class
+
+</code></pre></div><h3 id="开启-tars-支持">开启 tars 支持<a href="#开启-tars-支持" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>在 main 入口处添加注解 <code>@EnableTarsServer</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableTarsServer</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">JmqApplication</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">JmqApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><h3 id="定义tars接口文件">定义tars接口文件<a href="#定义tars接口文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>kit目录是通过tars2java生成的，具体过程为先在<code>resources</code>目录下创建一个Tars文件，如
+src/main/resources/jmq.tars</p>
+<pre><code>module kit {
+    //消息发送接口
+    interface Msg{
+        bool Send(string msg);                          //接收字符串，把整个字符串发送到IBM MQ中，返回 true/false
+        string Hash(string plain);                      //接收明文字符串，返回加密后的字符串
+        bool HashWithSend(string msg, string plain);    //接收明文字符串，加密后直接发送到IBM MQ
+    };
+};
+</code></pre><h3 id="添加tars依赖和插件">添加tars依赖和插件<a href="#添加tars依赖和插件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>pom.xml</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span> <span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+	<span class="nt">&lt;parent&gt;</span>
+		<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+		<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;version&gt;</span>2.4.2<span class="nt">&lt;/version&gt;</span>
+		<span class="nt">&lt;relativePath</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
+	<span class="nt">&lt;/parent&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>run.aomi<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>jmq<span class="nt">&lt;/artifactId&gt;</span>
+	<span class="nt">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;name&gt;</span>jmq<span class="nt">&lt;/name&gt;</span>
+	<span class="nt">&lt;description&gt;</span>jms for ibm mq<span class="nt">&lt;/description&gt;</span>
+	<span class="nt">&lt;properties&gt;</span>
+		<span class="nt">&lt;java.version&gt;</span>8<span class="nt">&lt;/java.version&gt;</span>
+	<span class="nt">&lt;/properties&gt;</span>
+	<span class="nt">&lt;dependencies&gt;</span>
+		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
+
+		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>spring-boot-devtools<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;scope&gt;</span>runtime<span class="nt">&lt;/scope&gt;</span>
+			<span class="nt">&lt;optional&gt;</span>true<span class="nt">&lt;/optional&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
+		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
+		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>tars-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
+	<span class="nt">&lt;/dependencies&gt;</span>
+
+	<span class="nt">&lt;build&gt;</span>
+		<span class="nt">&lt;finalName&gt;</span>jmq<span class="nt">&lt;/finalName&gt;</span>
+		<span class="nt">&lt;plugins&gt;</span>
+			<span class="nt">&lt;plugin&gt;</span>
+				<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+				<span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;/plugin&gt;</span>
+			<span class="c">&lt;!--tars2java plugin --&gt;</span>
+			<span class="nt">&lt;plugin&gt;</span>
+				<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
+				<span class="nt">&lt;artifactId&gt;</span>tars-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+				<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
+				<span class="nt">&lt;configuration&gt;</span>
+					<span class="nt">&lt;tars2JavaConfig&gt;</span>
+						<span class="c">&lt;!-- tars file location --&gt;</span>
+						<span class="nt">&lt;tarsFiles&gt;</span>
+							<span class="nt">&lt;tarsFile&gt;</span>${basedir}/src/main/resources/jmq.tars<span class="nt">&lt;/tarsFile&gt;</span>
+						<span class="nt">&lt;/tarsFiles&gt;</span>
+						<span class="c">&lt;!-- Source file encoding --&gt;</span>
+						<span class="nt">&lt;tarsFileCharset&gt;</span>UTF-8<span class="nt">&lt;/tarsFileCharset&gt;</span>
+						<span class="c">&lt;!-- Generate server code --&gt;</span>
+						<span class="nt">&lt;servant&gt;</span>true<span class="nt">&lt;/servant&gt;</span>
+						<span class="c">&lt;!-- Generated source code encoding --&gt;</span>
+						<span class="nt">&lt;charset&gt;</span>UTF-8<span class="nt">&lt;/charset&gt;</span>
+						<span class="c">&lt;!-- Generated source code directory --&gt;</span>
+						<span class="nt">&lt;srcPath&gt;</span>${basedir}/src/main/java<span class="nt">&lt;/srcPath&gt;</span>
+						<span class="c">&lt;!-- Generated source code package prefix --&gt;</span>
+						<span class="nt">&lt;packagePrefixName&gt;</span>run.aomi.jmq.<span class="nt">&lt;/packagePrefixName&gt;</span>
+					<span class="nt">&lt;/tars2JavaConfig&gt;</span>
+				<span class="nt">&lt;/configuration&gt;</span>
+			<span class="nt">&lt;/plugin&gt;</span>
+			<span class="c">&lt;!--package plugin--&gt;</span>
+		<span class="nt">&lt;/plugins&gt;</span>
+	<span class="nt">&lt;/build&gt;</span>
+
+<span class="nt">&lt;/project&gt;</span>
+</code></pre></div><h3 id="生成接口文件">生成接口文件<a href="#生成接口文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>在项目目录下运行<code>mvn tars:tars2java</code>,完成后显示如下
+src/main/java/run/aomi/jmq/kit/MsgServant.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn tars:tars2java
+
+<span class="o">[</span>INFO<span class="o">]</span> ----------------------------&lt; run.aomi:jmq &gt;----------------------------
+<span class="o">[</span>INFO<span class="o">]</span> Building jmq 0.0.1-SNAPSHOT
+<span class="o">[</span>INFO<span class="o">]</span> --------------------------------<span class="o">[</span> jar <span class="o">]</span>---------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> 
+<span class="o">[</span>INFO<span class="o">]</span> --- tars-maven-plugin:1.7.2:tars2java <span class="o">(</span>default-cli<span class="o">)</span> @ jmq ---
+<span class="o">[</span>INFO<span class="o">]</span> Parse /mnt/d/projects/java/cnaps2/jmq/src/main/resources/jmq.tars ...
+<span class="o">[</span>INFO<span class="o">]</span> generate code <span class="k">for</span> namespace : kit ...
+<span class="o">[</span>INFO<span class="o">]</span> module kit &gt;&gt;
+<span class="o">[</span>INFO<span class="o">]</span> generate Servant msgServant
+<span class="o">[</span>INFO<span class="o">]</span> module kit &lt;&lt;
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> BUILD SUCCESS
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> Total time:  0.486 s
+<span class="o">[</span>INFO<span class="o">]</span> Finished at: 2021-01-26T15:24:56+08:00
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+</code></pre></div><h3 id="实现接口">实现接口<a href="#实现接口" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>在实现接口的同时,添加 注解 <code>@Override</code>
+src/main/java/run/aomi/jmq/kit/MsgServantImpl.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">run.aomi.jmq.kit</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MsgServantImpl</span> <span class="kd">implements</span> <span class="n">MsgServant</span> <span class="o">{</span>
+    <span class="cm">/**
+</span><span class="cm">     * 发送消息到IBM MQ
+</span><span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">Send</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 对plain进行加密，返回加密后的内容
+</span><span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">Hash</span><span class="o">(</span><span class="n">String</span> <span class="n">plain</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">String</span> <span class="n">encodeStr</span> <span class="o">=</span> <span class="s">&#34;1231#!@#!&#34;</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">encodeStr</span><span class="o">;</span>
+
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 对plain进行加密，并同msg一起发送到IBM MQ
+</span><span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">HashWithSend</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">,</span> <span class="n">String</span> <span class="n">plain</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span> <span class="o">||</span> <span class="n">plain</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">var</span> <span class="n">hashStr</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">Hash</span><span class="o">(</span><span class="n">plain</span><span class="o">);</span>
+        <span class="n">var</span> <span class="n">ok</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">Send</span><span class="o">(</span><span class="n">hashStr</span> <span class="o">+</span> <span class="n">msg</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">ok</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="服务暴露配置">服务暴露配置<a href="#服务暴露配置" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>接口的实现类通过注解@TarsServant来暴露服务，其中填写的&rsquo;MsgObj'为servant名，该名称与管理平台上的名称对应即可。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">run.aomi.jmq.kit</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.qq.tars.spring.annotation.TarsServant</span><span class="o">;</span>
+
+<span class="nd">@TarsServant</span><span class="o">(</span><span class="s">&#34;MsgObj&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MsgServantImpl</span> <span class="kd">implements</span> <span class="n">MsgServant</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">Send</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">...</span>
+  <span class="o">}</span>
+  <span class="o">...</span>
+
+<span class="o">}</span>
+
+</code></pre></div><h3 id="jar打包">Jar打包<a href="#jar打包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>先删除测试文件夹,主要还没空研究Java里的测试,后续学习后再来做测试包</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package
+
+<span class="o">[</span>INFO<span class="o">]</span> Building jar: /mnt/d/projects/java/cnaps2/jmq/target/jmq.jar
+<span class="o">[</span>INFO<span class="o">]</span> 
+<span class="o">[</span>INFO<span class="o">]</span> --- spring-boot-maven-plugin:2.4.2:repackage <span class="o">(</span>repackage<span class="o">)</span> @ jmq ---
+<span class="o">[</span>INFO<span class="o">]</span> Replacing main artifact with repackaged archive
+<span class="o">[</span>INFO<span class="o">]</span> 
+<span class="o">[</span>INFO<span class="o">]</span> --- spring-boot-maven-plugin:2.4.2:repackage <span class="o">(</span>default<span class="o">)</span> @ jmq ---
+<span class="o">[</span>INFO<span class="o">]</span> Replacing main artifact with repackaged archive
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> BUILD SUCCESS
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> Total time:  4.980 s
+<span class="o">[</span>INFO<span class="o">]</span> Finished at: 2021-01-26T17:50:25+08:00
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+</code></pre></div><p>最后的目录结构是</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ tree
+.
+├── HELP.md
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+├── src
+│   └── main
+│       ├── java
+│       │   └── run
+│       │       └── aomi
+│       │           └── jmq
+│       │               ├── JmqApplication.java
+│       │               └── kit
+│       │                   ├── MsgServant.java
+│       │                   └── impl
+│       │                       └── MsgServantImpl.java
+│       └── resources
+│           ├── application.properties
+│           └── jmq.tars
+└── target
+    ├── classes
+    │   ├── application.properties
+    │   ├── jmq.tars
+    │   └── run
+    │       └── aomi
+    │           └── jmq
+    │               ├── JmqApplication.class
+    │               └── kit
+    │                   ├── MsgServant.class
+    │                   └── impl
+    │                       └── MsgServantImpl.class
+    ├── generated-sources
+    │   └── annotations
+    ├── jmq.jar
+    ├── jmq.jar.original
+    ├── maven-archiver
+    │   └── pom.properties
+    └── maven-status
+        └── maven-compiler-plugin
+            └── compile
+                └── default-compile
+                    ├── createdFiles.lst
+                    └── inputFiles.lst
+
+<span class="m">23</span> directories, <span class="m">19</span> files
+</code></pre></div><p>可以看出来,已经成功生成了Jar包,把这个包上传到TarsWeb页面来测试一下看.</p>
+<h3 id="部署与测试">部署与测试<a href="#部署与测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="上传jar包">上传jar包<a href="#上传jar包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><img src="/images/posts/tars/tars-upload.png" alt="">
+<img src="/images/posts/tars/tars-web-index.png" alt=""></p>
+<h4 id="上传对应的测试文件-jmqtars">上传对应的测试文件 jmq.tars<a href="#上传对应的测试文件-jmqtars" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><img src="/images/posts/tars/tars-web-debug.png" alt="">
+调试时可以看到，返回值与自己代码中定制的值相同，代表成功部署</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="cm">/**
+</span><span class="cm">     * 对plain进行加密，返回加密后的内容
+</span><span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">Hash</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">plain</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">encodeStr</span> <span class="o">=</span> <span class="s">&#34;1231#!@#!&#34;</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">encodeStr</span><span class="o">;</span>
+
+    <span class="o">}</span>
+</code></pre></div><h3 id="结语">结语<a href="#结语" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>学习java的第一天折腾了一下项目大致流程，主要是在 <code>vscode</code> 中使用 <code>maven</code> 来创建 <code>springboot</code> 项目，并加入 <code>tars</code> 的支持，然后打包上传到 <code>tars</code> 中运行并调试。中间也碰到了一些问题，比如没有实现<code>test</code>文件，保留在项目中，打包<code>jar</code>的时候就会报错，总之自己是java菜鸟，碰到各种错误也属于正常了，整体还是很成功的。一经在 <code>tars</code> 中使用后，就和开发语言无关了。之后喜欢用哪种开发语言去调用服务都可以，这也算是微服务的特点之一吧。</p>
+
+			</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/wsl2-vscode-openjdk-install/">Wsl2 Vscode Openjdk Install</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://aomi.run/tags/java">java</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>814 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-01-26 11:39 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://aomi.run/posts/wsl2-vscode-openjdk-install/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Wsl2 Vscode Openjdk Install</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+
+<script src="https://utteranc.es/client.js"
+        repo="aomirun/aomirun.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+<style>
+    .utterances {
+        max-width:none
+    }
+</style>
+
+
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://aomi.run">Aomi</a> &#183; <a href="https://aomi.run/about/" target="_blank" rel="noopener">run</a></p>
+		<p> &#183; <a href="https://aomi.run/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://aomi.run/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

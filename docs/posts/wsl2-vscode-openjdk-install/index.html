@@ -12,14 +12,13 @@
 $ sudo apt update -y $ sudo apt upgrade -y 安装JDK $ sudo apt install openjdk-8-jdk -y $ java -version openjdk version &#34;1.8.0_275&#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 再安装个 JDK 11
 $ sudo apt install openjdk-11-jdk -y 安装maven 安装maven
 $ sudo apt install maven -y $ mvn -v Apache Maven 3.6.3 Maven home: /usr/share/maven Java version: 1.8.0_275, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre Default locale: en, platform encoding: UTF-8 OS name: &#34;linux&#34;, version: &#34;4.">
-<meta itemprop="datePublished" content="2021-01-25T11:46:59+08:00" />
-<meta itemprop="dateModified" content="2021-01-25T11:46:59+08:00" />
+<meta itemprop="datePublished" content="2021-01-25T11:46:59&#43;08:00" />
+<meta itemprop="dateModified" content="2021-01-25T11:46:59&#43;08:00" />
 <meta itemprop="wordCount" content="708">
 
 
 
-<meta itemprop="keywords" content="java,openjdk,vscode,wsl," />
-<meta property="og:title" content="Wsl2 Vscode Openjdk Install" />
+<meta itemprop="keywords" content="java,openjdk,vscode,wsl," /><meta property="og:title" content="Wsl2 Vscode Openjdk Install" />
 <meta property="og:description" content="准备 进入wsl命令行，先更新系统,更新慢的可以换apt源处理，换源自行搜索。
 $ sudo apt update -y $ sudo apt upgrade -y 安装JDK $ sudo apt install openjdk-8-jdk -y $ java -version openjdk version &#34;1.8.0_275&#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 再安装个 JDK 11
 $ sudo apt install openjdk-11-jdk -y 安装maven 安装maven
@@ -103,7 +102,7 @@ OpenJDK 64-Bit Server VM <span class="o">(</span>build 25.275-b01, mixed mode<sp
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sudo apt install openjdk-11-jdk -y
 </code></pre></div><h2 id="安装maven">安装maven<a href="#安装maven" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>安装maven</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ sudo apt install maven -y
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sudo apt install maven -y
 
 $ mvn -v
 Apache Maven 3.6.3
@@ -257,7 +256,7 @@ $ code .
 </code></pre></div><p>点运行，可以看到输出</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">hello java of wsl
 </code></pre></div><h2 id="使用maven来创建springboot项目">使用maven来创建Springboot项目<a href="#使用maven来创建springboot项目" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<p>创建项目前，要配置一下vscode中的maven选项，告诉vscode配置文件地址，好使用国内镜像下载包。在vscode的设置中，搜索maven，global settings path to maven&rsquo;s global settings.xml选项中，输入 /usr/share/maven/conf</p>
+<p>创建项目前，要配置一下vscode中的maven选项，告诉vscode配置文件地址，好使用国内镜像下载包。在vscode的设置中，搜索maven，global settings path to maven&rsquo;s global settings.xml选项中，输入 <code>/usr/share/maven/conf/settings.xml</code></p>
 <p>之后在vscode界面按 crtl+shift+p 调出命令输出 spring init 智能提示中看到有 create maven project相关字样，通过这个来创建。之后会跳出选择Springboot版本，我选了2.4 项目所用开发语言选java，groupid com.example,project demo,package type jar,jdk 选8或11，根据自己的环境来定，之后就是选择要用到的springboot开发工具了。就做个简单的测试，我选了一个rest repositories包，选好工具包后，就是选项目根目录了,自己建一个空文件夹，作为该项目的根目录。</p>
 <p>创建好后，vscode会自动去下载相关的包，之后的项目结构是：</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">➜  demo tree      
@@ -390,6 +389,9 @@ $ java -jar target/demo-0.0.1-SNAPSHOT.jar
 </nav>
 		</aside>
 		<div class="post-nav thin">
+			<a class="next-post" href="https://aomi.run/posts/java/hello-java-1-day/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Hello Java 1 Day 学习JAVA第1天</span>
+			</a>
 			<a class="prev-post" href="https://aomi.run/posts/wsl-error/">
 				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>启动 WSL 2时警告“参考的对象类型不支持尝试的操作”</span>
 			</a>

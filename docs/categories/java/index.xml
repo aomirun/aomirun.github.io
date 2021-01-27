@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>java on Aomi</title>
-    <link>https://aomi.run/tags/java/</link>
+    <link>https://aomi.run/categories/java/</link>
     <description>Recent content in java on Aomi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
     <lastBuildDate>Tue, 26 Jan 2021 11:39:02 +0800</lastBuildDate>
     
-	<atom:link href="https://aomi.run/tags/java/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://aomi.run/categories/java/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>

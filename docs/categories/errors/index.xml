@@ -7,7 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Sat, 23 Jan 2021 00:15:05 +0800</lastBuildDate><atom:link href="https://aomi.run/categories/errors/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 23 Jan 2021 00:15:05 +0800</lastBuildDate>
+    
+	<atom:link href="https://aomi.run/categories/errors/index.xml" rel="self" type="application/rss+xml" />
+    
+    
     <item>
       <title>启动 WSL 2时警告“参考的对象类型不支持尝试的操作”</title>
       <link>https://aomi.run/posts/wsl-error/</link>
