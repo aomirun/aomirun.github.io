@@ -13,6 +13,24 @@
     
     
     <item>
+      <title>Hello Java 2 Day 学习JAVA第2天</title>
+      <link>https://aomi.run/posts/java/hello-java-2-day/</link>
+      <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/java/hello-java-2-day/</guid>
+      <description>前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务
+ 本章与第1章项目有所不同，还是因为中间调试出了许多问题，后来重新建了项目后，才完成，后续有空我把两章的代码弄成同一个项目，便于连续的文章
+ 搭建IBM MQ 同样还是使用docker来创建
+$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 $ mkdir ~/docker-app/jmq -p $ cd ~/docker-app/jmq $ touch docker-compose.yml docker-compose.yml 的内容如下：
+version:&amp;#39;3&amp;#39;services:ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&amp;#34;accept&amp;#34;MQ_QMGR_NAME:&amp;#34;QM1&amp;#34;MQ_APP_PASSWORD:&amp;#34;abcd1234&amp;#34;ports:- &amp;#34;1414:1414&amp;#34;- &amp;#34;9443:9443&amp;#34;networks:tars:ipv4_address:172.25.0.201networks:tars:external:truevolumes:qm1data:运行起来
+$ docker-compose up -d Status: Downloaded newer image for ibmcom/mq:latest Creating ibmmq ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问
+IBM MQ登录页 输入账号密码登录，默认账号密码是： admin/passw0rd
+IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的
+测试IBM MQ 先弄一个Demo代码，测试一下IBM MQ是否正常运行
+pom.xml &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.</description>
+    </item>
+    
+    <item>
       <title>Hello Java 1 Day 学习JAVA第1天</title>
       <link>https://aomi.run/posts/java/hello-java-1-day/</link>
       <pubDate>Tue, 26 Jan 2021 11:39:02 +0800</pubDate>

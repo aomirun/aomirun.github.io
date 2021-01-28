@@ -7,17 +7,71 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Tue, 26 Jan 2021 11:39:02 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 27 Jan 2021 12:37:57 +0800</lastBuildDate>
     
 	<atom:link href="https://aomi.run/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>docker</title>
+      <link>https://aomi.run/tags/docker/</link>
+      <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
+      
+      <guid>https://aomi.run/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>java</title>
       <link>https://aomi.run/tags/java/</link>
-      <pubDate>Tue, 26 Jan 2021 11:39:02 +0800</pubDate>
+      <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
       
       <guid>https://aomi.run/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>jms</title>
+      <link>https://aomi.run/tags/jms/</link>
+      <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
+      
+      <guid>https://aomi.run/tags/jms/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>micro serivce</title>
+      <link>https://aomi.run/tags/micro-serivce/</link>
+      <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
+      
+      <guid>https://aomi.run/tags/micro-serivce/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mq</title>
+      <link>https://aomi.run/tags/mq/</link>
+      <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
+      
+      <guid>https://aomi.run/tags/mq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tars</title>
+      <link>https://aomi.run/tags/tars/</link>
+      <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
+      
+      <guid>https://aomi.run/tags/tars/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>微服务</title>
+      <link>https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
+      
+      <guid>https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
       <description></description>
     </item>
     
@@ -45,60 +99,6 @@
       <pubDate>Mon, 25 Jan 2021 11:46:59 +0800</pubDate>
       
       <guid>https://aomi.run/tags/wsl/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>go</title>
-      <link>https://aomi.run/tags/go/</link>
-      <pubDate>Thu, 21 Jan 2021 17:35:50 +0800</pubDate>
-      
-      <guid>https://aomi.run/tags/go/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>web</title>
-      <link>https://aomi.run/tags/web/</link>
-      <pubDate>Thu, 21 Jan 2021 17:35:50 +0800</pubDate>
-      
-      <guid>https://aomi.run/tags/web/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>markdown</title>
-      <link>https://aomi.run/tags/markdown/</link>
-      <pubDate>Thu, 21 Jan 2021 14:33:04 +0800</pubDate>
-      
-      <guid>https://aomi.run/tags/markdown/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>md</title>
-      <link>https://aomi.run/tags/md/</link>
-      <pubDate>Thu, 21 Jan 2021 14:33:04 +0800</pubDate>
-      
-      <guid>https://aomi.run/tags/md/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>中文文档</title>
-      <link>https://aomi.run/tags/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</link>
-      <pubDate>Thu, 21 Jan 2021 14:33:04 +0800</pubDate>
-      
-      <guid>https://aomi.run/tags/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>cors</title>
-      <link>https://aomi.run/tags/cors/</link>
-      <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
-      
-      <guid>https://aomi.run/tags/cors/</guid>
       <description></description>
     </item>
     

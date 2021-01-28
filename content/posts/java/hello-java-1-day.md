@@ -2,16 +2,20 @@
 title: "Hello Java 1 Day 学习JAVA第1天"
 date: 2021-01-26T11:39:02+08:00
 draft: false
-toc: false
+toc: true
 categories: 
   - java
 images:
 tags: 
   - java
+  - tars
+  - docker
+  - micro serivce
+  - 微服务
 ---
 
 ## 前言
-先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于[win10 wsl2 vscode](https://aomi.run/posts/wsl2-vscode-openjdk-install/) 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
+先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于[win10 wsl2 vscode](/posts/wsl2-vscode-openjdk-install/) 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
 ## tars 环境搭建
 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
 ### 创建 Docker 网络
