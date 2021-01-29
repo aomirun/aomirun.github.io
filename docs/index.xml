@@ -7,38 +7,35 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Wed, 20 Jan 2021 23:42:51 +0800</lastBuildDate>
-    
-	<atom:link href="https://aomi.run/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 27 Jan 2021 12:37:57 +0800</lastBuildDate><atom:link href="https://aomi.run/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Hello Java 2 Day 学习JAVA第2天</title>
+      <title>Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务</title>
       <link>https://aomi.run/posts/java/hello-java-2-day/</link>
       <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
       
       <guid>https://aomi.run/posts/java/hello-java-2-day/</guid>
-      <description>前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务
- 本章与第1章项目有所不同，还是因为中间调试出了许多问题，后来重新建了项目后，才完成，后续有空我把两章的代码弄成同一个项目，便于连续的文章
- 搭建IBM MQ 同样还是使用docker来创建
-$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 $ mkdir ~/docker-app/jmq -p $ cd ~/docker-app/jmq $ touch docker-compose.yml docker-compose.yml 的内容如下：
-version:&amp;#39;3&amp;#39;services:ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&amp;#34;accept&amp;#34;MQ_QMGR_NAME:&amp;#34;QM1&amp;#34;MQ_APP_PASSWORD:&amp;#34;abcd1234&amp;#34;ports:- &amp;#34;1414:1414&amp;#34;- &amp;#34;9443:9443&amp;#34;networks:tars:ipv4_address:172.25.0.201networks:tars:external:truevolumes:qm1data:运行起来
-$ docker-compose up -d Status: Downloaded newer image for ibmcom/mq:latest Creating ibmmq ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问
+      <description>前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.
+搭建IBM MQ 同样还是使用docker来创建，添加ibmmq
+$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 docker-compose.yml 中添加内容如下：
+ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&amp;#34;accept&amp;#34;MQ_QMGR_NAME:&amp;#34;QM1&amp;#34;MQ_APP_PASSWORD:&amp;#34;abcd1234&amp;#34;ports:- &amp;#34;1414:1414&amp;#34;- &amp;#34;9443:9443&amp;#34;networks:tars:ipv4_address:172.25.0.201volumes:qm1data:另外给node一个web服务端口，后续会用上
+node:# image: tarscloud/tars-node:stableimage:tarscloud/tars-node:latestcontainer_name:tars-node# restart: alwaysports:- &amp;#34;1080:1080&amp;#34;networks:tars:ipv4_address:172.25.0.5volumes:- ./node/data:/data/tars:rw- /etc/localtime:/etc/localtimeenvironment:INET:eth0WEB_HOST:http://172.25.0.3:3000depends_on:- framework运行起来
+$ docker-compose up -d Creating tars-mysql ... done Creating ibmmq ... done Creating tars-framework ... done Creating tars-node ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问,好像ibmmq这个版本的web服务有bug,重启Docker后，会占用端口，之后就启动不了了，原因没有深究，测试的话，默认创建好后就可以使用，要不要Web管理端都无所谓。
 IBM MQ登录页 输入账号密码登录，默认账号密码是： admin/passw0rd
 IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的
-测试IBM MQ 先弄一个Demo代码，测试一下IBM MQ是否正常运行
-pom.xml &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.</description>
+测试IBM MQ 添加ibmmq的依赖
+pom.xml &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.</description>
     </item>
     
     <item>
-      <title>Hello Java 1 Day 学习JAVA第1天</title>
+      <title>Hello Java 1 Day 学习JAVA第1天 通过docker整合springboot和tars 构建微服务环境</title>
       <link>https://aomi.run/posts/java/hello-java-1-day/</link>
       <pubDate>Tue, 26 Jan 2021 11:39:02 +0800</pubDate>
       
       <guid>https://aomi.run/posts/java/hello-java-1-day/</guid>
-      <description>前言 先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
+      <description>前言  实现目标：通过docker整合springboot和tars
+ 先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
 tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
-创建 Docker 网络 $ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars 创建 docker 目录 $ mkdir ~/docker-app/tars/framework/data -p $ mkdir ~/docker-app/tars/framework-slave/data -p $ mkdir ~/docker-app/tars/node/data -p $ mkdir ~/docker-app/tars/mysql/data -p $ mkdir ~/docker-app/tars/mysql/conf -p 创建 ~/docker-app/tars/mysql/conf/my.cnf 文件 [mysqld] user=root default-storage-engine=INNODB character-set-server=utf8 [client] default-character-set=utf8 [mysql] default-character-set=utf8 创建 ~/docker-app/tars/docker-compose.yml 文件 version:&amp;#34;3&amp;#34;services:mysql:image:mysql:5.6container_name:tars-mysqlports:- &amp;#34;3307:3306&amp;#34;restart:alwaysprivileged:trueenvironment:MYSQL_ROOT_PASSWORD:&amp;#34;123456&amp;#34;volumes:- ./mysql/data:/var/lib/mysql- ./mysql/conf/my.cnf:/etc/my.cnf- /etc/localtime:/etc/localtimenetworks:tars:ipv4_address:172.25.0.2framework:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-frameworkports:- &amp;#34;3000:3000&amp;#34;- &amp;#34;3001:3001&amp;#34;restart:alwaysnetworks:tars:ipv4_address:172.25.0.3environment:MYSQL_HOST:&amp;#34;172.25.0.2&amp;#34;MYSQL_ROOT_PASSWORD:&amp;#34;123456&amp;#34;MYSQL_USER:&amp;#34;root&amp;#34;MYSQL_PORT:3306REBUILD:&amp;#34;false&amp;#34;INET:eth0SLAVE:&amp;#34;false&amp;#34;volumes:- ./framework/data:/data/tars:rw- /etc/localtime:/etc/localtimedepends_on:- mysqlframework-slave:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-framework-slaverestart:alwaysnetworks:tars:ipv4_address:172.</description>
+创建 Docker 网络 $ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars 创建 docker 目录 $ mkdir ~/docker-app/tars/framework/data -p $ mkdir ~/docker-app/tars/framework-slave/data -p $ mkdir ~/docker-app/tars/node/data -p $ mkdir ~/docker-app/tars/mysql/data -p $ mkdir ~/docker-app/tars/mysql/conf -p 创建 ~/docker-app/tars/mysql/conf/my.cnf 文件 [mysqld] user=root default-storage-engine=INNODB character-set-server=utf8 [client] default-character-set=utf8 [mysql] default-character-set=utf8 创建 ~/docker-app/tars/docker-compose.yml 文件 version:&amp;#34;3&amp;#34;services:mysql:image:mysql:5.6container_name:tars-mysqlports:- &amp;#34;3307:3306&amp;#34;# restart: alwaysprivileged:trueenvironment:MYSQL_ROOT_PASSWORD:&amp;#34;123456&amp;#34;volumes:- ./mysql/data:/var/lib/mysql- ./mysql/conf/my.cnf:/etc/my.cnf- /etc/localtime:/etc/localtimenetworks:tars:ipv4_address:172.25.0.2framework:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-frameworkports:- &amp;#34;3000:3000&amp;#34;- &amp;#34;3001:3001&amp;#34;# restart: alwaysnetworks:tars:ipv4_address:172.</description>
     </item>
     
     <item>
@@ -77,7 +74,7 @@ NoLsp.exe C:\Windows\system32\wsl.exe  参数为 wsl 的绝对路径（默认为
 我们先看看标准库net/http如何处理一个请求。
 func main() { http.HandleFunc(&amp;#34;/&amp;#34;, handler) http.HandleFunc(&amp;#34;/count&amp;#34;, counter) log.Fatal(http.ListenAndServe(&amp;#34;localhost:8000&amp;#34;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, &amp;#34;URL.Path = %qn&amp;#34;, r.URL.Path) } net/http提供了基础的Web功能，即监听端口，映射静态路由，解析HTTP报文。一些Web开发中简单的需求并不支持，需要手工实现。
  动态路由：例如hello/:name，hello/*这类的规则。 鉴权：没有分组/统一鉴权的能力，需要在每个路由映射的handler中实现。 模板：没有统一简化的HTML机制。 …  当我们离开框架，使用基础库时，需要频繁手工处理的地方，就是框架的价值所在。但并不是每一个频繁处理的地方都适合在框架中完成。Python有一个很著名的Web框架，名叫bottle，整个框架由bottle.py一个文件构成，共4400行，可以说是一个微框架。那么理解这个微框架提供的特性，可以帮助我们理解框架的核心能力。
- 路由(Routing)：将请求映射到函数，支持动态路由。例如&amp;rsquo;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
+ 路由(Routing)：将请求映射到函数，支持动态路由。例如&#39;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
 package main import ( &amp;#34;fmt&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; ) func main() { http.HandleFunc(&amp;#34;/&amp;#34;, indexHandler) http.</description>
     </item>
     

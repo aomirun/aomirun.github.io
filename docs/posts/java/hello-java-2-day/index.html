@@ -7,50 +7,51 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<meta name="theme-color" content="#494f5c">
 	<meta name="msapplication-TileColor" content="#494f5c">
-<meta itemprop="name" content="Hello Java 2 Day 学习JAVA第2天">
-<meta itemprop="description" content="前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务
- 本章与第1章项目有所不同，还是因为中间调试出了许多问题，后来重新建了项目后，才完成，后续有空我把两章的代码弄成同一个项目，便于连续的文章
- 搭建IBM MQ 同样还是使用docker来创建
-$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 $ mkdir ~/docker-app/jmq -p $ cd ~/docker-app/jmq $ touch docker-compose.yml docker-compose.yml 的内容如下：
-version:&#39;3&#39;services:ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&#34;accept&#34;MQ_QMGR_NAME:&#34;QM1&#34;MQ_APP_PASSWORD:&#34;abcd1234&#34;ports:- &#34;1414:1414&#34;- &#34;9443:9443&#34;networks:tars:ipv4_address:172.25.0.201networks:tars:external:truevolumes:qm1data:运行起来
-$ docker-compose up -d Status: Downloaded newer image for ibmcom/mq:latest Creating ibmmq ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问
+<meta itemprop="name" content="Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务">
+<meta itemprop="description" content="前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.
+搭建IBM MQ 同样还是使用docker来创建，添加ibmmq
+$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 docker-compose.yml 中添加内容如下：
+ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&#34;accept&#34;MQ_QMGR_NAME:&#34;QM1&#34;MQ_APP_PASSWORD:&#34;abcd1234&#34;ports:- &#34;1414:1414&#34;- &#34;9443:9443&#34;networks:tars:ipv4_address:172.25.0.201volumes:qm1data:另外给node一个web服务端口，后续会用上
+node:# image: tarscloud/tars-node:stableimage:tarscloud/tars-node:latestcontainer_name:tars-node# restart: alwaysports:- &#34;1080:1080&#34;networks:tars:ipv4_address:172.25.0.5volumes:- ./node/data:/data/tars:rw- /etc/localtime:/etc/localtimeenvironment:INET:eth0WEB_HOST:http://172.25.0.3:3000depends_on:- framework运行起来
+$ docker-compose up -d Creating tars-mysql ... done Creating ibmmq ... done Creating tars-framework ... done Creating tars-node ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问,好像ibmmq这个版本的web服务有bug,重启Docker后，会占用端口，之后就启动不了了，原因没有深究，测试的话，默认创建好后就可以使用，要不要Web管理端都无所谓。
 IBM MQ登录页 输入账号密码登录，默认账号密码是： admin/passw0rd
 IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的
-测试IBM MQ 先弄一个Demo代码，测试一下IBM MQ是否正常运行
-pom.xml &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.">
-<meta itemprop="datePublished" content="2021-01-27T12:37:57&#43;08:00" />
-<meta itemprop="dateModified" content="2021-01-27T12:37:57&#43;08:00" />
-<meta itemprop="wordCount" content="1274">
+测试IBM MQ 添加ibmmq的依赖
+pom.xml &lt;dependency&gt; &lt;groupId&gt;org.">
+<meta itemprop="datePublished" content="2021-01-27T12:37:57+08:00" />
+<meta itemprop="dateModified" content="2021-01-27T12:37:57+08:00" />
+<meta itemprop="wordCount" content="751">
 
 
 
-<meta itemprop="keywords" content="java,docker,mq,jms,tars,micro serivce,微服务," /><meta property="og:title" content="Hello Java 2 Day 学习JAVA第2天" />
-<meta property="og:description" content="前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务
- 本章与第1章项目有所不同，还是因为中间调试出了许多问题，后来重新建了项目后，才完成，后续有空我把两章的代码弄成同一个项目，便于连续的文章
- 搭建IBM MQ 同样还是使用docker来创建
-$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 $ mkdir ~/docker-app/jmq -p $ cd ~/docker-app/jmq $ touch docker-compose.yml docker-compose.yml 的内容如下：
-version:&#39;3&#39;services:ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&#34;accept&#34;MQ_QMGR_NAME:&#34;QM1&#34;MQ_APP_PASSWORD:&#34;abcd1234&#34;ports:- &#34;1414:1414&#34;- &#34;9443:9443&#34;networks:tars:ipv4_address:172.25.0.201networks:tars:external:truevolumes:qm1data:运行起来
-$ docker-compose up -d Status: Downloaded newer image for ibmcom/mq:latest Creating ibmmq ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问
+<meta itemprop="keywords" content="java,docker,mq,jms,tars,micro serivce,微服务," />
+<meta property="og:title" content="Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务" />
+<meta property="og:description" content="前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.
+搭建IBM MQ 同样还是使用docker来创建，添加ibmmq
+$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 docker-compose.yml 中添加内容如下：
+ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&#34;accept&#34;MQ_QMGR_NAME:&#34;QM1&#34;MQ_APP_PASSWORD:&#34;abcd1234&#34;ports:- &#34;1414:1414&#34;- &#34;9443:9443&#34;networks:tars:ipv4_address:172.25.0.201volumes:qm1data:另外给node一个web服务端口，后续会用上
+node:# image: tarscloud/tars-node:stableimage:tarscloud/tars-node:latestcontainer_name:tars-node# restart: alwaysports:- &#34;1080:1080&#34;networks:tars:ipv4_address:172.25.0.5volumes:- ./node/data:/data/tars:rw- /etc/localtime:/etc/localtimeenvironment:INET:eth0WEB_HOST:http://172.25.0.3:3000depends_on:- framework运行起来
+$ docker-compose up -d Creating tars-mysql ... done Creating ibmmq ... done Creating tars-framework ... done Creating tars-node ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问,好像ibmmq这个版本的web服务有bug,重启Docker后，会占用端口，之后就启动不了了，原因没有深究，测试的话，默认创建好后就可以使用，要不要Web管理端都无所谓。
 IBM MQ登录页 输入账号密码登录，默认账号密码是： admin/passw0rd
 IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的
-测试IBM MQ 先弄一个Demo代码，测试一下IBM MQ是否正常运行
-pom.xml &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com." />
+测试IBM MQ 添加ibmmq的依赖
+pom.xml &lt;dependency&gt; &lt;groupId&gt;org." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://aomi.run/posts/java/hello-java-2-day/" />
 <meta property="article:published_time" content="2021-01-27T12:37:57+08:00" />
 <meta property="article:modified_time" content="2021-01-27T12:37:57+08:00" />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Hello Java 2 Day 学习JAVA第2天"/>
-<meta name="twitter:description" content="前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务
- 本章与第1章项目有所不同，还是因为中间调试出了许多问题，后来重新建了项目后，才完成，后续有空我把两章的代码弄成同一个项目，便于连续的文章
- 搭建IBM MQ 同样还是使用docker来创建
-$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 $ mkdir ~/docker-app/jmq -p $ cd ~/docker-app/jmq $ touch docker-compose.yml docker-compose.yml 的内容如下：
-version:&#39;3&#39;services:ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&#34;accept&#34;MQ_QMGR_NAME:&#34;QM1&#34;MQ_APP_PASSWORD:&#34;abcd1234&#34;ports:- &#34;1414:1414&#34;- &#34;9443:9443&#34;networks:tars:ipv4_address:172.25.0.201networks:tars:external:truevolumes:qm1data:运行起来
-$ docker-compose up -d Status: Downloaded newer image for ibmcom/mq:latest Creating ibmmq ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问
+<meta name="twitter:title" content="Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务"/>
+<meta name="twitter:description" content="前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.
+搭建IBM MQ 同样还是使用docker来创建，添加ibmmq
+$ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 docker-compose.yml 中添加内容如下：
+ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&#34;accept&#34;MQ_QMGR_NAME:&#34;QM1&#34;MQ_APP_PASSWORD:&#34;abcd1234&#34;ports:- &#34;1414:1414&#34;- &#34;9443:9443&#34;networks:tars:ipv4_address:172.25.0.201volumes:qm1data:另外给node一个web服务端口，后续会用上
+node:# image: tarscloud/tars-node:stableimage:tarscloud/tars-node:latestcontainer_name:tars-node# restart: alwaysports:- &#34;1080:1080&#34;networks:tars:ipv4_address:172.25.0.5volumes:- ./node/data:/data/tars:rw- /etc/localtime:/etc/localtimeenvironment:INET:eth0WEB_HOST:http://172.25.0.3:3000depends_on:- framework运行起来
+$ docker-compose up -d Creating tars-mysql ... done Creating ibmmq ... done Creating tars-framework ... done Creating tars-node ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问,好像ibmmq这个版本的web服务有bug,重启Docker后，会占用端口，之后就启动不了了，原因没有深究，测试的话，默认创建好后就可以使用，要不要Web管理端都无所谓。
 IBM MQ登录页 输入账号密码登录，默认账号密码是： admin/passw0rd
 IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的
-测试IBM MQ 先弄一个Demo代码，测试一下IBM MQ是否正常运行
-pom.xml &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com."/>
+测试IBM MQ 添加ibmmq的依赖
+pom.xml &lt;dependency&gt; &lt;groupId&gt;org."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -59,7 +60,7 @@ pom.xml &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&g
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
 	<link rel="shortcut icon" href="/favicon.ico">
 
-	<title>Hello Java 2 Day 学习JAVA第2天</title>
+	<title>Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务</title>
 	<link rel="stylesheet" href="https://aomi.run/css/style.min.eac77496566fd7d5768fd650ddb0b2b181ca6a2d7c5fdd6fe6b8ba4bf47e566f.css" integrity="sha256-6sd0llZv19V2j9ZQ3bCysYHKai18X91v5ri6S/R+Vm8=" crossorigin="anonymous">
 	
 </head>
@@ -102,53 +103,61 @@ pom.xml &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&g
 		<article class="thin">
 			<header class="post-header">
 				<div class="post-meta"><span>2021-01-27</span></div>
-				<h1>Hello Java 2 Day 学习JAVA第2天</h1>
+				<h1>Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务</h1>
 			</header>
 			<div class="content">
 				<h2 id="前言">前言<a href="#前言" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<p>第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务</p>
-<blockquote>
-<p>本章与第1章项目有所不同，还是因为中间调试出了许多问题，后来重新建了项目后，才完成，后续有空我把两章的代码弄成同一个项目，便于连续的文章</p>
-</blockquote>
+<p>第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.</p>
 <h2 id="搭建ibm-mq">搭建IBM MQ<a href="#搭建ibm-mq" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<p>同样还是使用docker来创建</p>
+<p>同样还是使用docker来创建，添加ibmmq</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker volume create qm1data  <span class="c1"># ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单</span>
-
-$ mkdir ~/docker-app/jmq -p
-$ <span class="nb">cd</span> ~/docker-app/jmq 
-$ touch docker-compose.yml
-</code></pre></div><p>docker-compose.yml 的内容如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;3&#39;</span><span class="w">
-</span><span class="w"></span><span class="k">services</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">ibmmq</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>ibmcom/mq<span class="w">
-</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>ibmmq<span class="w">
-</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- qm1data<span class="p">:</span>/mnt/mqm<span class="w">
-</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">LICENSE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;accept&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">MQ_QMGR_NAME</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;QM1&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">MQ_APP_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;abcd1234&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
+</code></pre></div><p>docker-compose.yml 中添加内容如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="w">  </span><span class="nt">ibmmq</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ibmcom/mq</span><span class="w">
+</span><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">ibmmq</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">qm1data:/mnt/mqm</span><span class="w">
+</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">LICENSE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;accept&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">MQ_QMGR_NAME</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;QM1&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">MQ_APP_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;abcd1234&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;1414:1414&#34;</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;9443:9443&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.201</span><span class="w">
+</span><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.201</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">external</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">     
-</span><span class="w">
-</span><span class="w"></span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">qm1data</span><span class="p">:</span><span class="w">
+</span><span class="w"></span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">qm1data</span><span class="p">:</span><span class="w">
 </span><span class="w">   
+</span></code></pre></div><p>另外给node一个web服务端口，后续会用上</p>
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="w">  </span><span class="nt">node</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="c"># image: tarscloud/tars-node:stable</span><span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">tarscloud/tars-node:latest</span><span class="w">
+</span><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">tars-node</span><span class="w">
+</span><span class="w">    </span><span class="c"># restart: always</span><span class="w">
+</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="s2">&#34;1080:1080&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.5</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">./node/data:/data/tars:rw</span><span class="w">
+</span><span class="w">      </span>- <span class="l">/etc/localtime:/etc/localtime</span><span class="w">
+</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">INET</span><span class="p">:</span><span class="w"> </span><span class="l">eth0</span><span class="w">
+</span><span class="w">      </span><span class="nt">WEB_HOST</span><span class="p">:</span><span class="w"> </span><span class="l">http://172.25.0.3:3000</span><span class="w">
+</span><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">framework</span><span class="w">
 </span></code></pre></div><p>运行起来</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker-compose up -d
 
-Status: Downloaded newer image <span class="k">for</span> ibmcom/mq:latest
-Creating ibmmq ... <span class="k">done</span>
-</code></pre></div><p>打开浏览器访问一下，并做相应的配置 https://localhost:9443 <code>重要！！！ 9443是SSL端口，一定需要使用https来访问</code></p>
+Creating tars-mysql ... <span class="k">done</span>
+Creating ibmmq      ... <span class="k">done</span>
+Creating tars-framework ... <span class="k">done</span>
+Creating tars-node      ... <span class="k">done</span>
+</code></pre></div><p>打开浏览器访问一下，并做相应的配置 https://localhost:9443 <code>重要！！！ 9443是SSL端口，一定需要使用https来访问</code>,好像ibmmq这个版本的web服务有bug,重启Docker后，会占用端口，之后就启动不了了，原因没有深究，测试的话，默认创建好后就可以使用，要不要Web管理端都无所谓。</p>
 <h3 id="ibm-mq登录页">IBM MQ登录页<a href="#ibm-mq登录页" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p><img src="/images/posts/mq/ibm-mq-index.png" alt="">
 输入账号密码登录，默认账号密码是： <code>admin/passw0rd</code></p>
@@ -158,7 +167,7 @@ Creating ibmmq ... <span class="k">done</span>
 <p><img src="/images/posts/mq/ibm-mq-version.png" alt="">
 新版本的IBM MQ的界面还是很漂亮的</p>
 <h2 id="测试ibm-mq">测试IBM MQ<a href="#测试ibm-mq" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<p>先弄一个Demo代码，测试一下IBM MQ是否正常运行</p>
+<p>添加ibmmq的依赖</p>
 <h3 id="pomxml">pom.xml<a href="#pomxml" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">		<span class="nt">&lt;dependency&gt;</span>
 			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
@@ -173,24 +182,45 @@ Creating ibmmq ... <span class="k">done</span>
 			<span class="nt">&lt;artifactId&gt;</span>mq-jms-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
 			<span class="nt">&lt;version&gt;</span>2.4.2<span class="nt">&lt;/version&gt;</span>
 		<span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div><h3 id="applicationproperties">application.properties<a href="#applicationproperties" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-ini" data-lang="ini"><span class="na">ibm.mq.queueManager</span><span class="o">=</span><span class="s">QM1</span>
+</code></pre></div><h3 id="添加配置项">添加配置项<a href="#添加配置项" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>application.properties
+spring boot 默认都是开启8080端口，因为我开发机上要运行多个，所以改下端口。</p>
+<div class="highlight"><pre class="chroma"><code class="language-ini" data-lang="ini"><span class="c1"># tomcat default 8080</span>
+<span class="na">server.port</span><span class="o">=</span><span class="s">1080</span>
+
+<span class="c1"># ibm mq config</span>
+<span class="na">ibm.mq.queueManager</span><span class="o">=</span><span class="s">QM1</span>
 <span class="na">ibm.mq.channel</span><span class="o">=</span><span class="s">DEV.APP.SVRCONN</span>
-<span class="na">ibm.mq.connName</span><span class="o">=</span><span class="s">localhost(1414)</span>
+<span class="na">ibm.mq.connName</span><span class="o">=</span><span class="s">172.25.0.201(1414)</span>
 <span class="na">ibm.mq.user</span><span class="o">=</span><span class="s">app</span>
 <span class="na">ibm.mq.password</span><span class="o">=</span><span class="s">abcd1234</span>
-</code></pre></div><h3 id="demoapplication">DemoApplication<a href="#demoapplication" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<span class="na">ibm.mq.sendQueueName</span><span class="o">=</span><span class="s">DEV.QUEUE.1</span>
+<span class="na">ibm.mq.recvQueueName</span><span class="o">=</span><span class="s">DEV.QUEUE.1</span>
+</code></pre></div><h3 id="修改main">修改main<a href="#修改main" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>TarsMqServerApplication
+这里需要用到spring boot 的web服务，所以这里恢复到项目初始状态，上传tars时，协议先非tars协议即可。</p>
 <div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
-<span class="nd">@RestController</span>
-<span class="nd">@EnableJms</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DemoApplication</span> <span class="o">{</span>
-
-	<span class="nd">@Autowired</span>
-	<span class="kd">private</span> <span class="n">JmsTemplate</span> <span class="n">jmsTemplate</span><span class="o">;</span>
+<span class="nd">@EnableTarsServer</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TarsMqServerApplication</span> <span class="o">{</span>
 
 	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-		<span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">DemoApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
-	<span class="o">}</span>
+		<span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">TarsMqServerApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+		<span class="c1">// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
+</span><span class="c1"></span>		<span class="c1">// SpringApplication app = new SpringApplication(TarsMqServerApplication.class);
+</span><span class="c1"></span>		<span class="c1">// app.setWebApplicationType(WebApplicationType.NONE);
+</span><span class="c1"></span>		<span class="c1">// app.run(args);
+</span><span class="c1"></span>	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><h3 id="添加rest控制器">添加Rest控制器<a href="#添加rest控制器" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>这里先做个简单的测试，主要目的是用最简单的代码测试ibmmq的连通性
+src/main/java/com/example/tarsmqserver/web/MQController.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@RestController</span>
+<span class="nd">@EnableJms</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/api/mq&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MQController</span> <span class="o">{</span> 
+    <span class="nd">@Autowired</span>
+	<span class="kd">private</span> <span class="n">JmsTemplate</span> <span class="n">jmsTemplate</span><span class="o">;</span>
 
 	<span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;send&#34;</span><span class="o">)</span> 
 	<span class="n">String</span> <span class="nf">send</span><span class="o">()</span> <span class="o">{</span>
@@ -212,107 +242,29 @@ Creating ibmmq ... <span class="k">done</span>
 			<span class="k">return</span> <span class="s">&#34;FAIL&#34;</span><span class="o">;</span>
 		<span class="o">}</span>
 	<span class="o">}</span>
-
+    
 <span class="o">}</span>
-</code></pre></div><h3 id="运行程序">运行程序<a href="#运行程序" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">2021-01-28 12:25:14.847  INFO <span class="m">26166</span> --- <span class="o">[</span>           main<span class="o">]</span> o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService <span class="s1">&#39;applicationTaskExecutor&#39;</span>
-2021-01-28 12:25:15.219  INFO <span class="m">26166</span> --- <span class="o">[</span>           main<span class="o">]</span> o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port<span class="o">(</span>s<span class="o">)</span>: <span class="m">8080</span> <span class="o">(</span>http<span class="o">)</span> with context path <span class="s1">&#39;&#39;</span>
-2021-01-28 12:25:15.232  INFO <span class="m">26166</span> --- <span class="o">[</span>           main<span class="o">]</span> com.example.demo.DemoApplication         : Started DemoApplication in 3.663 seconds <span class="o">(</span>JVM running <span class="k">for</span> 4.099<span class="o">)</span>
-2021-01-28 12:25:21.125  INFO <span class="m">26166</span> --- <span class="o">[</span>nio-8080-exec-1<span class="o">]</span> o.a.c.c.C.<span class="o">[</span>Tomcat<span class="o">]</span>.<span class="o">[</span>localhost<span class="o">]</span>.<span class="o">[</span>/<span class="o">]</span>       : Initializing Spring DispatcherServlet <span class="s1">&#39;dispatcherServlet&#39;</span>
-2021-01-28 12:25:21.125  INFO <span class="m">26166</span> --- <span class="o">[</span>nio-8080-exec-1<span class="o">]</span> o.s.web.servlet.DispatcherServlet        : Initializing Servlet <span class="s1">&#39;dispatcherServlet&#39;</span>
-2021-01-28 12:25:21.125  INFO <span class="m">26166</span> --- <span class="o">[</span>nio-8080-exec-1<span class="o">]</span> o.s.web.servlet.DispatcherServlet        : Completed initialization in <span class="m">0</span> ms
-</code></pre></div><p>访问Web方法 通过Curl或浏览器都行</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ curl http://localhost:8080/send
-OK%
-
-$ curl http://localhost:8080/recv
+</code></pre></div><h3 id="提交tars-web测试">提交tars-web测试<a href="#提交tars-web测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="打包">打包<a href="#打包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package
+</code></pre></div><h4 id="上传">上传<a href="#上传" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>上传办法详细看第1节</p>
+<h4 id="测试">测试<a href="#测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ curl http://localhost:1080/api/mq/recv
 Hello World!%
+
+$ curl http://localhost:1080/api/mq/send
+OK%
 </code></pre></div><p>看到上面的信息，证明IBM MQ服务正常跑起来了，jms测试代码也起了作用，后面就是改良代码了。</p>
-<h2 id="jms服务">JMS服务<a href="#jms服务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h2 id="jms">JMS<a href="#jms" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="服务介绍">服务介绍<a href="#服务介绍" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>关于JMS到网上抄了一份作业,了解一下运行逻辑。
 <img src="/images/posts/mq/jms.png" alt="">
 由于刚接触Java，到网上找了许多资料，我剪裁了一下，最后模样如下</p>
-<h3 id="pomxml-1">pom.xml<a href="#pomxml-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
-<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
-	<span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span class="nt">&gt;</span>
-	<span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
-	<span class="nt">&lt;parent&gt;</span>
-		<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-		<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;version&gt;</span>2.4.2<span class="nt">&lt;/version&gt;</span>
-		<span class="nt">&lt;relativePath/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
-	<span class="nt">&lt;/parent&gt;</span>
-	<span class="nt">&lt;groupId&gt;</span>com.example<span class="nt">&lt;/groupId&gt;</span>
-	<span class="nt">&lt;artifactId&gt;</span>demo<span class="nt">&lt;/artifactId&gt;</span>
-	<span class="nt">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
-	<span class="nt">&lt;name&gt;</span>demo<span class="nt">&lt;/name&gt;</span>
-	<span class="nt">&lt;description&gt;</span>Demo project for Spring Boot<span class="nt">&lt;/description&gt;</span>
-	<span class="nt">&lt;properties&gt;</span>
-		<span class="nt">&lt;java.version&gt;</span>1.8<span class="nt">&lt;/java.version&gt;</span>
-	<span class="nt">&lt;/properties&gt;</span>
-	<span class="nt">&lt;dependencies&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>com.fasterxml.jackson.core<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>jackson-databind<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>com.ibm.mq<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>mq-jms-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;version&gt;</span>2.4.2<span class="nt">&lt;/version&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="c">&lt;!-- log --&gt;</span>
-        <span class="c">&lt;!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api --&gt;</span>
-        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>slf4j-api<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>1.7.25<span class="nt">&lt;/version&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-        <span class="c">&lt;!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 --&gt;</span>
-        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>slf4j-log4j12<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>1.7.25<span class="nt">&lt;/version&gt;</span>
-            <span class="c">&lt;!-- &lt;scope&gt;test&lt;/scope&gt; --&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-	<span class="nt">&lt;/dependencies&gt;</span>
-
-	<span class="nt">&lt;build&gt;</span>
-		<span class="nt">&lt;plugins&gt;</span>
-			<span class="nt">&lt;plugin&gt;</span>
-				<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-				<span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;/plugin&gt;</span>
-		<span class="nt">&lt;/plugins&gt;</span>
-	<span class="nt">&lt;/build&gt;</span>
-
-<span class="nt">&lt;/project&gt;</span>
-</code></pre></div><h3 id="配置文件">配置文件<a href="#配置文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>src/main/resources/application.properties</p>
-<div class="highlight"><pre class="chroma"><code class="language-ini" data-lang="ini"><span class="na">ibm.mq.queueManager</span><span class="o">=</span><span class="s">QM1</span>
-<span class="na">ibm.mq.channel</span><span class="o">=</span><span class="s">DEV.APP.SVRCONN</span>
-<span class="na">ibm.mq.connName</span><span class="o">=</span><span class="s">localhost(1414)</span>
-<span class="na">ibm.mq.user</span><span class="o">=</span><span class="s">app</span>
-<span class="na">ibm.mq.password</span><span class="o">=</span><span class="s">abcd1234</span>
-
-<span class="na">ibm.mq.sendQueueName</span><span class="o">=</span><span class="s">DEV.QUEUE.1</span>
-<span class="na">ibm.mq.recvQueueName</span><span class="o">=</span><span class="s">DEV.QUEUE.1</span>
-</code></pre></div><h3 id="配置类">配置类<a href="#配置类" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>src/main/java/com/example/demo/jmq/JmqConfig.java</p>
+<h3 id="开始打造基于tars的jms服务了">开始打造基于tars的JMS服务了<a href="#开始打造基于tars的jms服务了" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h3 id="ibmmq-绑定配置文件">ibmmq 绑定配置文件<a href="#ibmmq-绑定配置文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>目录建得比较随意，网上抄作业看到有人用这种目录方式，就直接抄了。
+src/main/java/com/example/tarsmqserver/domain/JmqConfig.java</p>
 <div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">JmqConfig</span> <span class="o">{</span>
 
@@ -333,7 +285,7 @@ Hello World!%
 
 <span class="o">}</span>
 </code></pre></div><h3 id="消息生产者">消息生产者<a href="#消息生产者" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>src/main/java/com/example/demo/jmq/Producer.java</p>
+<p>src/main/java/com/example/tarsmqserver/service/mqserver/Producer.java</p>
 <div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Service</span><span class="o">(</span><span class="s">&#34;producer&#34;</span><span class="o">)</span>
 <span class="nd">@EnableJms</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Producer</span> <span class="o">{</span>
@@ -349,14 +301,14 @@ Hello World!%
 </span><span class="cm">     * @param destinationName
 </span><span class="cm">     * @param message
 </span><span class="cm">     */</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">sendMessage</span><span class="o">(</span><span class="n">String</span> <span class="n">destinationName</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">sendMessage</span><span class="o">(</span><span class="n">String</span> <span class="n">destinationName</span><span class="o">,</span> <span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
         <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
-		<span class="k">try</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
             <span class="n">jmsTemplate</span><span class="o">.</span><span class="na">convertAndSend</span><span class="o">(</span><span class="n">destinationName</span><span class="o">,</span> <span class="n">message</span><span class="o">);</span>
-			<span class="n">ok</span><span class="o">=</span><span class="kc">true</span><span class="o">;</span>
-		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">JmsException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
-			<span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-			<span class="n">ok</span><span class="o">=</span><span class="kc">false</span><span class="o">;</span>
+            <span class="n">ok</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">JmsException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="n">ok</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
         <span class="o">}</span>
         <span class="k">return</span> <span class="n">ok</span><span class="o">;</span>
     <span class="o">}</span>
@@ -383,88 +335,26 @@ Hello World!%
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div><h3 id="默认入口">默认入口<a href="#默认入口" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>src/main/java/com/example/demo/DemoApplication.java</p>
+<p>关闭本地tomcat服务，只开启rpc服务端口
+src/main/java/com/example/demo/DemoApplication.java</p>
 <div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DemoApplication</span> <span class="o">{</span>
+<span class="nd">@EnableTarsServer</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TarsMqServerApplication</span> <span class="o">{</span>
 
 	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-		<span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">DemoApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+		<span class="c1">// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
+</span><span class="c1"></span>		<span class="n">SpringApplication</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpringApplication</span><span class="o">(</span><span class="n">TarsMqServerApplication</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+		<span class="n">app</span><span class="o">.</span><span class="na">setWebApplicationType</span><span class="o">(</span><span class="n">WebApplicationType</span><span class="o">.</span><span class="na">NONE</span><span class="o">);</span>
+		<span class="n">app</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
 	<span class="o">}</span>
-
 <span class="o">}</span>
-</code></pre></div><h3 id="测试程序">测试程序<a href="#测试程序" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>src/test/java/com/example/demo/DemoApplicationTests.java</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootTest</span>
-<span class="kd">class</span> <span class="nc">DemoApplicationTests</span> <span class="o">{</span>
-
-	<span class="nd">@Autowired</span>
-	<span class="kd">private</span> <span class="n">Producer</span> <span class="n">producer</span><span class="o">;</span> 
-
-	<span class="nd">@Autowired</span>
-    <span class="kd">private</span> <span class="n">JmqConfig</span> <span class="n">jmqConfig</span><span class="o">;</span>
-
-	<span class="nd">@Test</span>
-	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">jmsIBMMqTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
-		<span class="n">String</span> <span class="n">destination</span> <span class="o">=</span> <span class="n">jmqConfig</span><span class="o">.</span><span class="na">getSendQueueName</span><span class="o">();</span>
-
-		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">21</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-			<span class="n">producer</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">(</span><span class="n">destination</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;My name is aomi%s&#34;</span><span class="o">,</span> <span class="n">i</span><span class="o">));</span>
-		<span class="o">}</span>
-	<span class="o">}</span>
-
-	<span class="nd">@Test</span>
-	<span class="kt">void</span> <span class="nf">contextLoads</span><span class="o">()</span> <span class="o">{</span>
-	<span class="o">}</span>
-
-<span class="o">}</span>
-</code></pre></div><h3 id="测试">测试<a href="#测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>由于我对Java测试不熟，我看到maven在打包前会自动运行测试用例，那我就直接打包。</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package
-
-2021-01-28 16:43:38.258  INFO <span class="m">7834</span> --- <span class="o">[</span>           main<span class="o">]</span> com.example.demo.DemoApplicationTests    : Started DemoApplicationTests in 5.512 seconds <span class="o">(</span>JVM running <span class="k">for</span> 7.027<span class="o">)</span>
-2021-01-28 16:43:38.934  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi0
-2021-01-28 16:43:38.945  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi1
-2021-01-28 16:43:38.949  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi2
-2021-01-28 16:43:38.953  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi3
-2021-01-28 16:43:38.956  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi4
-2021-01-28 16:43:38.960  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi5
-2021-01-28 16:43:38.964  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi6
-2021-01-28 16:43:38.966  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi7
-2021-01-28 16:43:38.968  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi8
-2021-01-28 16:43:38.971  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi9
-2021-01-28 16:43:38.975  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi10
-2021-01-28 16:43:38.978  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi11
-2021-01-28 16:43:38.980  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi12
-2021-01-28 16:43:38.983  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi13
-2021-01-28 16:43:38.985  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi14
-2021-01-28 16:43:38.988  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi15
-2021-01-28 16:43:38.991  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi16
-2021-01-28 16:43:38.994  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi17
-2021-01-28 16:43:38.996  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi18
-2021-01-28 16:43:38.998  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi19
-2021-01-28 16:43:39.001  INFO <span class="m">7834</span> --- <span class="o">[</span>enerContainer-1<span class="o">]</span> com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi20
-<span class="o">[</span>INFO<span class="o">]</span> Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.249 s - in com.example.demo.DemoApplicationTests
-</code></pre></div><p>看到可以收发消息了，接下来就是把JMS整合到tars中去了，整合完成则后面就是丰富功能了。</p>
-<h2 id="整合tars">整合tars<a href="#整合tars" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<p>实现接口中，加入今天写的JMS服务。有关tars与java的整合介绍走传送门 <a href="/posts/java/hello-java-1-day">第1天</a></p>
-<h3 id="tars接口定义">tars接口定义<a href="#tars接口定义" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>以昨天的文件为例，直接拿过来</p>
-<pre><code>module demo {
-    //消息发送接口
-    interface Message{
-        bool Send(string msg);                          //接收字符串，把整个字符串发送到IBM MQ中，返回 true/false
-        string Hash(string plain);                      //接收明文字符串，返回加密后的字符串
-        bool HashWithSend(string msg, string plain);    //接收明文字符串，加密后直接发送到IBM MQ
-    };
-};
-</code></pre><h3 id="生成java接口文件">生成java接口文件<a href="#生成java接口文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn tars:tars2java
-</code></pre></div><h3 id="实现接口">实现接口<a href="#实现接口" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>src/main/java/com/example/demo/impl/MessageServantImpl.java</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Component</span>
-<span class="nd">@TarsServant</span><span class="o">(</span><span class="s">&#34;MsgObj&#34;</span><span class="o">)</span>
+</code></pre></div><h3 id="完善tars接口">完善tars接口<a href="#完善tars接口" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>用的是上一章定义的接口
+tars接口定义传送门 <a href="/posts/java/hello-java-1-day">第1天 通过docker整合springboot和tars</a>
+src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@TarsServant</span><span class="o">(</span><span class="s">&#34;messageObj&#34;</span><span class="o">)</span>
+<span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MessageServantImpl</span> <span class="kd">implements</span> <span class="n">MessageServant</span> <span class="o">{</span>
-
     <span class="nd">@Autowired</span>
     <span class="kd">private</span> <span class="n">Producer</span> <span class="n">producer</span><span class="o">;</span>
 
@@ -475,95 +365,89 @@ Hello World!%
 </span><span class="cm">     * 发送消息到IBM MQ
 </span><span class="cm">     */</span>
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">Send</span><span class="o">(</span><span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">String</span> <span class="n">destination</span> <span class="o">=</span> <span class="n">jmqConfig</span><span class="o">.</span><span class="na">getSendQueueName</span><span class="o">();</span>
-        <span class="k">return</span> <span class="n">producer</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">(</span><span class="n">destination</span><span class="o">,</span> <span class="n">message</span><span class="o">);</span>
-    <span class="o">}</span>
-
-    <span class="cm">/**
-</span><span class="cm">     * 对plain进行加密，返回加密后的内容
-</span><span class="cm">     */</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="nf">Hash</span><span class="o">(</span><span class="n">String</span> <span class="n">plain</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
-        <span class="o">}</span>
-        <span class="n">String</span> <span class="n">encodeStr</span> <span class="o">=</span> <span class="s">&#34;1231#!@#!&#34;</span><span class="o">;</span>
-        <span class="k">return</span> <span class="n">encodeStr</span><span class="o">;</span>
-
-    <span class="o">}</span>
-
-    <span class="cm">/**
-</span><span class="cm">     * 对plain进行加密，并同msg一起发送到IBM MQ
-</span><span class="cm">     */</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">HashWithSend</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">,</span> <span class="n">String</span> <span class="n">plain</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span> <span class="o">||</span> <span class="n">plain</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">send</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
             <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
         <span class="o">}</span>
 
-        <span class="n">String</span> <span class="n">hashStr</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">Hash</span><span class="o">(</span><span class="n">plain</span><span class="o">);</span>
-        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">Send</span><span class="o">(</span><span class="n">hashStr</span> <span class="o">+</span> <span class="n">msg</span><span class="o">);</span>
-        <span class="k">return</span> <span class="n">ok</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">queueName</span> <span class="o">=</span> <span class="n">jmqConfig</span><span class="o">.</span><span class="na">getSendQueueName</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">producer</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">(</span><span class="n">queueName</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">encode</span><span class="o">(</span><span class="n">String</span> <span class="n">sign</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO 先简单走流程 后面实现具体加密签名之类的
+</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">sign</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">enStr</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="s">&#34;123&#34;</span> <span class="o">+</span> <span class="n">sign</span> <span class="o">+</span> <span class="s">&#34;456&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">encodeWithSend</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">,</span> <span class="n">String</span> <span class="n">sign</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="o">||</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">sign</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">encode</span><span class="o">(</span><span class="n">sign</span><span class="o">,</span> <span class="n">enStr</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">ok</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">send</span><span class="o">(</span><span class="n">enStr</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">+</span> <span class="n">msg</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div><h3 id="修改ibm-mq的ip配置">修改IBM MQ的IP配置<a href="#修改ibm-mq的ip配置" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>tars的环境与IBM MQ在同一个网段中，改成内网IP</p>
-<div class="highlight"><pre class="chroma"><code class="language-ini" data-lang="ini"><span class="na">ibm.mq.connName</span><span class="o">=</span><span class="s">172.25.0.201(1414)</span>
-</code></pre></div><h3 id="生成jar包">生成jar包<a href="#生成jar包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<blockquote>
-<p>先要注解或删除掉<code>src/test/java/com/example/demo/DemoApplicationTests.java</code>文件，因为缺少tars专有的配置文件等，以后再来研究基于tars的本地测试。</p>
-</blockquote>
+</code></pre></div><h3 id="生成jar包上传测试观察">生成jar包/上传/测试/观察<a href="#生成jar包上传测试观察" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package
-</code></pre></div><h3 id="上传jar包">上传jar包<a href="#上传jar包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>由于我在tars的obj定义的是 <code>@TarsServant(&quot;MsgObj&quot;)</code> 所以对应的obj要改成MsgObj，服务名称要和上传的jar包名相同，具体详细的要去看tars官方文档</p>
-<h3 id="在线测试">在线测试<a href="#在线测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>上传demo.tars即可，最后测试结果
-<img src="/images/posts/mq/demo-msg-test.png" alt=""></p>
-<p>查看日志文件</p>
-<pre><code class="language-log" data-lang="log">[dule-executor-1] TARS_CLIENT_LOGGER : ServantNodeRefresher run(tars.tarsregistry.QueryObj), use: 1
-[enerContainer-1] com.example.demo.jmq.ConsumerListener : Consumer收到的报文为: 1231#!@#!1211
+</code></pre></div><p>查看日志，有类似信息</p>
+<pre><code class="language-log" data-lang="log">2021-01-29 13:14:34.416 INFO 4474 --- [enerContainer-1] c.e.t.service.mqserver.ConsumerListener : Consumer收到的报文为: 123中文456aaaaaaaaaaaaaaa
+2021-01-29 13:14:56.194 INFO 4474 --- [enerContainer-1] c.e.t.service.mqserver.ConsumerListener : Consumer收到的报文为: 春树暮云
 </code></pre><p>整合完成</p>
 <h2 id="汇总">汇总<a href="#汇总" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h3 id="最后项目目录">最后项目目录<a href="#最后项目目录" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ tree
 .
-├── HELP.md
 ├── mvnw
 ├── mvnw.cmd
 ├── pom.xml
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── example
-│   │   │           └── demo
-│   │   │               ├── DemoApplication.java
-│   │   │               ├── MessageServant.java
-│   │   │               ├── MsgServant.java
-│   │   │               ├── impl
-│   │   │               │   └── MessageServantImpl.java
-│   │   │               └── jmq
-│   │   │                   ├── ConsumerListener.java
-│   │   │                   ├── JmqConfig.java
-│   │   │                   └── Producer.java
-│   │   └── resources
-│   │       ├── application.properties
-│   │       └── demo.tars
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── example
+    │   │           └── tarsmqserver
+    │   │               ├── TarsMqServerApplication.java
+    │   │               ├── domain
+    │   │               │   └── JmqConfig.java
+    │   │               ├── service
+    │   │               │   └── mqserver
+    │   │               │       ├── ConsumerListener.java
+    │   │               │       ├── MessageServant.java
+    │   │               │       ├── Producer.java
+    │   │               │       └── impl
+    │   │               │           └── MessageServantImpl.java
+    │   │               └── web
+    │   │                   └── MQController.java
+    │   └── resources
+    │       ├── application.properties
+    │       └── mqserver.tars
 </code></pre></div><h3 id="最后pomxml">最后pom.xml<a href="#最后pomxml" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
-<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span> <span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+	<span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span class="nt">&gt;</span>
 	<span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
 	<span class="nt">&lt;parent&gt;</span>
 		<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
 		<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
 		<span class="nt">&lt;version&gt;</span>2.4.2<span class="nt">&lt;/version&gt;</span>
-		<span class="nt">&lt;relativePath</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
+		<span class="nt">&lt;relativePath/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
 	<span class="nt">&lt;/parent&gt;</span>
 	<span class="nt">&lt;groupId&gt;</span>com.example<span class="nt">&lt;/groupId&gt;</span>
-	<span class="nt">&lt;artifactId&gt;</span>demo<span class="nt">&lt;/artifactId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>tars-mq-server<span class="nt">&lt;/artifactId&gt;</span>
 	<span class="nt">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
-	<span class="nt">&lt;name&gt;</span>demo<span class="nt">&lt;/name&gt;</span>
+	<span class="nt">&lt;name&gt;</span>tars-mq-server<span class="nt">&lt;/name&gt;</span>
 	<span class="nt">&lt;description&gt;</span>Demo project for Spring Boot<span class="nt">&lt;/description&gt;</span>
 	<span class="nt">&lt;properties&gt;</span>
 		<span class="nt">&lt;java.version&gt;</span>1.8<span class="nt">&lt;/java.version&gt;</span>
@@ -575,19 +459,6 @@ Hello World!%
 		<span class="nt">&lt;/dependency&gt;</span>
 
 		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>com.fasterxml.jackson.core<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>jackson-databind<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
 			<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
 			<span class="nt">&lt;artifactId&gt;</span>tars-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
 			<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
@@ -598,24 +469,14 @@ Hello World!%
 			<span class="nt">&lt;artifactId&gt;</span>mq-jms-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
 			<span class="nt">&lt;version&gt;</span>2.4.2<span class="nt">&lt;/version&gt;</span>
 		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="c">&lt;!-- log --&gt;</span>
-		<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api --&gt;</span>
 		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>slf4j-api<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;version&gt;</span>1.7.25<span class="nt">&lt;/version&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 --&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>slf4j-log4j12<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;version&gt;</span>1.7.25<span class="nt">&lt;/version&gt;</span>
-			<span class="c">&lt;!-- &lt;scope&gt;test&lt;/scope&gt; --&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
 		<span class="nt">&lt;/dependency&gt;</span>
 	<span class="nt">&lt;/dependencies&gt;</span>
 
 	<span class="nt">&lt;build&gt;</span>
-		<span class="nt">&lt;finalName&gt;</span>demo<span class="nt">&lt;/finalName&gt;</span> 
+		<span class="nt">&lt;finalName&gt;</span>mqserver<span class="nt">&lt;/finalName&gt;</span>
 		<span class="nt">&lt;plugins&gt;</span>
 			<span class="nt">&lt;plugin&gt;</span>
 				<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
@@ -630,7 +491,7 @@ Hello World!%
 					<span class="nt">&lt;tars2JavaConfig&gt;</span>
 						<span class="c">&lt;!-- tars file location --&gt;</span>
 						<span class="nt">&lt;tarsFiles&gt;</span>
-							<span class="nt">&lt;tarsFile&gt;</span>${basedir}/src/main/resources/demo.tars<span class="nt">&lt;/tarsFile&gt;</span>
+							<span class="nt">&lt;tarsFile&gt;</span>${basedir}/src/main/resources/mqserver.tars<span class="nt">&lt;/tarsFile&gt;</span>
 						<span class="nt">&lt;/tarsFiles&gt;</span>
 						<span class="c">&lt;!-- Source file encoding --&gt;</span>
 						<span class="nt">&lt;tarsFileCharset&gt;</span>UTF-8<span class="nt">&lt;/tarsFileCharset&gt;</span>
@@ -641,17 +502,18 @@ Hello World!%
 						<span class="c">&lt;!-- Generated source code directory --&gt;</span>
 						<span class="nt">&lt;srcPath&gt;</span>${basedir}/src/main/java<span class="nt">&lt;/srcPath&gt;</span>
 						<span class="c">&lt;!-- Generated source code package prefix --&gt;</span>
-						<span class="nt">&lt;packagePrefixName&gt;</span>com.example.<span class="nt">&lt;/packagePrefixName&gt;</span>
+						<span class="nt">&lt;packagePrefixName&gt;</span>com.example.tarsmqserver.service.<span class="nt">&lt;/packagePrefixName&gt;</span>
 					<span class="nt">&lt;/tars2JavaConfig&gt;</span>
 				<span class="nt">&lt;/configuration&gt;</span>
 			<span class="nt">&lt;/plugin&gt;</span>
 			<span class="c">&lt;!--package plugin--&gt;</span>
-
 		<span class="nt">&lt;/plugins&gt;</span>
 	<span class="nt">&lt;/build&gt;</span>
 
 <span class="nt">&lt;/project&gt;</span>
-</code></pre></div><h2 id="结语">结语<a href="#结语" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h2 id="源代码">源代码<a href="#源代码" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://github.com/aomirun/demo/tree/main/day-2">学习JAVA第2天 实现基于tars springboot ibm mq的微服务</a></p>
+<h2 id="结语">结语<a href="#结语" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>由于才接触java，springboot很多功能都是通过java专有的注解完成的。学习时间有限，很多东西还没有理解，中间调试的时候花了不少时间去查资料和调试。更因为我是使用vscode+tars+springboot来弄的，发生了错误也不知道哪里出问题了。搜索的资料只能做参考，然后自己消化学习，最终调试完成。</p>
 
 			</div>
@@ -660,7 +522,7 @@ Hello World!%
 	<h2>相关推荐</h2>
 	<ul>
 	
-	<li><a href="/posts/java/hello-java-1-day/">Hello Java 1 Day 学习JAVA第1天</a></li>
+	<li><a href="/posts/java/hello-java-1-day/">Hello Java 1 Day 学习JAVA第1天 通过docker整合springboot和tars 构建微服务环境</a></li>
 	
 	<li><a href="/posts/wsl2-vscode-openjdk-install/">Wsl2 Vscode Openjdk Install</a></li>
 	
@@ -672,7 +534,7 @@ Hello World!%
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://aomi.run/tags/java">java</a></span><span class="tag"><a href="https://aomi.run/tags/docker">docker</a></span><span class="tag"><a href="https://aomi.run/tags/mq">mq</a></span><span class="tag"><a href="https://aomi.run/tags/jms">jms</a></span><span class="tag"><a href="https://aomi.run/tags/tars">tars</a></span><span class="tag"><a href="https://aomi.run/tags/micro-serivce">micro serivce</a></span><span class="tag"><a href="https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1274 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>751 字</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-01-27 12:37 &#43;0800</p>
 			</footer>
 		</article>
@@ -691,32 +553,22 @@ Hello World!%
     <li><a href="#测试ibm-mq">测试IBM MQ</a>
       <ul>
         <li><a href="#pomxml">pom.xml</a></li>
-        <li><a href="#applicationproperties">application.properties</a></li>
-        <li><a href="#demoapplication">DemoApplication</a></li>
-        <li><a href="#运行程序">运行程序</a></li>
+        <li><a href="#添加配置项">添加配置项</a></li>
+        <li><a href="#修改main">修改main</a></li>
+        <li><a href="#添加rest控制器">添加Rest控制器</a></li>
+        <li><a href="#提交tars-web测试">提交tars-web测试</a></li>
       </ul>
     </li>
-    <li><a href="#jms服务">JMS服务</a>
+    <li><a href="#jms">JMS</a>
       <ul>
-        <li><a href="#pomxml-1">pom.xml</a></li>
-        <li><a href="#配置文件">配置文件</a></li>
-        <li><a href="#配置类">配置类</a></li>
+        <li><a href="#服务介绍">服务介绍</a></li>
+        <li><a href="#开始打造基于tars的jms服务了">开始打造基于tars的JMS服务了</a></li>
+        <li><a href="#ibmmq-绑定配置文件">ibmmq 绑定配置文件</a></li>
         <li><a href="#消息生产者">消息生产者</a></li>
         <li><a href="#消息消费者">消息消费者</a></li>
         <li><a href="#默认入口">默认入口</a></li>
-        <li><a href="#测试程序">测试程序</a></li>
-        <li><a href="#测试">测试</a></li>
-      </ul>
-    </li>
-    <li><a href="#整合tars">整合tars</a>
-      <ul>
-        <li><a href="#tars接口定义">tars接口定义</a></li>
-        <li><a href="#生成java接口文件">生成java接口文件</a></li>
-        <li><a href="#实现接口">实现接口</a></li>
-        <li><a href="#修改ibm-mq的ip配置">修改IBM MQ的IP配置</a></li>
-        <li><a href="#生成jar包">生成jar包</a></li>
-        <li><a href="#上传jar包">上传jar包</a></li>
-        <li><a href="#在线测试">在线测试</a></li>
+        <li><a href="#完善tars接口">完善tars接口</a></li>
+        <li><a href="#生成jar包上传测试观察">生成jar包/上传/测试/观察</a></li>
       </ul>
     </li>
     <li><a href="#汇总">汇总</a>
@@ -725,13 +577,14 @@ Hello World!%
         <li><a href="#最后pomxml">最后pom.xml</a></li>
       </ul>
     </li>
+    <li><a href="#源代码">源代码</a></li>
     <li><a href="#结语">结语</a></li>
   </ul>
 </nav>
 		</aside>
 		<div class="post-nav thin">
 			<a class="prev-post" href="https://aomi.run/posts/java/hello-java-1-day/">
-				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Hello Java 1 Day 学习JAVA第1天</span>
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Hello Java 1 Day 学习JAVA第1天 通过docker整合springboot和tars 构建微服务环境</span>
 			</a>
 		</div>
 		<div id="comments" class="thin">
