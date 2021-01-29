@@ -18,21 +18,14 @@ tags:
 
 ## 前言
 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务
-> 本章与第1章项目有所不同，还是因为中间调试出了许多问题，后来重新建了项目后，才完成，后续有空我把两章的代码弄成同一个项目，便于连续的文章
 
 ## 搭建IBM MQ
-同样还是使用docker来创建
+同样还是使用docker来创建，添加ibmmq
 ```sh
 $ docker volume create qm1data  # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单
-
-$ mkdir ~/docker-app/jmq -p
-$ cd ~/docker-app/jmq 
-$ touch docker-compose.yml
 ```
-docker-compose.yml 的内容如下：
+docker-compose.yml 中添加内容如下：
 ```yml
-version: '3'
-services:
   ibmmq:
     image: ibmcom/mq
     container_name: ibmmq
@@ -49,13 +42,30 @@ services:
       tars:
         ipv4_address: 172.25.0.201
 
-networks:
-  tars:
-    external: true     
-
 volumes:
   qm1data:
    
+```
+另外给node一个web服务端口，后续会用上
+```yml
+  node:
+    # image: tarscloud/tars-node:stable
+    image: tarscloud/tars-node:latest
+    container_name: tars-node
+    # restart: always
+    ports:
+      - "1080:1080"
+    networks:
+      tars:
+        ipv4_address: 172.25.0.5
+    volumes:
+      - ./node/data:/data/tars:rw
+      - /etc/localtime:/etc/localtime
+    environment:
+      INET: eth0
+      WEB_HOST: http://172.25.0.3:3000
+    depends_on:
+      - framework
 ```
 运行起来
 ```sh
@@ -76,7 +86,7 @@ Creating ibmmq ... done
 
 
 ## 测试IBM MQ
-先弄一个Demo代码，测试一下IBM MQ是否正常运行
+添加ibmmq的依赖
 ### pom.xml
 ```xml
 		<dependency>
@@ -93,27 +103,50 @@ Creating ibmmq ... done
 			<version>2.4.2</version>
 		</dependency>
 ```
-### application.properties
+### 添加配置项
+application.properties
+spring boot 默认都是开启8080端口，因为我开发机上要运行多个，所以改下端口。
 ```ini
+# tomcat default 8080
+server.port=1080
+
+# ibm mq config
 ibm.mq.queueManager=QM1
 ibm.mq.channel=DEV.APP.SVRCONN
-ibm.mq.connName=localhost(1414)
+ibm.mq.connName=172.25.0.201(1414)
 ibm.mq.user=app
 ibm.mq.password=abcd1234
+ibm.mq.sendQueueName=DEV.QUEUE.1
+ibm.mq.recvQueueName=DEV.QUEUE.1
 ```
-### DemoApplication
+### 修改main
+TarsMqServerApplication
+这里需要用到spring boot 的web服务，所以这里恢复到项目初始状态，上传tars时，协议先非tars协议即可。
 ```java
 @SpringBootApplication
-@RestController
-@EnableJms
-public class DemoApplication {
-
-	@Autowired
-	private JmsTemplate jmsTemplate;
+@EnableTarsServer
+public class TarsMqServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(TarsMqServerApplication.class, args);
+		// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
+		// SpringApplication app = new SpringApplication(TarsMqServerApplication.class);
+		// app.setWebApplicationType(WebApplicationType.NONE);
+		// app.run(args);
 	}
+
+}
+```
+### 添加Rest控制器
+这里先做个简单的测试，主要目的是用最简单的代码测试ibmmq的连通性
+src/main/java/com/example/tarsmqserver/web/MQController.java
+```java
+@RestController
+@EnableJms
+@RequestMapping("/api/mq")
+public class MQController { 
+    @Autowired
+	private JmsTemplate jmsTemplate;
 
 	@GetMapping("send") 
 	String send() {
@@ -135,116 +168,36 @@ public class DemoApplication {
 			return "FAIL";
 		}
 	}
-
+    
 }
 ```
-### 运行程序
+### 提交tars-web测试
+#### 打包
 ```sh
-2021-01-28 12:25:14.847  INFO 26166 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
-2021-01-28 12:25:15.219  INFO 26166 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2021-01-28 12:25:15.232  INFO 26166 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 3.663 seconds (JVM running for 4.099)
-2021-01-28 12:25:21.125  INFO 26166 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2021-01-28 12:25:21.125  INFO 26166 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2021-01-28 12:25:21.125  INFO 26166 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+$ mvn clean package
 ```
-访问Web方法 通过Curl或浏览器都行
-```sh
-$ curl http://localhost:8080/send
-OK%
+#### 上传
+上传办法详细看第1节 
 
-$ curl http://localhost:8080/recv
+#### 测试
+```sh
+$ curl http://localhost:1080/api/mq/recv
 Hello World!%
+
+$ curl http://localhost:1080/api/mq/send
+OK%
 ```
 看到上面的信息，证明IBM MQ服务正常跑起来了，jms测试代码也起了作用，后面就是改良代码了。
-## JMS服务
+
+## JMS
+### 服务介绍
 关于JMS到网上抄了一份作业,了解一下运行逻辑。
 ![](/images/posts/mq/jms.png)
 由于刚接触Java，到网上找了许多资料，我剪裁了一下，最后模样如下
-### pom.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.mq</groupId>
-			<artifactId>mq-jms-spring-boot-starter</artifactId>
-			<version>2.4.2</version>
-		</dependency>
-		<!-- log -->
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
-            <!-- <scope>test</scope> -->
-        </dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
-</project>
-```
-### 配置文件
-src/main/resources/application.properties
-```ini
-ibm.mq.queueManager=QM1
-ibm.mq.channel=DEV.APP.SVRCONN
-ibm.mq.connName=localhost(1414)
-ibm.mq.user=app
-ibm.mq.password=abcd1234
-
-ibm.mq.sendQueueName=DEV.QUEUE.1
-ibm.mq.recvQueueName=DEV.QUEUE.1
-```
-### 配置类
-src/main/java/com/example/demo/jmq/JmqConfig.java
+### 开始打造基于tars的JMS服务了
+### ibmmq 绑定配置文件
+目录建得比较随意，网上抄作业看到有人用这种目录方式，就直接抄了。
+src/main/java/com/example/tarsmqserver/domain/JmqConfig.java
 ```java
 @Component
 public class JmqConfig {
@@ -267,7 +220,7 @@ public class JmqConfig {
 }
 ```
 ### 消息生产者
-src/main/java/com/example/demo/jmq/Producer.java
+src/main/java/com/example/tarsmqserver/service/mqserver/Producer.java
 ```java
 @Service("producer")
 @EnableJms
@@ -321,99 +274,31 @@ public class ConsumerListener extends MessageListenerAdapter {
 }
 ```
 ### 默认入口
+关闭本地tomcat服务，只开启rpc服务端口
 src/main/java/com/example/demo/DemoApplication.java
 ```java
 @SpringBootApplication
-public class DemoApplication {
+@EnableTarsServer
+public class TarsMqServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		// SpringApplication.run(TarsMqServerApplication.class, args);
+		// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
+		SpringApplication app = new SpringApplication(TarsMqServerApplication.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		app.run(args);
 	}
 
 }
 ```
-### 测试程序
-src/test/java/com/example/demo/DemoApplicationTests.java
+### 完善tars接口
+用的是上一章定义的接口
+tars接口定义传送门 [第1天 通过docker整合springboot和tars](/posts/java/hello-java-1-day)
+src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.java
 ```java
-@SpringBootTest
-class DemoApplicationTests {
-
-	@Autowired
-	private Producer producer; 
-
-	@Autowired
-    private JmqConfig jmqConfig;
-
-	@Test
-	public void jmsIBMMqTest() throws InterruptedException {
-		String destination = jmqConfig.getSendQueueName();
-
-		for (int i = 0; i < 21; i++) {
-			producer.sendMessage(destination, String.format("My name is aomi%s", i));
-		}
-	}
-
-	@Test
-	void contextLoads() {
-	}
-
-}
-```
-### 测试
-由于我对Java测试不熟，我看到maven在打包前会自动运行测试用例，那我就直接打包。
-```sh
-$ mvn clean package
-
-2021-01-28 16:43:38.258  INFO 7834 --- [           main] com.example.demo.DemoApplicationTests    : Started DemoApplicationTests in 5.512 seconds (JVM running for 7.027)
-2021-01-28 16:43:38.934  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi0
-2021-01-28 16:43:38.945  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi1
-2021-01-28 16:43:38.949  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi2
-2021-01-28 16:43:38.953  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi3
-2021-01-28 16:43:38.956  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi4
-2021-01-28 16:43:38.960  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi5
-2021-01-28 16:43:38.964  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi6
-2021-01-28 16:43:38.966  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi7
-2021-01-28 16:43:38.968  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi8
-2021-01-28 16:43:38.971  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi9
-2021-01-28 16:43:38.975  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi10
-2021-01-28 16:43:38.978  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi11
-2021-01-28 16:43:38.980  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi12
-2021-01-28 16:43:38.983  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi13
-2021-01-28 16:43:38.985  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi14
-2021-01-28 16:43:38.988  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi15
-2021-01-28 16:43:38.991  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi16
-2021-01-28 16:43:38.994  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi17
-2021-01-28 16:43:38.996  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi18
-2021-01-28 16:43:38.998  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi19
-2021-01-28 16:43:39.001  INFO 7834 --- [enerContainer-1] com.example.demo.jmq.ConsumerListener    : Consumer收到的报文为: My name is aomi20
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.249 s - in com.example.demo.DemoApplicationTests
-```
-看到可以收发消息了，接下来就是把JMS整合到tars中去了，整合完成则后面就是丰富功能了。
-## 整合tars
-实现接口中，加入今天写的JMS服务。有关tars与java的整合介绍走传送门 [第1天](/posts/java/hello-java-1-day)
-### tars接口定义
-以昨天的文件为例，直接拿过来
-```
-module demo {
-    //消息发送接口
-    interface Message{
-        bool Send(string msg);                          //接收字符串，把整个字符串发送到IBM MQ中，返回 true/false
-        string Hash(string plain);                      //接收明文字符串，返回加密后的字符串
-        bool HashWithSend(string msg, string plain);    //接收明文字符串，加密后直接发送到IBM MQ
-    };
-};
-```
-### 生成java接口文件
-```sh
-$ mvn tars:tars2java
-```
-### 实现接口
-src/main/java/com/example/demo/impl/MessageServantImpl.java
-```java
+@TarsServant("messageObj") 
 @Component
-@TarsServant("MsgObj")
 public class MessageServantImpl implements MessageServant {
-
     @Autowired
     private Producer producer;
 
@@ -424,46 +309,43 @@ public class MessageServantImpl implements MessageServant {
      * 发送消息到IBM MQ
      */
     @Override
-    public boolean Send(String message) {
-        String destination = jmqConfig.getSendQueueName();
-        return producer.sendMessage(destination, message);
-    }
-
-    /**
-     * 对plain进行加密，返回加密后的内容
-     */
-    @Override
-    public String Hash(String plain) {
-        if (plain.length() == 0) {
-            return null;
-        }
-        String encodeStr = "1231#!@#!";
-        return encodeStr;
-
-    }
-
-    /**
-     * 对plain进行加密，并同msg一起发送到IBM MQ
-     */
-    @Override
-    public boolean HashWithSend(String msg, String plain) {
-        if (msg.length() == 0 || plain.length() == 0) {
+    public boolean send(String msg) {
+        if (msg == null) {
             return false;
         }
 
-        String hashStr = this.Hash(plain);
-        boolean ok = this.Send(hashStr + msg);
-        return ok;
+        String queueName = jmqConfig.getSendQueueName(); 
+        return producer.sendMessage(queueName, msg);
+    }
+
+    @Override
+    public boolean encode(String sign, Holder<String> enStr) {
+        // TODO 先简单走流程 后面实现具体与ibmmq的对接
+        if (sign == null) {
+            return false;
+        }
+        enStr.setValue("123" + sign + "456");
+        return true;
+    }
+
+    @Override
+    public boolean encodeWithSend(String msg, String sign) {
+        if (sign == null || msg == null) {
+            return false;
+        }
+
+        Holder<String> enStr = new Holder<String>();
+        boolean ok = encode(sign, enStr);
+        if (!ok) {
+            return false;
+        }
+
+        return send(enStr + msg);
     }
 }
 ```
-### 修改IBM MQ的IP配置
-tars的环境与IBM MQ在同一个网段中，改成内网IP
-```ini
-ibm.mq.connName=172.25.0.201(1414)
-```
 ### 生成jar包
-> 先要注解或删除掉`src/test/java/com/example/demo/DemoApplicationTests.java`文件，因为缺少tars专有的配置文件等，以后再来研究基于tars的本地测试。
+> 先要注解或删除掉`test.java`文件，因为缺少tars专有的配置文件等，以后再来研究基于tars的本地测试。
 ```sh
 $ mvn clean package
 ```

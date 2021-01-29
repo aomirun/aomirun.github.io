@@ -1,5 +1,5 @@
 ---
-title: "Hello Java 1 Day 学习JAVA第1天"
+title: "Hello Java 1 Day 学习JAVA第1天 通过docker整合springboot和tars"
 date: 2021-01-26T11:39:02+08:00
 draft: false
 toc: true
@@ -15,6 +15,8 @@ tags:
 ---
 
 ## 前言
+> 实现目标：通过docker整合springboot和tars
+
 先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于[win10 wsl2 vscode](/posts/wsl2-vscode-openjdk-install/) 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
 ## tars 环境搭建
 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
@@ -52,7 +54,7 @@ services:
     container_name: tars-mysql
     ports:
       - "3307:3306"
-    restart: always
+    # restart: always
     privileged: true
     environment:
       MYSQL_ROOT_PASSWORD: "123456"
@@ -70,7 +72,7 @@ services:
     ports:
       - "3000:3000"
       - "3001:3001"
-    restart: always
+    # restart: always
     networks:
       tars:
         ipv4_address: 172.25.0.3
@@ -91,7 +93,7 @@ services:
     # image: tarscloud/framework:stable
     image: tarscloud/framework:latest
     container_name: tars-framework-slave
-    restart: always
+    # restart: always
     networks:
       tars:
         ipv4_address: 172.25.0.4
@@ -112,7 +114,7 @@ services:
     # image: tarscloud/tars-node:stable
     image: tarscloud/tars-node:latest
     container_name: tars-node
-    restart: always
+    # restart: always
     networks:
       tars:
         ipv4_address: 172.25.0.5
@@ -142,115 +144,74 @@ Creating tars-node            ... done
 ```
 打开浏览器，访问 `http://localhost:3000/` 即可打开 `tars web`，关于Tars更详细的请查看 [官方文档](https://tarscloud.gitbook.io/)
 ## 创建JAVA项目
-这是我是用`vscode + maven + tars`创建好的一个`IBM MQ CLIENT`的一个初始项目，关于vscode怎么设置Java开发环境及Maven的，请看我另外一篇文章 [Wsl2 Vscode Openjdk Install](https://aomi.run/posts/wsl2-vscode-openjdk-install/) ，最后项目目录为
+这是我是用`vscode + maven + tars`创建好的一个`IBM MQ CLIENT`的一个初始项目，关于vscode怎么设置Java开发环境及Maven的，请看我另外一篇文章 [Wsl2 Vscode Openjdk Install](/posts/wsl2-vscode-openjdk-install/) ，最后项目目录为
 ```sh
-➜  jmq tree
+$ tree
 .
 ├── HELP.md
 ├── mvnw
 ├── mvnw.cmd
 ├── pom.xml
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── run
-│   │   │       └── aomi
-│   │   │           └── jmq
-│   │   │               └── JmqApplication.java
-│   │   └── resources
-│   │       └── application.properties
-│   └── test
-│       └── java
-│           └── run
-│               └── aomi
-│                   └── jmq
-│                       └── JmqApplicationTests.java
-└── target
-    ├── classes
-    │   ├── application.properties
-    │   └── run
-    │       └── aomi
-    │           └── jmq
-    │               └── JmqApplication.class
-    └── test-classes
-        └── run
-            └── aomi
-                └── jmq
-                    └── JmqApplicationTests.class
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── example
+    │   │           └── tarsmqserver
+    │   │               └── TarsMqServerApplication.java
+    │   └── resources
+    │       └── application.properties
+    └── test
+        └── java
+            └── com
+                └── example
+                    └── tarsmqserver
+                        └── TarsMqServerApplicationTests.java
 
+12 directories, 7 files
 ```
-### 开启 tars 支持
-在 main 入口处添加注解 `@EnableTarsServer`
-```java
-@SpringBootApplication
-@EnableTarsServer
-public class JmqApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(JmqApplication.class, args);
-	}
-
-}
-```
-### 定义tars接口文件
-kit目录是通过tars2java生成的，具体过程为先在`resources`目录下创建一个Tars文件，如
-src/main/resources/jmq.tars
-```
-module kit {
-    //消息发送接口
-    interface Msg{
-        bool Send(string msg);                          //接收字符串，把整个字符串发送到IBM MQ中，返回 true/false
-        string Hash(string plain);                      //接收明文字符串，返回加密后的字符串
-        bool HashWithSend(string msg, string plain);    //接收明文字符串，加密后直接发送到IBM MQ
-    };
-};
-```
-### 添加tars依赖和插件
-pom.xml
+### 添加依赖
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.2</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>run.aomi</groupId>
-	<artifactId>jmq</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>jmq</name>
-	<description>jms for ibm mq</description>
-	<properties>
-		<java.version>8</java.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>com.tencent.tars</groupId>
 			<artifactId>tars-spring-boot-starter</artifactId>
 			<version>1.7.2</version>
 		</dependency>
-	</dependencies>
+```
+### 关掉测试用例
+由于导入了 tars 包后,测试就有了 tars 专有依赖了,具体如何测试有 tars 的项目,后面再弄,现在玩关掉,要不然mvn package会通不过
+```java
+package com.example.tarsmqserver;
 
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
+
+// @SpringBootTest
+// class TarsMqServerApplicationTests {
+
+// 	@Test
+// 	void contextLoads() {
+// 	}
+
+// }
+```
+### 创建tars协议接口文件
+```
+module mqserver
+{
+	interface Message
+	{
+        bool send(string msg);
+        bool encode(string sign, out string enStr);
+        bool encodeWithSend(string msg, string sign);
+	};
+};
+```
+### 添加 tars 插件
+同时定义好 jar 的文件名,最后build看起来像这样
+```xml
 	<build>
-		<finalName>jmq</finalName>
+		<finalName>mqserver</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -265,7 +226,7 @@ pom.xml
 					<tars2JavaConfig>
 						<!-- tars file location -->
 						<tarsFiles>
-							<tarsFile>${basedir}/src/main/resources/jmq.tars</tarsFile>
+							<tarsFile>${basedir}/src/main/resources/mqserver.tars</tarsFile>
 						</tarsFiles>
 						<!-- Source file encoding -->
 						<tarsFileCharset>UTF-8</tarsFileCharset>
@@ -276,121 +237,118 @@ pom.xml
 						<!-- Generated source code directory -->
 						<srcPath>${basedir}/src/main/java</srcPath>
 						<!-- Generated source code package prefix -->
-						<packagePrefixName>run.aomi.jmq.</packagePrefixName>
+						<packagePrefixName>com.example.tarsmqserver.service.</packagePrefixName>
 					</tars2JavaConfig>
 				</configuration>
 			</plugin>
 			<!--package plugin-->
 		</plugins>
 	</build>
-
-</project>
 ```
-### 生成接口文件
-在项目目录下运行`mvn tars:tars2java`,完成后显示如下 
-src/main/java/run/aomi/jmq/kit/MsgServant.java
+### tars2java
+通过tars协议接口,生成java接口文件
 ```sh
 $ mvn tars:tars2java
 
-[INFO] ----------------------------< run.aomi:jmq >----------------------------
-[INFO] Building jmq 0.0.1-SNAPSHOT
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.example:tars-mq-server >---------------------
+[INFO] Building tars-mq-server 0.0.1-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] --- tars-maven-plugin:1.7.2:tars2java (default-cli) @ jmq ---
-[INFO] Parse /mnt/d/projects/java/cnaps2/jmq/src/main/resources/jmq.tars ...
-[INFO] generate code for namespace : kit ...
-[INFO] module kit >>
-[INFO] generate Servant msgServant
-[INFO] module kit <<
+[INFO] --- tars-maven-plugin:1.7.2:tars2java (default-cli) @ tars-mq-server ---
+[INFO] Parse /mnt/d/projects/java/demo/day-1/tars-mq-server/src/main/resources/mqserver.tars ...
+[INFO] generate code for namespace : mqserver ...
+[INFO] module mqserver >>
+[INFO] generate Servant MessageServant
+[INFO] module mqserver <<
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  0.486 s
-[INFO] Finished at: 2021-01-26T15:24:56+08:00
-[INFO] ------------------------------------------------------------------------
+```
+文件生成到了 `src/main/java/com/example/tarsmqserver/service/mqserver/MessageServant.java`,打开看看
+```java
+@Servant
+public interface MessageServant {
+
+	 boolean send(@TarsMethodParameter(name="msg")String msg);
+
+	 boolean encode(@TarsMethodParameter(name="sign")String sign, @TarsHolder(name="enStr") Holder<String> enStr);
+
+	 boolean encodeWithSend(@TarsMethodParameter(name="msg")String msg, @TarsMethodParameter(name="sign")String sign);
+}
 ```
 ### 实现接口
-在实现接口的同时,添加 注解 `@Override`
-src/main/java/run/aomi/jmq/kit/MsgServantImpl.java
+src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.java
+tars 接口的类名需要添加注解 @TarsServant("messageObj") 
+messageObj 的名称是要和tars-web上自己定义的名称相同,方法实现需要注解 @Override 
 ```java
-package run.aomi.jmq.kit;
+package com.example.tarsmqserver.service.mqserver.impl;
 
-public class MsgServantImpl implements MsgServant {
-    /**
-     * 发送消息到IBM MQ
-     */
+import com.example.tarsmqserver.service.mqserver.MessageServant;
+import com.qq.tars.common.support.Holder;
+import com.qq.tars.spring.annotation.TarsServant;
+
+/**
+ * @author aomi.run
+ */
+@TarsServant("messageObj") 
+public class MessageServantImpl implements MessageServant {
     @Override
-    public boolean Send(String msg) {
-        if (msg.length() == 0) {
+    public boolean send(String msg) {
+        // TODO 先简单走流程 后面实现具体与ibmmq的对接
+        if (msg == null) {
             return false;
         }
         return true;
     }
 
-    /**
-     * 对plain进行加密，返回加密后的内容
-     */
     @Override
-    public String Hash(String plain) {
-        if (plain.length() == 0) {
-            return null;
+    public boolean encode(String sign, Holder<String> enStr) {
+        // TODO 先简单走流程 后面实现具体与ibmmq的对接
+        if (sign == null) {
+            return false;
         }
-        String encodeStr = "1231#!@#!";
-        return encodeStr;
-
+        enStr.setValue("123" + sign + "456");
+        return true;
     }
 
-    /**
-     * 对plain进行加密，并同msg一起发送到IBM MQ
-     */
     @Override
-    public boolean HashWithSend(String msg, String plain) {
-        if (msg.length() == 0 || plain.length() == 0) {
+    public boolean encodeWithSend(String msg, String sign) {
+        // TODO 先简单走流程 后面实现具体与ibmmq的对接
+        if (sign == null || msg == null) {
             return false;
         }
 
-        var hashStr = this.Hash(plain);
-        var ok = this.Send(hashStr + msg);
-        return ok;
+        Holder<String> enStr = new Holder<String>();
+        boolean ok = encode(sign, enStr);
+        if (!ok) {
+            return false;
+        }
+
+        return send(enStr + msg);
     }
 }
 ```
-### 服务暴露配置
-接口的实现类通过注解@TarsServant来暴露服务，其中填写的'MsgObj'为servant名，该名称与管理平台上的名称对应即可。
+
+### 开启 tars 服务监听
+在 main 入口处添加注解 `@EnableTarsServer`,并关闭自带的Web服务.
 ```java
-package run.aomi.jmq.kit;
+@SpringBootApplication
+@EnableTarsServer
+public class TarsMqServerApplication {
 
-import com.qq.tars.spring.annotation.TarsServant;
-
-@TarsServant("MsgObj")
-public class MsgServantImpl implements MsgServant {
-  @Override
-  public boolean Send(String msg) {
-    ...
-  }
-  ...
+	public static void main(String[] args) {
+		// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
+		SpringApplication app = new SpringApplication(TarsMqServerApplication.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		app.run(args);
+	}
 
 }
-
 ```
 ### Jar打包
-先删除测试文件夹,主要还没空研究Java里的测试,后续学习后再来做测试包
 ```sh
 $ mvn clean package
-
-[INFO] Building jar: /mnt/d/projects/java/cnaps2/jmq/target/jmq.jar
-[INFO] 
-[INFO] --- spring-boot-maven-plugin:2.4.2:repackage (repackage) @ jmq ---
-[INFO] Replacing main artifact with repackaged archive
-[INFO] 
-[INFO] --- spring-boot-maven-plugin:2.4.2:repackage (default) @ jmq ---
-[INFO] Replacing main artifact with repackaged archive
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  4.980 s
-[INFO] Finished at: 2021-01-26T17:50:25+08:00
-[INFO] ------------------------------------------------------------------------
 ```
 最后的目录结构是
 ```sh
@@ -401,68 +359,55 @@ $ tree
 ├── mvnw.cmd
 ├── pom.xml
 ├── src
-│   └── main
-│       ├── java
-│       │   └── run
-│       │       └── aomi
-│       │           └── jmq
-│       │               ├── JmqApplication.java
-│       │               └── kit
-│       │                   ├── MsgServant.java
-│       │                   └── impl
-│       │                       └── MsgServantImpl.java
-│       └── resources
-│           ├── application.properties
-│           └── jmq.tars
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── example
+│   │   │           └── tarsmqserver
+│   │   │               ├── TarsMqServerApplication.java
+│   │   │               └── service
+│   │   │                   └── mqserver
+│   │   │                       ├── MessageServant.java
+│   │   │                       └── impl
+│   │   │                           └── MessageServantImpl.java
+│   │   └── resources
+│   │       ├── application.properties
+│   │       └── mqserver.tars
+│   └── ...
 └── target
-    ├── classes
-    │   ├── application.properties
-    │   ├── jmq.tars
-    │   └── run
-    │       └── aomi
-    │           └── jmq
-    │               ├── JmqApplication.class
-    │               └── kit
-    │                   ├── MsgServant.class
-    │                   └── impl
-    │                       └── MsgServantImpl.class
-    ├── generated-sources
-    │   └── annotations
-    ├── jmq.jar
-    ├── jmq.jar.original
-    ├── maven-archiver
-    │   └── pom.properties
-    └── maven-status
-        └── maven-compiler-plugin
-            └── compile
-                └── default-compile
-                    ├── createdFiles.lst
-                    └── inputFiles.lst
+    ...
+    ├── mqserver.jar
+    ├── mqserver.jar.original
+    └── test-classes
 
-23 directories, 19 files
+35 directories, 22 files
 ```
-可以看出来,已经成功生成了Jar包,把这个包上传到TarsWeb页面来测试一下看.
-### 部署与测试
+mqserver.jar 就是tars的包,上传到tars-web上面
+### tars 的部署与测试
+> 首次使用tars-web,我尽量弄些图解,后续文档中有很多涉及到tars-web的就简单文字带过了
+#### 创建应用名称
+![](/images/posts/tars/tars-web-add-app.png)
+#### 创建服务
+![](/images/posts/tars/tars-web-add-server.png)
 #### 上传jar包
-![](/images/posts/tars/tars-upload.png)
-![](/images/posts/tars/tars-web-index.png)
-#### 上传对应的测试文件 jmq.tars
-![](/images/posts/tars/tars-web-debug.png)
+![](/images/posts/tars/tars-web-push-manage.png)
+![](/images/posts/tars/tars-web-update-push.png)
+#### 上传接口定义文件
+就是前面写的mqserver.tars文件
+![](/images/posts/tars/tars-web-interface-test.png)
 调试时可以看到，返回值与自己代码中定制的值相同，代表成功部署
 ```java
-    /**
-     * 对plain进行加密，返回加密后的内容
-     */
     @Override
-    public String Hash(final String plain) {
-        if (plain.length() == 0) {
-            return null;
+    public boolean encode(String sign, Holder<String> enStr) {
+        // TODO 先简单走流程 后面实现具体与ibmmq的对接
+        if (sign == null) {
+            return false;
         }
-        final String encodeStr = "1231#!@#!";
-        return encodeStr;
-
+        enStr.setValue("123" + sign + "456");
+        return true;
     }
 ```
-
+### 源代码
+源代码几天后做了整理，现上传到github上面了 传送门 -> [通过docker整合springboot和tars](https://github.com/aomirun/demo/tree/main/day-1/tars-mq-server)
 ### 结语
-学习java的第一天折腾了一下项目大致流程，主要是在 `vscode` 中使用 `maven` 来创建 `springboot` 项目，并加入 `tars` 的支持，然后打包上传到 `tars` 中运行并调试。中间也碰到了一些问题，比如没有实现`test`文件，保留在项目中，打包`jar`的时候就会报错，总之自己是java菜鸟，碰到各种错误也属于正常了，整体还是很成功的。一经在 `tars` 中使用后，就和开发语言无关了。之后喜欢用哪种开发语言去调用服务都可以，这也算是微服务的特点之一吧。
+学习java的第一天折腾了一下项目大致流程，主要是在 `vscode` 中使用 `maven` 来创建 `springboot` 项目，并加入 `tars` 的支持，然后打包上传到 `tars` 中运行并调试。中间也碰到了一些问题，比如加载了tars包后`test`文件就有依赖了，不加入依赖就会报找不到tars 配置文件的错误，开始一直保留在项目中，打包`jar`的时候就会报错，总之自己是java菜鸟，碰到各种错误也属于正常了，整体还是很成功的。一经在 `tars` 中使用后，就和开发语言无关了。之后喜欢用哪种开发语言去调用服务都可以，这也算是微服务的特点之一吧。
