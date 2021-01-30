@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>java on Aomi</title>
-    <link>https://aomi.run/categories/java/</link>
-    <description>Recent content in java on Aomi</description>
+    <title>hello java on Aomi</title>
+    <link>https://aomi.run/series/hello-java/</link>
+    <description>Recent content in hello java on Aomi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Thu, 28 Jan 2021 18:16:06 +0800</lastBuildDate><atom:link href="https://aomi.run/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 28 Jan 2021 18:16:06 +0800</lastBuildDate><atom:link href="https://aomi.run/series/hello-java/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>实现客户端同步和异步调用RPC微服务(微服务系列第三天)</title>
       <link>https://aomi.run/posts/java/hello-java-3-day/</link>
@@ -47,18 +47,6 @@ IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂
  先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
 tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
 创建 Docker 网络 $ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars 创建 docker 目录 $ mkdir ~/docker-app/tars/framework/data -p $ mkdir ~/docker-app/tars/framework-slave/data -p $ mkdir ~/docker-app/tars/node/data -p $ mkdir ~/docker-app/tars/mysql/data -p $ mkdir ~/docker-app/tars/mysql/conf -p 创建 ~/docker-app/tars/mysql/conf/my.cnf 文件 [mysqld] user=root default-storage-engine=INNODB character-set-server=utf8 [client] default-character-set=utf8 [mysql] default-character-set=utf8 创建 ~/docker-app/tars/docker-compose.yml 文件 version:&amp;#34;3&amp;#34;services:mysql:image:mysql:5.6container_name:tars-mysqlports:- &amp;#34;3307:3306&amp;#34;# restart: alwaysprivileged:trueenvironment:MYSQL_ROOT_PASSWORD:&amp;#34;123456&amp;#34;volumes:- ./mysql/data:/var/lib/mysql- ./mysql/conf/my.cnf:/etc/my.cnf- /etc/localtime:/etc/localtimenetworks:tars:ipv4_address:172.25.0.2framework:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-frameworkports:- &amp;#34;3000:3000&amp;#34;- &amp;#34;3001:3001&amp;#34;# restart: alwaysnetworks:tars:ipv4_address:172.</description>
-    </item>
-    
-    <item>
-      <title>Wsl2 Vscode Openjdk Install</title>
-      <link>https://aomi.run/posts/wsl2-vscode-openjdk-install/</link>
-      <pubDate>Mon, 25 Jan 2021 11:46:59 +0800</pubDate>
-      
-      <guid>https://aomi.run/posts/wsl2-vscode-openjdk-install/</guid>
-      <description>准备 进入wsl命令行，先更新系统,更新慢的可以换apt源处理，换源自行搜索。
-$ sudo apt update -y $ sudo apt upgrade -y 安装JDK $ sudo apt install openjdk-8-jdk -y $ java -version openjdk version &amp;#34;1.8.0_275&amp;#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 再安装个 JDK 11
-$ sudo apt install openjdk-11-jdk -y 安装maven 安装maven
-$ sudo apt install maven -y $ mvn -v Apache Maven 3.6.3 Maven home: /usr/share/maven Java version: 1.8.0_275, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre Default locale: en, platform encoding: UTF-8 OS name: &amp;#34;linux&amp;#34;, version: &amp;#34;4.</description>
     </item>
     
   </channel>

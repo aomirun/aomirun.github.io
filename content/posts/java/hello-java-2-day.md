@@ -1,11 +1,15 @@
 ---
-title: "Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务"
+title: "实现tars-springboot-ibm-mq的微服务(微服务系列第二天)"
 date: 2021-01-27T12:37:57+08:00
 draft: false
 toc: true
 categories: 
   - java
 images:
+series:
+  - hello java
+  - 微服务
+  - tars
 tags: 
   - java
   - docker
@@ -17,7 +21,9 @@ tags:
 ---
 
 ## 前言
-第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.
+> 学习JAVA第2天 目标实现： 基于tars springboot ibm mq的微服务
+
+第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,于是就实现了基于tars springboot ibm mq的微服务.
 
 ## 搭建IBM MQ
 同样还是使用docker来创建，添加ibmmq
@@ -123,7 +129,7 @@ ibm.mq.recvQueueName=DEV.QUEUE.1
 ```
 ### 修改main
 TarsMqServerApplication
-这里需要用到spring boot 的web服务，所以这里恢复到项目初始状态，上传tars时，协议先非tars协议即可。
+这里需要用到spring boot 的web服务，所以这里恢复到项目初始状态，上传tars时，协议选非tars协议即可。
 ```java
 @SpringBootApplication
 @EnableTarsServer
@@ -131,10 +137,6 @@ public class TarsMqServerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TarsMqServerApplication.class, args);
-		// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
-		// SpringApplication app = new SpringApplication(TarsMqServerApplication.class);
-		// app.setWebApplicationType(WebApplicationType.NONE);
-		// app.run(args);
 	}
 
 }
@@ -176,7 +178,7 @@ public class MQController {
 ### 提交tars-web测试
 #### 打包
 ```sh
-$ mvn clean package
+$ mvn clean package -DskipTests 
 ```
 #### 上传
 上传办法详细看第1节 
@@ -195,8 +197,7 @@ OK%
 ### 服务介绍
 关于JMS到网上抄了一份作业,了解一下运行逻辑。
 ![](/images/posts/mq/jms.png)
-由于刚接触Java，到网上找了许多资料，我剪裁了一下，最后模样如下
-### 开始打造基于tars的JMS服务了
+下面开始打造基于tars的JMS服务了
 ### ibmmq 绑定配置文件
 目录建得比较随意，网上抄作业看到有人用这种目录方式，就直接抄了。
 src/main/java/com/example/tarsmqserver/domain/JmqConfig.java
@@ -293,7 +294,7 @@ public class TarsMqServerApplication {
 ```
 ### 完善tars接口
 用的是上一章定义的接口
-tars接口定义传送门 [第1天 通过docker整合springboot和tars](/posts/java/hello-java-1-day)
+tars接口定义传送门 [第1天 通过docker整合springboot和tars](/posts/java/hello-java-1-day/#%E5%88%9B%E5%BB%BAtars%E5%8D%8F%E8%AE%AE%E6%8E%A5%E5%8F%A3%E6%96%87%E4%BB%B6)
 src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.java
 ```java
 @TarsServant("messageObj")
@@ -305,32 +306,37 @@ public class MessageServantImpl implements MessageServant {
     @Autowired
     private JmqConfig jmqConfig;
 
+    private final static Logger MSG_LOGGER = LoggerFactory.getLogger("msg");
+
     /**
      * 发送消息到IBM MQ
      */
     @Override
     public boolean send(String msg) {
-        if (StringUtils.isEmpty(msg)) {
+        
+        if (StringUtils.isBlank(msg)) {
             return false;
         }
 
         String queueName = jmqConfig.getSendQueueName();
+        MSG_LOGGER.info("send: {} -> {}", queueName, msg);
         return producer.sendMessage(queueName, msg);
     }
 
     @Override
     public boolean encode(String sign, Holder<String> enStr) {
         // TODO 先简单走流程 后面实现具体加密签名之类的
-        if (sign.length() == 0) {
+        if (StringUtils.isBlank(sign)) {
             return false;
         }
         enStr.setValue("123" + sign + "456");
+        MSG_LOGGER.info("encode: {} -> {}", sign, enStr.value);
         return true;
     }
 
     @Override
     public boolean encodeWithSend(String msg, String sign) {
-        if (StringUtils.isEmpty(msg) || StringUtils.isEmpty(sign)) {
+        if (StringUtils.isBlank(msg) || StringUtils.isBlank(sign)) {
             return false;
         }
 
@@ -339,14 +345,22 @@ public class MessageServantImpl implements MessageServant {
         if (!ok) {
             return false;
         }
-
-        return send(enStr.getValue() + msg);
+        return send(enStr.value + msg);
     }
 }
 ```
+这里的字符串验证工具用的是org.apache.commons，maven引入如下
+```xml
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.11</version>
+		</dependency>
+```
+
 ### 生成jar包/上传/测试/观察
 ```sh
-$ mvn clean package
+$ mvn clean package -DskipTests
 ```
 查看日志，有类似信息
 ```log
@@ -385,88 +399,8 @@ $ tree
     │       ├── application.properties
     │       └── mqserver.tars
 ```
-### 最后pom.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>tars-mq-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>tars-mq-server</name>
-	<description>Demo project for Spring Boot</description>
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.tencent.tars</groupId>
-			<artifactId>tars-spring-boot-starter</artifactId>
-			<version>1.7.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.ibm.mq</groupId>
-			<artifactId>mq-jms-spring-boot-starter</artifactId>
-			<version>2.4.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<finalName>mqserver</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<!--tars2java plugin -->
-			<plugin>
-				<groupId>com.tencent.tars</groupId>
-				<artifactId>tars-maven-plugin</artifactId>
-				<version>1.7.2</version>
-				<configuration>
-					<tars2JavaConfig>
-						<!-- tars file location -->
-						<tarsFiles>
-							<tarsFile>${basedir}/src/main/resources/mqserver.tars</tarsFile>
-						</tarsFiles>
-						<!-- Source file encoding -->
-						<tarsFileCharset>UTF-8</tarsFileCharset>
-						<!-- Generate server code -->
-						<servant>true</servant>
-						<!-- Generated source code encoding -->
-						<charset>UTF-8</charset>
-						<!-- Generated source code directory -->
-						<srcPath>${basedir}/src/main/java</srcPath>
-						<!-- Generated source code package prefix -->
-						<packagePrefixName>com.example.tarsmqserver.service.</packagePrefixName>
-					</tars2JavaConfig>
-				</configuration>
-			</plugin>
-			<!--package plugin-->
-		</plugins>
-	</build>
-
-</project>
-```
 ## 源代码
-[学习JAVA第2天 实现基于tars springboot ibm mq的微服务](https://github.com/aomirun/demo/tree/main/day-2)
+[学习JAVA第2天 实现tars-springboot-ibm-mq的微服务(微服务系列第二天)](https://github.com/aomirun/demo/tree/main/day-2)
 
 ## 结语
 由于才接触java，springboot很多功能都是通过java专有的注解完成的。学习时间有限，很多东西还没有理解，中间调试的时候花了不少时间去查资料和调试。更因为我是使用vscode+tars+springboot来弄的，发生了错误也不知道哪里出问题了。搜索的资料只能做参考，然后自己消化学习，最终调试完成。

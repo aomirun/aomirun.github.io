@@ -7,23 +7,34 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Wed, 27 Jan 2021 12:37:57 +0800</lastBuildDate><atom:link href="https://aomi.run/tags/jms/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 28 Jan 2021 18:16:06 +0800</lastBuildDate><atom:link href="https://aomi.run/tags/jms/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务</title>
+      <title>实现客户端同步和异步调用RPC微服务(微服务系列第三天)</title>
+      <link>https://aomi.run/posts/java/hello-java-3-day/</link>
+      <pubDate>Thu, 28 Jan 2021 18:16:06 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/java/hello-java-3-day/</guid>
+      <description>前言  学习java的第3天 实现目标： 学习tars 客户端同步和异步调用RPC服务
+ 前面搞了那么多环境，主要还是为了折腾多语言微服务开发架构，这样就不用只限定某一种开发语言了，各种语言谁行谁上。今天主要目的就是把前面做的服务端程序，使用客户端来调用。
+客户端同步/单向/异步调用服务 构建客户端工程项目,提供WEB代理服务 具体种自开发环境不同，自行创建maven项目
+添加依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.tencent.tars&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tars-client&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.7.2&amp;lt;/version&amp;gt; &amp;lt;type&amp;gt;jar&amp;lt;/type&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.tencent.tars&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tars-spring-boot-starter&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.7.2&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 添加插件 &amp;lt;build&amp;gt; &amp;lt;finalName&amp;gt;mqwebservice&amp;lt;/finalName&amp;gt; &amp;lt;plugins&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;/plugin&amp;gt; &amp;lt;!--tars2java plugin --&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;com.tencent.tars&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tars-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.7.2&amp;lt;/version&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;tars2JavaConfig&amp;gt; &amp;lt;!-- tars文件位置 --&amp;gt; &amp;lt;tarsFiles&amp;gt; &amp;lt;tarsFile&amp;gt;${basedir}/src/main/resources/mqserver.tars&amp;lt;/tarsFile&amp;gt; &amp;lt;/tarsFiles&amp;gt; &amp;lt;!-- 源文件编码 --&amp;gt; &amp;lt;tarsFileCharset&amp;gt;UTF-8&amp;lt;/tarsFileCharset&amp;gt; &amp;lt;!-- 生成代码，PS：客户端调用，这里需要设置为false --&amp;gt; &amp;lt;servant&amp;gt;false&amp;lt;/servant&amp;gt; &amp;lt;!-- 生成源代码编码 --&amp;gt; &amp;lt;charset&amp;gt;UTF-8&amp;lt;/charset&amp;gt; &amp;lt;!-- 生成的源代码目录 --&amp;gt; &amp;lt;srcPath&amp;gt;${basedir}/src/main/java&amp;lt;/srcPath&amp;gt; &amp;lt;!-- 生成源代码包前缀 --&amp;gt; &amp;lt;packagePrefixName&amp;gt;com.example.mqwebservice.service.&amp;lt;/packagePrefixName&amp;gt; &amp;lt;/tars2JavaConfig&amp;gt; &amp;lt;/configuration&amp;gt; &amp;lt;/plugin&amp;gt; &amp;lt;!--package plugin--&amp;gt; &amp;lt;/plugins&amp;gt; &amp;lt;/build&amp;gt; 注解main @SpringBootApplication @EnableTarsServer public class MqwebserviceApplication { public static void main(String[] args) { SpringApplication.</description>
+    </item>
+    
+    <item>
+      <title>实现tars-springboot-ibm-mq的微服务(微服务系列第二天)</title>
       <link>https://aomi.run/posts/java/hello-java-2-day/</link>
       <pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
       
       <guid>https://aomi.run/posts/java/hello-java-2-day/</guid>
-      <description>前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.
+      <description>前言  学习JAVA第2天 目标实现： 基于tars springboot ibm mq的微服务
+ 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,于是就实现了基于tars springboot ibm mq的微服务.
 搭建IBM MQ 同样还是使用docker来创建，添加ibmmq
 $ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 docker-compose.yml 中添加内容如下：
 ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&amp;#34;accept&amp;#34;MQ_QMGR_NAME:&amp;#34;QM1&amp;#34;MQ_APP_PASSWORD:&amp;#34;abcd1234&amp;#34;ports:- &amp;#34;1414:1414&amp;#34;- &amp;#34;9443:9443&amp;#34;networks:tars:ipv4_address:172.25.0.201volumes:qm1data:另外给node一个web服务端口，后续会用上
 node:# image: tarscloud/tars-node:stableimage:tarscloud/tars-node:latestcontainer_name:tars-node# restart: alwaysports:- &amp;#34;1080:1080&amp;#34;networks:tars:ipv4_address:172.25.0.5volumes:- ./node/data:/data/tars:rw- /etc/localtime:/etc/localtimeenvironment:INET:eth0WEB_HOST:http://172.25.0.3:3000depends_on:- framework运行起来
 $ docker-compose up -d Creating tars-mysql ... done Creating ibmmq ... done Creating tars-framework ... done Creating tars-node ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问,好像ibmmq这个版本的web服务有bug,重启Docker后，会占用端口，之后就启动不了了，原因没有深究，测试的话，默认创建好后就可以使用，要不要Web管理端都无所谓。
 IBM MQ登录页 输入账号密码登录，默认账号密码是： admin/passw0rd
-IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的
-测试IBM MQ 添加ibmmq的依赖
-pom.xml &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.</description>
+IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的</description>
     </item>
     
   </channel>

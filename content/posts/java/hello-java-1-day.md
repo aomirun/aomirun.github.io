@@ -1,11 +1,15 @@
 ---
-title: "Hello Java 1 Day 学习JAVA第1天 通过docker整合springboot和tars 构建微服务环境"
+title: "通过docker-springboot-tars构建微服务环境(微服务系列第一天)"
 date: 2021-01-26T11:39:02+08:00
 draft: false
 toc: true
 categories: 
   - java
 images:
+series:
+  - hello java
+  - 微服务
+  - tars
 tags: 
   - java
   - tars
@@ -15,7 +19,7 @@ tags:
 ---
 
 ## 前言
-> 实现目标：通过docker整合springboot和tars
+> 学习JAVA第1天,实现目标：通过docker整合springboot和tars
 
 先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于[win10 wsl2 vscode](/posts/wsl2-vscode-openjdk-install/) 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
 ## tars 环境搭建
@@ -178,23 +182,6 @@ $ tree
 			<version>1.7.2</version>
 		</dependency>
 ```
-### 关掉测试用例
-由于导入了 tars 包后,测试就有了 tars 专有依赖了,具体如何测试有 tars 的项目,后面再弄,现在玩关掉,要不然mvn package会通不过
-```java
-package com.example.tarsmqserver;
-
-// import org.junit.jupiter.api.Test;
-// import org.springframework.boot.test.context.SpringBootTest;
-
-// @SpringBootTest
-// class TarsMqServerApplicationTests {
-
-// 	@Test
-// 	void contextLoads() {
-// 	}
-
-// }
-```
 ### 创建tars协议接口文件
 ```
 module mqserver
@@ -348,7 +335,7 @@ public class TarsMqServerApplication {
 ```
 ### Jar打包
 ```sh
-$ mvn clean package
+$ mvn clean package -DskipTests
 ```
 最后的目录结构是
 ```sh
@@ -408,6 +395,6 @@ mqserver.jar 就是tars的包,上传到tars-web上面
     }
 ```
 ### 源代码
-源代码几天后做了整理，现上传到github上面了 传送门 -> [通过docker整合springboot和tars](https://github.com/aomirun/demo/tree/main/day-1/tars-mq-server)
+源代码几天后做了整理，现上传到github上面了 传送门 -> [通过docker-springboot-tars构建微服务环境(微服务系列第一天)](https://github.com/aomirun/demo/tree/main/day-1/tars-mq-server)
 ### 结语
 学习java的第一天折腾了一下项目大致流程，主要是在 `vscode` 中使用 `maven` 来创建 `springboot` 项目，并加入 `tars` 的支持，然后打包上传到 `tars` 中运行并调试。中间也碰到了一些问题，比如加载了tars包后`test`文件就有依赖了，不加入依赖就会报找不到tars 配置文件的错误，开始一直保留在项目中，打包`jar`的时候就会报错，总之自己是java菜鸟，碰到各种错误也属于正常了，整体还是很成功的。一经在 `tars` 中使用后，就和开发语言无关了。之后喜欢用哪种开发语言去调用服务都可以，这也算是微服务的特点之一吧。

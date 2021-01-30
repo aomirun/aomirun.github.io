@@ -6,27 +6,412 @@
 		<generator>Hugo -- gohugo.io</generator>
 		<language>zh_CN</language>
 		<copyright>aomi.run</copyright>
-		<lastBuildDate>Wed, 27 Jan 2021 12:37:57 +0800</lastBuildDate>
+		<lastBuildDate>Thu, 28 Jan 2021 18:16:06 +0800</lastBuildDate>
 		<atom:link href="https://aomi.run/posts/index.xml" rel="self" type="application/rss+xml" />
 		
 		<item>
-			<title>Hello Java 2 Day 学习JAVA第2天 实现基于tars springboot ibm mq的微服务</title>
+			<title>实现客户端同步和异步调用RPC微服务(微服务系列第三天)</title>
+			<link>https://aomi.run/posts/java/hello-java-3-day/</link>
+			<pubDate>Thu, 28 Jan 2021 18:16:06 +0800</pubDate>
+			
+			<guid>https://aomi.run/posts/java/hello-java-3-day/</guid>
+			<description>前言  学习java的第3天 实现目标： 学习tars 客户端同步和异步调用RPC服务
+ 前面搞了那么多环境，主要还是为了折腾多语言微服务开发架构，这样就不用只限定某一种开发语言了，各种语言谁行谁上。今天主要目的就是把前面做的服务端程序，使用客户端来调用。
+客户端同步/单向/异步调用服务 构建客户端工程项目,提供WEB代理服务 具体种自开发环境不同，自行创建maven项目
+添加依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.tencent.tars&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tars-client&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.7.2&amp;lt;/version&amp;gt; &amp;lt;type&amp;gt;jar&amp;lt;/type&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.tencent.tars&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tars-spring-boot-starter&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.7.2&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 添加插件 &amp;lt;build&amp;gt; &amp;lt;finalName&amp;gt;mqwebservice&amp;lt;/finalName&amp;gt; &amp;lt;plugins&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;/plugin&amp;gt; &amp;lt;!--tars2java plugin --&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;com.tencent.tars&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tars-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.7.2&amp;lt;/version&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;tars2JavaConfig&amp;gt; &amp;lt;!-- tars文件位置 --&amp;gt; &amp;lt;tarsFiles&amp;gt; &amp;lt;tarsFile&amp;gt;${basedir}/src/main/resources/mqserver.tars&amp;lt;/tarsFile&amp;gt; &amp;lt;/tarsFiles&amp;gt; &amp;lt;!-- 源文件编码 --&amp;gt; &amp;lt;tarsFileCharset&amp;gt;UTF-8&amp;lt;/tarsFileCharset&amp;gt; &amp;lt;!-- 生成代码，PS：客户端调用，这里需要设置为false --&amp;gt; &amp;lt;servant&amp;gt;false&amp;lt;/servant&amp;gt; &amp;lt;!-- 生成源代码编码 --&amp;gt; &amp;lt;charset&amp;gt;UTF-8&amp;lt;/charset&amp;gt; &amp;lt;!-- 生成的源代码目录 --&amp;gt; &amp;lt;srcPath&amp;gt;${basedir}/src/main/java&amp;lt;/srcPath&amp;gt; &amp;lt;!-- 生成源代码包前缀 --&amp;gt; &amp;lt;packagePrefixName&amp;gt;com.example.mqwebservice.service.&amp;lt;/packagePrefixName&amp;gt; &amp;lt;/tars2JavaConfig&amp;gt; &amp;lt;/configuration&amp;gt; &amp;lt;/plugin&amp;gt; &amp;lt;!--package plugin--&amp;gt; &amp;lt;/plugins&amp;gt; &amp;lt;/build&amp;gt; 注解main @SpringBootApplication @EnableTarsServer public class MqwebserviceApplication { public static void main(String[] args) { SpringApplication.</description>
+			<content type="html"><![CDATA[<h2 id="前言">前言</h2>
+<blockquote>
+<p>学习java的第3天 实现目标： 学习tars 客户端同步和异步调用RPC服务</p>
+</blockquote>
+<p>前面搞了那么多环境，主要还是为了折腾多语言微服务开发架构，这样就不用只限定某一种开发语言了，各种语言谁行谁上。今天主要目的就是把前面做的服务端程序，使用客户端来调用。</p>
+<h2 id="客户端同步单向异步调用服务">客户端同步/单向/异步调用服务</h2>
+<h3 id="构建客户端工程项目提供web代理服务">构建客户端工程项目,提供WEB代理服务</h3>
+<p>具体种自开发环境不同，自行创建maven项目</p>
+<h3 id="添加依赖">添加依赖</h3>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>tars-client<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
+			<span class="nt">&lt;type&gt;</span>jar<span class="nt">&lt;/type&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
+		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>tars-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div><h3 id="添加插件">添加插件</h3>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">	<span class="nt">&lt;build&gt;</span>
+		<span class="nt">&lt;finalName&gt;</span>mqwebservice<span class="nt">&lt;/finalName&gt;</span>
+		<span class="nt">&lt;plugins&gt;</span>
+			<span class="nt">&lt;plugin&gt;</span>
+				<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+				<span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;/plugin&gt;</span>
+			<span class="c">&lt;!--tars2java plugin --&gt;</span>
+			<span class="nt">&lt;plugin&gt;</span>
+				<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
+				<span class="nt">&lt;artifactId&gt;</span>tars-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+				<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
+				<span class="nt">&lt;configuration&gt;</span>
+					<span class="nt">&lt;tars2JavaConfig&gt;</span>
+						<span class="c">&lt;!-- tars文件位置 --&gt;</span>
+						<span class="nt">&lt;tarsFiles&gt;</span>
+							<span class="nt">&lt;tarsFile&gt;</span>${basedir}/src/main/resources/mqserver.tars<span class="nt">&lt;/tarsFile&gt;</span>
+						<span class="nt">&lt;/tarsFiles&gt;</span>
+						<span class="c">&lt;!-- 源文件编码 --&gt;</span>
+						<span class="nt">&lt;tarsFileCharset&gt;</span>UTF-8<span class="nt">&lt;/tarsFileCharset&gt;</span>
+						<span class="c">&lt;!-- 生成代码，PS：客户端调用，这里需要设置为false --&gt;</span>
+						<span class="nt">&lt;servant&gt;</span>false<span class="nt">&lt;/servant&gt;</span>
+						<span class="c">&lt;!-- 生成源代码编码 --&gt;</span>
+						<span class="nt">&lt;charset&gt;</span>UTF-8<span class="nt">&lt;/charset&gt;</span>
+						<span class="c">&lt;!-- 生成的源代码目录 --&gt;</span>
+						<span class="nt">&lt;srcPath&gt;</span>${basedir}/src/main/java<span class="nt">&lt;/srcPath&gt;</span>
+						<span class="c">&lt;!-- 生成源代码包前缀 --&gt;</span>
+						<span class="nt">&lt;packagePrefixName&gt;</span>com.example.mqwebservice.service.<span class="nt">&lt;/packagePrefixName&gt;</span>
+					<span class="nt">&lt;/tars2JavaConfig&gt;</span>
+				<span class="nt">&lt;/configuration&gt;</span>
+			<span class="nt">&lt;/plugin&gt;</span>
+			<span class="c">&lt;!--package plugin--&gt;</span>
+		<span class="nt">&lt;/plugins&gt;</span>
+	<span class="nt">&lt;/build&gt;</span>
+</code></pre></div><h3 id="注解main">注解main</h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableTarsServer</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MqwebserviceApplication</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">MqwebserviceApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="生成mqservertars客户端文件">生成mqserver.tars客户端文件</h3>
+<p>文件用的是第一天服务端的接口定义文件 <a href="/posts/java/hello-java-1-day/">传送门</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn tars:tars2java
+</code></pre></div><h3 id="创建web控制器">创建Web控制器</h3>
+<p>src/main/java/com/example/mqwebservice/web/MQController.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@TarsHttpService</span><span class="o">(</span><span class="s">&#34;mqwebserviceObj&#34;</span><span class="o">)</span>
+<span class="nd">@RestController</span><span class="o">()</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/api/mq&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MQController</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">RPC_LOGGER</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">&#34;rpc&#34;</span><span class="o">);</span>
+
+    <span class="nd">@TarsClient</span><span class="o">(</span><span class="s">&#34;example.mqserver.messageObj&#34;</span><span class="o">)</span>
+    <span class="n">MessagePrx</span> <span class="n">messagePrx</span><span class="o">;</span>
+
+    
+    <span class="cm">/**
+</span><span class="cm">     * 远程调用rpc服务，发送消息给ibmmq
+</span><span class="cm">     * 
+</span><span class="cm">     * @param msg
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/send/{msg}&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">rpcSend</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;msg&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;发送的报文为: {}&#34;</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">messagePrx</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">msg</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/encode/{sign}&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">rpcEncode</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;sign&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">sign</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="n">messagePrx</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">sign</span><span class="o">,</span> <span class="n">enStr</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">enStr</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
+        <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;收到的密文是: {}&#34;</span><span class="o">,</span> <span class="n">enStr</span><span class="o">.</span><span class="na">value</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/send/{msg}/encode/{sign}&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">rpcEncodeWithSend</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;msg&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">msg</span><span class="o">,</span> <span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;sign&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">sign</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="o">||</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">sign</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span><span class="n">messagePrx</span><span class="o">.</span><span class="na">encodeWithSend</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">sign</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">ok</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;发送的报文为: {}&#34;</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="main">main</h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableTarsServer</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MqwebserviceApplication</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">MqwebserviceApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="同步调用注解">同步调用注解</h3>
+<p>通过注解绑定了tars客户端</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@TarsClient</span><span class="o">(</span><span class="s">&#34;example.mqserver.messageObj&#34;</span><span class="o">)</span>
+    <span class="n">MessagePrx</span> <span class="n">messagePrx</span><span class="o">;</span>
+</code></pre></div><h3 id="编写restful-实现同步异步请求">编写restful 实现同步/异步请求</h3>
+<p>src/main/java/com/example/client/controller/MessageController.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 开启tars的web服务，整合spring boot tomcat 的web服务
+</span><span class="c1"></span><span class="nd">@TarsHttpService</span><span class="o">(</span><span class="s">&#34;mqwebserviceObj&#34;</span><span class="o">)</span>
+<span class="nd">@RestController</span><span class="o">()</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/api/mq&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MQController</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">RPC_LOGGER</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">&#34;rpc&#34;</span><span class="o">);</span>
+
+    <span class="nd">@TarsClient</span><span class="o">(</span><span class="s">&#34;example.mqserver.messageObj&#34;</span><span class="o">)</span>
+    <span class="n">MessagePrx</span> <span class="n">messagePrx</span><span class="o">;</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 远程调用rpc服务，发送消息给ibmmq
+</span><span class="cm">     * 
+</span><span class="cm">     * @param msg
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/send/{msg}&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">rpcSend</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;msg&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="c1">// 异步调用
+</span><span class="c1"></span>        <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;开始异步发送的报文为: {}&#34;</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+        <span class="n">messagePrx</span><span class="o">.</span><span class="na">async_send</span><span class="o">(</span><span class="k">new</span> <span class="n">MessagePrxCallback</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">callback_expired</span><span class="o">()</span> <span class="o">{</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">callback_exception</span><span class="o">(</span><span class="n">Throwable</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">callback_send</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">ret</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;接收到异步返回状态: {}, &#34;</span><span class="o">,</span><span class="n">ret</span><span class="o">);</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">callback_encode</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">ret</span><span class="o">,</span> <span class="n">String</span> <span class="n">enStr</span><span class="o">){}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">callback_encodeWithSend</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">ret</span><span class="o">){}</span>
+        <span class="o">},</span> <span class="n">msg</span><span class="o">);</span>
+        
+        <span class="c1">// 单向调用 所谓单向调用，表示客户端只管发送数据，而不接收服务端的响应，也不管服务端是否接收到请求。
+</span><span class="c1"></span>        <span class="n">messagePrx</span><span class="o">.</span><span class="na">async_send</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+        <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;单向调用发送的报文为: {}&#34;</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+
+
+        <span class="c1">// 同步调用
+</span><span class="c1"></span>        <span class="kt">boolean</span> <span class="n">isSend</span> <span class="o">=</span> <span class="n">messagePrx</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">msg</span><span class="o">);</span>
+        <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;同步发送的报文为: {}, 状态： {}&#34;</span><span class="o">,</span> <span class="n">msg</span><span class="o">,</span> <span class="n">isSend</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">isSend</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/encode/{sign}&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">rpcEncode</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;sign&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">sign</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="n">messagePrx</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">sign</span><span class="o">,</span> <span class="n">enStr</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">enStr</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
+        <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;收到的密文是: {}&#34;</span><span class="o">,</span> <span class="n">enStr</span><span class="o">.</span><span class="na">value</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/send/{msg}/encode/{sign}&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">rpcEncodeWithSend</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;msg&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">msg</span><span class="o">,</span> <span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;sign&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">sign</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="o">||</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">sign</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">messagePrx</span><span class="o">.</span><span class="na">encodeWithSend</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">sign</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">ok</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">RPC_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;发送的报文为: {}&#34;</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="tarshttpservice-用途">@TarsHttpService 用途</h3>
+<p>把springboot tomcat的端口配置变成tars的指定的商品，可以在tars-web平台上绑定</p>
+<pre><code class="language-log" data-lang="log">[SERVER] server starting at tcp -h 127.0.0.1 -p 1080 -t 3000...
+[SERVER] server started at tcp -h 127.0.0.1 -p 1080 -t 3000...
+[SERVER] The application started successfully.
+The session manager service started...
+[SERVER] server is ready...
+2021-01-30 14:25:14.886 INFO 26735 --- [ main] o.s.b.w.embedded.tomcat.TomcatWebServer : Tomcat started on port(s): 1080 (http) with context path ''
+</code></pre><h3 id="部署">部署</h3>
+<p>通过之前的方法，打包-&gt;上传-&gt;测试数据-&gt;观察结果</p>
+<h4 id="打包">打包</h4>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package -DskipTests 
+</code></pre></div><h4 id="上传">上传</h4>
+<p>通过tars-web上传</p>
+<h4 id="测试">测试</h4>
+<p>通过浏览器或curl测试</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ curl http://localhost:1080/api/mq/send/abcd
+<span class="o">{</span><span class="s2">&#34;success&#34;</span>:true,<span class="s2">&#34;code&#34;</span>:200,<span class="s2">&#34;msg&#34;</span>:null,<span class="s2">&#34;data&#34;</span>:true<span class="o">}</span>% 
+</code></pre></div><h4 id="查看结果">查看结果</h4>
+<p>在tars-web后面查看日志，可以看到收到了消息，同步消息测试完成。
+mqserver</p>
+<pre><code class="language-log" data-lang="log">2021-01-30 14:28:30.033 INFO 26862 --- [ageObjAdapter-5] msg : send: DEV.QUEUE.1 -&gt; abcd
+2021-01-30 14:28:30.034 INFO 26862 --- [ageObjAdapter-2] msg : send: DEV.QUEUE.1 -&gt; abcd
+2021-01-30 14:28:30.035 INFO 26862 --- [ageObjAdapter-1] msg : send: DEV.QUEUE.1 -&gt; abcd
+2021-01-30 14:28:30.037 INFO 26862 --- [enerContainer-1] flow : Consumer收到的报文为: abcd
+2021-01-30 14:28:30.126 INFO 26862 --- [enerContainer-1] flow : Consumer收到的报文为: abcd
+2021-01-30 14:28:30.130 INFO 26862 --- [enerContainer-1] flow : Consumer收到的报文为: abcd
+</code></pre><p>mqwebservice</p>
+<pre><code class="language-log" data-lang="log">2021-01-30 14:28:30.027 INFO 27613 --- [0.5-1080-exec-1] rpc : 开始异步发送的报文为: abcd
+2021-01-30 14:28:30.033 INFO 27613 --- [0.5-1080-exec-1] rpc : 单向调用发送的报文为: abcd
+2021-01-30 14:28:30.040 INFO 27613 --- [ient-executor-2] rpc : 接收到异步返回状态: true,
+2021-01-30 14:28:30.136 INFO 27613 --- [0.5-1080-exec-1] rpc : 同步发送的报文为: abcd, 状态： true
+</code></pre><p>为了展示例子，项目代码还是比较简单的。</p>
+<h2 id="本地调试">本地调试</h2>
+<p>如果所有开发的项目都要打包/上传/远程调试/查看日志，无疑是非常麻烦的，所以就需要有本地调试。查看tars官方文档中有描述说明</p>
+<blockquote>
+<ul>
+<li>首先在工程目录下执行 mvn tars:build -Dapp=TestApp -Dserver=HelloJavaServer -DjvmParams=&quot;-Xms1024m -Xmx1024m -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Xdebug -Xrunjdwp:transport=dt_socket,address=9000,server=y,suspend=n&quot;</li>
+<li>在工程目录target/tars/bin/tars_start 启动服务</li>
+</ul>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn tars:build -Dapp<span class="o">=</span>example -Dserver<span class="o">=</span>mqserver -DjvmParams<span class="o">=</span><span class="s2">&#34;-Xms1024m -Xmx1024m -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Xdebug -Xrunjdwp:transport=dt_socket,address=9000,server=y,suspend=n&#34;</span> 
+</code></pre></div><p>我调试了一段时间，会报一些错误，最后提示错误为，一直没有解决</p>
+<pre><code>Failed to tars build: failed to find WEB-INF/servants.xml,  servants will be disabled
+</code></pre><p>如何配置使<code>tars:build</code>找到这个目录和文件，还没学会，以后学会了再回来修改这一段。
+现在我使用另外一个方法来解决这个问题,以第2天的代码为例子，来做本地调试，因为今天的例子是客户端，依赖第2天做的服务端。</p>
+<h3 id="从tars服务器找文件">从tars服务器找文件</h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ tree ~/docker-app/tars/data/node/tarsnode-data/example.mqserver
+
+├── bin
+│   ├── example.mqserver.jar
+│   └── tars_start.sh
+├── conf
+│   ├── example.mqserver.config.conf
+│   └── example.mqserver.config.conf.bak
+└── data
+    └── tarsnodes.dat
+
+<span class="m">3</span> directories, <span class="m">5</span> files
+
+$ cp ~/docker-app/tars/data/node/tarsnode-data/example.mqserver/bin/tars_start.sh .
+$ cp ~/docker-app/tars/data/node/tarsnode-data/example.mqserver/conf/example.mqserver.config.conf .
+</code></pre></div><h3 id="修改-examplemqserverconfigconf">修改 example.mqserver.config.conf</h3>
+<p>day-2/tars-mq-server/src/main/resources/example.mqserver.config.conf</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;tars&gt;</span>
+	<span class="nt">&lt;application&gt;</span>
+		enableset=N
+		setdivision=NULL
+		<span class="nt">&lt;client&gt;</span>
+			locator=
+			sync-invoke-timeout=20000
+			async-invoke-timeout=20000
+			refresh-endpoint-interval=60000
+			stat=tars.tarsstat.StatObj
+			property=tars.tarsproperty.PropertyObj
+			report-interval=60000
+			modulename=mqserver.messageJavaServer
+		<span class="nt">&lt;/client&gt;</span>
+		<span class="nt">&lt;server&gt;</span>
+			node=
+            		app=mqserver
+            		server=Message
+            		localip=127.0.0.1
+            		local=tcp -h 127.0.0.1 -p 18601 -t 3000
+            		basepath=.
+            		datapath=.
+            		logpath=.
+            		loglevel=DEBUG
+            		logsize=15M
+            		log=
+            		config=tars.tarsconfig.ConfigObj
+            		notify=tars.tarsnotify.NotifyObj
+            		mainclass=com.qq.tars.server.startup.Main
+            		jvmparams=-Xms1024m -Xmx1024m
+            		sessiontimeout=120000
+            		sessioncheckinterval=60000
+            		tcpnodelay=true
+            		udpbuffersize=8192
+            		charsetname=UTF-8
+			<span class="nt">&lt;mqserver.Message.messageObjAdapter&gt;</span>
+				allow
+				endpoint=tcp -h 127.0.0.1 -p 18600 -t 60000
+				handlegroup=mqserver.Message.messageObjAdapter
+				maxconns=200000
+				protocol=tars
+				queuecap=10000
+				queuetimeout=60000
+				servant=mqserver.Message.messageObj
+				shmcap=0
+				shmkey=0
+				threads=100
+			<span class="nt">&lt;/mqserver.Message.messageObjAdapter&gt;</span>
+		<span class="nt">&lt;/server&gt;</span>
+	<span class="nt">&lt;/application&gt;</span>
+<span class="nt">&lt;/tars&gt;</span>
+</code></pre></div><h3 id="修改tars_startsh">修改tars_start.sh</h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/sh
+</span><span class="cp"></span>
+java -Dconfig<span class="o">=</span>target/classes/example.mqserver.config.conf -Dcom.sun.management.jmxremote.ssl<span class="o">=</span><span class="nb">false</span> -Dcom.sun.management.jmxremote.authenticate<span class="o">=</span><span class="nb">false</span> -Xms2000m -Xmx2000m -Xmn1000m -Xss1000k -XX:CMSInitiatingOccupancyFraction<span class="o">=</span><span class="m">60</span> -XX:+CMSParallelRemarkEnabled -XX:+CMSScavengeBeforeRemark -verbosegc -XX:+PrintGCDetails -XX:ErrorFile<span class="o">=</span>target/mqserver/logs/jvm_error.log -jar target/mqserver.jar
+</code></pre></div><h3 id="启动本地测试">启动本地测试</h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sh tars_start.sh
+
+
+  .   ____          _            __ _ _
+ /<span class="se">\\</span> / ___<span class="s1">&#39;_ __ _ _(_)_ __  __ _ \ \ \ \
+</span><span class="s1">( ( )\___ | &#39;</span>_ <span class="p">|</span> <span class="s1">&#39;_| | &#39;</span>_ <span class="se">\/</span> _<span class="sb">`</span> <span class="p">|</span> <span class="se">\ \ \ \
+</span><span class="se"></span> <span class="se">\\</span>/  ___<span class="o">)</span><span class="p">|</span> <span class="p">|</span>_<span class="o">)</span><span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="o">||</span> <span class="o">(</span>_<span class="p">|</span> <span class="p">|</span>  <span class="o">)</span> <span class="o">)</span> <span class="o">)</span> <span class="o">)</span>
+  <span class="err">&#39;</span>  <span class="p">|</span>____<span class="p">|</span> .__<span class="p">|</span>_<span class="p">|</span> <span class="p">|</span>_<span class="p">|</span>_<span class="p">|</span> <span class="p">|</span>_<span class="se">\_</span>_, <span class="p">|</span> / / / /
+ <span class="o">=========</span><span class="p">|</span>_<span class="p">|</span><span class="o">==============</span><span class="p">|</span>___/<span class="o">=</span>/_/_/_/
+ :: Spring Boot ::                <span class="o">(</span>v2.4.2<span class="o">)</span>
+ ...
+ ...
+ ...
+</code></pre></div><p>这样本地就启动起来了，调试方便多了。
+既然已经折腾这么久了，后续还会很频繁的使用，弄个脚本文件来处理吧。</p>
+<h3 id="makefile">Makefile</h3>
+<p>用Linux做开发的人肯定很熟了，我这里就简单的弄了一个脚本。
+其实就是做了mvn一些命令的别名，另外加了一个上传jar文件的命令。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ make <span class="nb">help</span>
+<span class="o">===============</span>A common Makefile <span class="k">for</span> java maven tars <span class="nv">programs</span><span class="o">==============</span>
+Copyright <span class="o">(</span>C<span class="o">)</span> <span class="m">2021</span> aomi.run
+The following targets aresupport:
+
+ <span class="nb">test</span>                                   - mvn <span class="nb">test</span>
+ run                                    - tars <span class="nb">local</span> run
+ build                                  - mvn clean package -DskipTests
+ test-build                             - mvn clean package
+ upload                                 - upload jar package to tars node
+ build-upload                           - build and upload
+ test-build-upload                      - test-build and upload
+ <span class="nb">help</span>                                   - print <span class="nb">help</span> information
+
+To make a target, <span class="k">do</span> <span class="s1">&#39;make [target]&#39;</span>
+<span class="o">===============================</span> Version 1.7.2 <span class="o">=============================</span>
+</code></pre></div><p><code>Makefile</code>文件存放在我的github上面，需要的可以进入<a href="https://github.com/aomirun/demo/blob/main/day-2/tars-mq-server/Makefile">传送门</a>查看。</p>
+<h2 id="源代码">源代码</h2>
+<p><a href="https://github.com/aomirun/demo/tree/main/day-3/mqwebservice">实现客户端同步和异步调用RPC微服务(微服务系列第三天)</a></p>
+<h2 id="结语">结语</h2>
+<p>本打算今天弄简单点，不想到又加了个本地调试，和打包上传脚本，超纲了！顺便梳理了这3个文章，把项目名称和文件名称理了一下，顺便把源代码也存放到github上面，方便今后自己忘记了可以查阅。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>实现tars-springboot-ibm-mq的微服务(微服务系列第二天)</title>
 			<link>https://aomi.run/posts/java/hello-java-2-day/</link>
 			<pubDate>Wed, 27 Jan 2021 12:37:57 +0800</pubDate>
 			
 			<guid>https://aomi.run/posts/java/hello-java-2-day/</guid>
-			<description>前言 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.
+			<description>前言  学习JAVA第2天 目标实现： 基于tars springboot ibm mq的微服务
+ 第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,于是就实现了基于tars springboot ibm mq的微服务.
 搭建IBM MQ 同样还是使用docker来创建，添加ibmmq
 $ docker volume create qm1data # ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单 docker-compose.yml 中添加内容如下：
 ibmmq:image:ibmcom/mqcontainer_name:ibmmqvolumes:- qm1data:/mnt/mqmenvironment:LICENSE:&amp;#34;accept&amp;#34;MQ_QMGR_NAME:&amp;#34;QM1&amp;#34;MQ_APP_PASSWORD:&amp;#34;abcd1234&amp;#34;ports:- &amp;#34;1414:1414&amp;#34;- &amp;#34;9443:9443&amp;#34;networks:tars:ipv4_address:172.25.0.201volumes:qm1data:另外给node一个web服务端口，后续会用上
 node:# image: tarscloud/tars-node:stableimage:tarscloud/tars-node:latestcontainer_name:tars-node# restart: alwaysports:- &amp;#34;1080:1080&amp;#34;networks:tars:ipv4_address:172.25.0.5volumes:- ./node/data:/data/tars:rw- /etc/localtime:/etc/localtimeenvironment:INET:eth0WEB_HOST:http://172.25.0.3:3000depends_on:- framework运行起来
 $ docker-compose up -d Creating tars-mysql ... done Creating ibmmq ... done Creating tars-framework ... done Creating tars-node ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问,好像ibmmq这个版本的web服务有bug,重启Docker后，会占用端口，之后就启动不了了，原因没有深究，测试的话，默认创建好后就可以使用，要不要Web管理端都无所谓。
 IBM MQ登录页 输入账号密码登录，默认账号密码是： admin/passw0rd
-IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的
-测试IBM MQ 添加ibmmq的依赖
-pom.xml &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.</description>
+IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的</description>
 			<content type="html"><![CDATA[<h2 id="前言">前言</h2>
-<p>第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,实现基于tars springboot ibm mq的微服务.</p>
+<blockquote>
+<p>学习JAVA第2天 目标实现： 基于tars springboot ibm mq的微服务</p>
+</blockquote>
+<p>第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,于是就实现了基于tars springboot ibm mq的微服务.</p>
 <h2 id="搭建ibm-mq">搭建IBM MQ</h2>
 <p>同样还是使用docker来创建，添加ibmmq</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker volume create qm1data  <span class="c1"># ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单</span>
@@ -117,18 +502,14 @@ spring boot 默认都是开启8080端口，因为我开发机上要运行多个�
 <span class="na">ibm.mq.recvQueueName</span><span class="o">=</span><span class="s">DEV.QUEUE.1</span>
 </code></pre></div><h3 id="修改main">修改main</h3>
 <p>TarsMqServerApplication
-这里需要用到spring boot 的web服务，所以这里恢复到项目初始状态，上传tars时，协议先非tars协议即可。</p>
+这里需要用到spring boot 的web服务，所以这里恢复到项目初始状态，上传tars时，协议选非tars协议即可。</p>
 <div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
 <span class="nd">@EnableTarsServer</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TarsMqServerApplication</span> <span class="o">{</span>
 
 	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
 		<span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">TarsMqServerApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
-		<span class="c1">// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
-</span><span class="c1"></span>		<span class="c1">// SpringApplication app = new SpringApplication(TarsMqServerApplication.class);
-</span><span class="c1"></span>		<span class="c1">// app.setWebApplicationType(WebApplicationType.NONE);
-</span><span class="c1"></span>		<span class="c1">// app.run(args);
-</span><span class="c1"></span>	<span class="o">}</span>
+	<span class="o">}</span>
 
 <span class="o">}</span>
 </code></pre></div><h3 id="添加rest控制器">添加Rest控制器</h3>
@@ -165,7 +546,7 @@ src/main/java/com/example/tarsmqserver/web/MQController.java</p>
 <span class="o">}</span>
 </code></pre></div><h3 id="提交tars-web测试">提交tars-web测试</h3>
 <h4 id="打包">打包</h4>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package -DskipTests 
 </code></pre></div><h4 id="上传">上传</h4>
 <p>上传办法详细看第1节</p>
 <h4 id="测试">测试</h4>
@@ -179,8 +560,7 @@ OK%
 <h3 id="服务介绍">服务介绍</h3>
 <p>关于JMS到网上抄了一份作业,了解一下运行逻辑。
 <img src="/images/posts/mq/jms.png" alt="">
-由于刚接触Java，到网上找了许多资料，我剪裁了一下，最后模样如下</p>
-<h3 id="开始打造基于tars的jms服务了">开始打造基于tars的JMS服务了</h3>
+下面开始打造基于tars的JMS服务了</p>
 <h3 id="ibmmq-绑定配置文件">ibmmq 绑定配置文件</h3>
 <p>目录建得比较随意，网上抄作业看到有人用这种目录方式，就直接抄了。
 src/main/java/com/example/tarsmqserver/domain/JmqConfig.java</p>
@@ -269,7 +649,7 @@ src/main/java/com/example/demo/DemoApplication.java</p>
 <span class="o">}</span>
 </code></pre></div><h3 id="完善tars接口">完善tars接口</h3>
 <p>用的是上一章定义的接口
-tars接口定义传送门 <a href="/posts/java/hello-java-1-day">第1天 通过docker整合springboot和tars</a>
+tars接口定义传送门 <a href="/posts/java/hello-java-1-day/#%E5%88%9B%E5%BB%BAtars%E5%8D%8F%E8%AE%AE%E6%8E%A5%E5%8F%A3%E6%96%87%E4%BB%B6">第1天 通过docker整合springboot和tars</a>
 src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.java</p>
 <div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@TarsServant</span><span class="o">(</span><span class="s">&#34;messageObj&#34;</span><span class="o">)</span>
 <span class="nd">@Component</span>
@@ -280,32 +660,37 @@ src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.
     <span class="nd">@Autowired</span>
     <span class="kd">private</span> <span class="n">JmqConfig</span> <span class="n">jmqConfig</span><span class="o">;</span>
 
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">MSG_LOGGER</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">&#34;msg&#34;</span><span class="o">);</span>
+
     <span class="cm">/**
 </span><span class="cm">     * 发送消息到IBM MQ
 </span><span class="cm">     */</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">send</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
+        
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
             <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
         <span class="o">}</span>
 
         <span class="n">String</span> <span class="n">queueName</span> <span class="o">=</span> <span class="n">jmqConfig</span><span class="o">.</span><span class="na">getSendQueueName</span><span class="o">();</span>
+        <span class="n">MSG_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;send: {} -&gt; {}&#34;</span><span class="o">,</span> <span class="n">queueName</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
         <span class="k">return</span> <span class="n">producer</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">(</span><span class="n">queueName</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">encode</span><span class="o">(</span><span class="n">String</span> <span class="n">sign</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span><span class="o">)</span> <span class="o">{</span>
         <span class="c1">// TODO 先简单走流程 后面实现具体加密签名之类的
-</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">sign</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">sign</span><span class="o">))</span> <span class="o">{</span>
             <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
         <span class="o">}</span>
         <span class="n">enStr</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="s">&#34;123&#34;</span> <span class="o">+</span> <span class="n">sign</span> <span class="o">+</span> <span class="s">&#34;456&#34;</span><span class="o">);</span>
+        <span class="n">MSG_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;encode: {} -&gt; {}&#34;</span><span class="o">,</span> <span class="n">sign</span><span class="o">,</span> <span class="n">enStr</span><span class="o">.</span><span class="na">value</span><span class="o">);</span>
         <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">encodeWithSend</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">,</span> <span class="n">String</span> <span class="n">sign</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="o">||</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">sign</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="o">||</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">sign</span><span class="o">))</span> <span class="o">{</span>
             <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
         <span class="o">}</span>
 
@@ -314,12 +699,17 @@ src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.
         <span class="k">if</span> <span class="o">(!</span><span class="n">ok</span><span class="o">)</span> <span class="o">{</span>
             <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
         <span class="o">}</span>
-
-        <span class="k">return</span> <span class="n">send</span><span class="o">(</span><span class="n">enStr</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">+</span> <span class="n">msg</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">send</span><span class="o">(</span><span class="n">enStr</span><span class="o">.</span><span class="na">value</span> <span class="o">+</span> <span class="n">msg</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
+</code></pre></div><p>这里的字符串验证工具用的是org.apache.commons，maven引入如下</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>org.apache.commons<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>commons-lang3<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;version&gt;</span>3.11<span class="nt">&lt;/version&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div><h3 id="生成jar包上传测试观察">生成jar包/上传/测试/观察</h3>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package -DskipTests
 </code></pre></div><p>查看日志，有类似信息</p>
 <pre><code class="language-log" data-lang="log">2021-01-29 13:14:34.416 INFO 4474 --- [enerContainer-1] c.e.t.service.mqserver.ConsumerListener : Consumer收到的报文为: 123中文456aaaaaaaaaaaaaaa
 2021-01-29 13:14:56.194 INFO 4474 --- [enerContainer-1] c.e.t.service.mqserver.ConsumerListener : Consumer收到的报文为: 春树暮云
@@ -352,104 +742,26 @@ src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.
     │   └── resources
     │       ├── application.properties
     │       └── mqserver.tars
-</code></pre></div><h3 id="最后pomxml">最后pom.xml</h3>
-<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
-<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
-	<span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span class="nt">&gt;</span>
-	<span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
-	<span class="nt">&lt;parent&gt;</span>
-		<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-		<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;version&gt;</span>2.4.2<span class="nt">&lt;/version&gt;</span>
-		<span class="nt">&lt;relativePath/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
-	<span class="nt">&lt;/parent&gt;</span>
-	<span class="nt">&lt;groupId&gt;</span>com.example<span class="nt">&lt;/groupId&gt;</span>
-	<span class="nt">&lt;artifactId&gt;</span>tars-mq-server<span class="nt">&lt;/artifactId&gt;</span>
-	<span class="nt">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
-	<span class="nt">&lt;name&gt;</span>tars-mq-server<span class="nt">&lt;/name&gt;</span>
-	<span class="nt">&lt;description&gt;</span>Demo project for Spring Boot<span class="nt">&lt;/description&gt;</span>
-	<span class="nt">&lt;properties&gt;</span>
-		<span class="nt">&lt;java.version&gt;</span>1.8<span class="nt">&lt;/java.version&gt;</span>
-	<span class="nt">&lt;/properties&gt;</span>
-	<span class="nt">&lt;dependencies&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>tars-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>com.ibm.mq<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>mq-jms-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;version&gt;</span>2.4.2<span class="nt">&lt;/version&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-		<span class="nt">&lt;dependency&gt;</span>
-			<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-			<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
-		<span class="nt">&lt;/dependency&gt;</span>
-	<span class="nt">&lt;/dependencies&gt;</span>
-
-	<span class="nt">&lt;build&gt;</span>
-		<span class="nt">&lt;finalName&gt;</span>mqserver<span class="nt">&lt;/finalName&gt;</span>
-		<span class="nt">&lt;plugins&gt;</span>
-			<span class="nt">&lt;plugin&gt;</span>
-				<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-				<span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-			<span class="nt">&lt;/plugin&gt;</span>
-			<span class="c">&lt;!--tars2java plugin --&gt;</span>
-			<span class="nt">&lt;plugin&gt;</span>
-				<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
-				<span class="nt">&lt;artifactId&gt;</span>tars-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-				<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
-				<span class="nt">&lt;configuration&gt;</span>
-					<span class="nt">&lt;tars2JavaConfig&gt;</span>
-						<span class="c">&lt;!-- tars file location --&gt;</span>
-						<span class="nt">&lt;tarsFiles&gt;</span>
-							<span class="nt">&lt;tarsFile&gt;</span>${basedir}/src/main/resources/mqserver.tars<span class="nt">&lt;/tarsFile&gt;</span>
-						<span class="nt">&lt;/tarsFiles&gt;</span>
-						<span class="c">&lt;!-- Source file encoding --&gt;</span>
-						<span class="nt">&lt;tarsFileCharset&gt;</span>UTF-8<span class="nt">&lt;/tarsFileCharset&gt;</span>
-						<span class="c">&lt;!-- Generate server code --&gt;</span>
-						<span class="nt">&lt;servant&gt;</span>true<span class="nt">&lt;/servant&gt;</span>
-						<span class="c">&lt;!-- Generated source code encoding --&gt;</span>
-						<span class="nt">&lt;charset&gt;</span>UTF-8<span class="nt">&lt;/charset&gt;</span>
-						<span class="c">&lt;!-- Generated source code directory --&gt;</span>
-						<span class="nt">&lt;srcPath&gt;</span>${basedir}/src/main/java<span class="nt">&lt;/srcPath&gt;</span>
-						<span class="c">&lt;!-- Generated source code package prefix --&gt;</span>
-						<span class="nt">&lt;packagePrefixName&gt;</span>com.example.tarsmqserver.service.<span class="nt">&lt;/packagePrefixName&gt;</span>
-					<span class="nt">&lt;/tars2JavaConfig&gt;</span>
-				<span class="nt">&lt;/configuration&gt;</span>
-			<span class="nt">&lt;/plugin&gt;</span>
-			<span class="c">&lt;!--package plugin--&gt;</span>
-		<span class="nt">&lt;/plugins&gt;</span>
-	<span class="nt">&lt;/build&gt;</span>
-
-<span class="nt">&lt;/project&gt;</span>
 </code></pre></div><h2 id="源代码">源代码</h2>
-<p><a href="https://github.com/aomirun/demo/tree/main/day-2">学习JAVA第2天 实现基于tars springboot ibm mq的微服务</a></p>
+<p><a href="https://github.com/aomirun/demo/tree/main/day-2">学习JAVA第2天 实现tars-springboot-ibm-mq的微服务(微服务系列第二天)</a></p>
 <h2 id="结语">结语</h2>
 <p>由于才接触java，springboot很多功能都是通过java专有的注解完成的。学习时间有限，很多东西还没有理解，中间调试的时候花了不少时间去查资料和调试。更因为我是使用vscode+tars+springboot来弄的，发生了错误也不知道哪里出问题了。搜索的资料只能做参考，然后自己消化学习，最终调试完成。</p>
 ]]></content>
 		</item>
 		
 		<item>
-			<title>Hello Java 1 Day 学习JAVA第1天 通过docker整合springboot和tars 构建微服务环境</title>
+			<title>通过docker-springboot-tars构建微服务环境(微服务系列第一天)</title>
 			<link>https://aomi.run/posts/java/hello-java-1-day/</link>
 			<pubDate>Tue, 26 Jan 2021 11:39:02 +0800</pubDate>
 			
 			<guid>https://aomi.run/posts/java/hello-java-1-day/</guid>
-			<description>前言  实现目标：通过docker整合springboot和tars
+			<description>前言  学习JAVA第1天,实现目标：通过docker整合springboot和tars
  先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
 tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
 创建 Docker 网络 $ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars 创建 docker 目录 $ mkdir ~/docker-app/tars/framework/data -p $ mkdir ~/docker-app/tars/framework-slave/data -p $ mkdir ~/docker-app/tars/node/data -p $ mkdir ~/docker-app/tars/mysql/data -p $ mkdir ~/docker-app/tars/mysql/conf -p 创建 ~/docker-app/tars/mysql/conf/my.cnf 文件 [mysqld] user=root default-storage-engine=INNODB character-set-server=utf8 [client] default-character-set=utf8 [mysql] default-character-set=utf8 创建 ~/docker-app/tars/docker-compose.yml 文件 version:&amp;#34;3&amp;#34;services:mysql:image:mysql:5.6container_name:tars-mysqlports:- &amp;#34;3307:3306&amp;#34;# restart: alwaysprivileged:trueenvironment:MYSQL_ROOT_PASSWORD:&amp;#34;123456&amp;#34;volumes:- ./mysql/data:/var/lib/mysql- ./mysql/conf/my.cnf:/etc/my.cnf- /etc/localtime:/etc/localtimenetworks:tars:ipv4_address:172.25.0.2framework:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-frameworkports:- &amp;#34;3000:3000&amp;#34;- &amp;#34;3001:3001&amp;#34;# restart: alwaysnetworks:tars:ipv4_address:172.</description>
 			<content type="html"><![CDATA[<h2 id="前言">前言</h2>
 <blockquote>
-<p>实现目标：通过docker整合springboot和tars</p>
+<p>学习JAVA第1天,实现目标：通过docker整合springboot和tars</p>
 </blockquote>
 <p>先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于<a href="/posts/wsl2-vscode-openjdk-install/">win10 wsl2 vscode</a> 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。</p>
 <h2 id="tars-环境搭建">tars 环境搭建</h2>
@@ -595,22 +907,7 @@ Creating tars-node            ... <span class="k">done</span>
 			<span class="nt">&lt;artifactId&gt;</span>tars-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
 			<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
 		<span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div><h3 id="关掉测试用例">关掉测试用例</h3>
-<p>由于导入了 tars 包后,测试就有了 tars 专有依赖了,具体如何测试有 tars 的项目,后面再弄,现在玩关掉,要不然mvn package会通不过</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.tarsmqserver</span><span class="o">;</span>
-
-<span class="c1">// import org.junit.jupiter.api.Test;
-</span><span class="c1">// import org.springframework.boot.test.context.SpringBootTest;
-</span><span class="c1"></span>
-<span class="c1">// @SpringBootTest
-</span><span class="c1">// class TarsMqServerApplicationTests {
-</span><span class="c1"></span>
-<span class="c1">// 	@Test
-</span><span class="c1">// 	void contextLoads() {
-</span><span class="c1">// 	}
-</span><span class="c1"></span>
-<span class="c1">// }
-</span></code></pre></div><h3 id="创建tars协议接口文件">创建tars协议接口文件</h3>
+</code></pre></div><h3 id="创建tars协议接口文件">创建tars协议接口文件</h3>
 <pre><code>module mqserver
 {
 	interface Message
@@ -749,7 +1046,7 @@ messageObj 的名称是要和tars-web上自己定义的名称相同,方法实现
 
 <span class="o">}</span>
 </code></pre></div><h3 id="jar打包">Jar打包</h3>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn clean package -DskipTests
 </code></pre></div><p>最后的目录结构是</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ tree
 .
@@ -806,7 +1103,7 @@ messageObj 的名称是要和tars-web上自己定义的名称相同,方法实现
         <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
     <span class="o">}</span>
 </code></pre></div><h3 id="源代码">源代码</h3>
-<p>源代码几天后做了整理，现上传到github上面了 传送门 -&gt; <a href="https://github.com/aomirun/demo/tree/main/day-1/tars-mq-server">通过docker整合springboot和tars</a></p>
+<p>源代码几天后做了整理，现上传到github上面了 传送门 -&gt; <a href="https://github.com/aomirun/demo/tree/main/day-1/tars-mq-server">通过docker-springboot-tars构建微服务环境(微服务系列第一天)</a></p>
 <h3 id="结语">结语</h3>
 <p>学习java的第一天折腾了一下项目大致流程，主要是在 <code>vscode</code> 中使用 <code>maven</code> 来创建 <code>springboot</code> 项目，并加入 <code>tars</code> 的支持，然后打包上传到 <code>tars</code> 中运行并调试。中间也碰到了一些问题，比如加载了tars包后<code>test</code>文件就有依赖了，不加入依赖就会报找不到tars 配置文件的错误，开始一直保留在项目中，打包<code>jar</code>的时候就会报错，总之自己是java菜鸟，碰到各种错误也属于正常了，整体还是很成功的。一经在 <code>tars</code> 中使用后，就和开发语言无关了。之后喜欢用哪种开发语言去调用服务都可以，这也算是微服务的特点之一吧。</p>
 ]]></content>

@@ -100,8 +100,13 @@ enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/func
 
   [[menu.main]]
     name = "专栏"
-    url = "series/"
+    url = "series"
     weight = 22
+
+  [[menu.main]]
+    name = "微服务"
+    url = "series/hello-java"
+    weight = 23
 
   [[menu.main]]
     name = "TAGS"

@@ -4,66 +4,91 @@
   
   <url>
     <loc>https://aomi.run/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/tags/docker/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://aomi.run/posts/java/hello-java-2-day/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <loc>https://aomi.run/series/hello-java/</loc>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/tags/java/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/categories/java/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/tags/jms/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/tags/micro-serivce/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/tags/mq/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/tags/tars/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/series/tars/</loc>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/series/</loc>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/categories/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/posts/java/hello-java-3-day/</loc>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/series/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/posts/</loc>
-    <lastmod>2021-01-27T12:37:57+08:00</lastmod>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://aomi.run/tags/</loc>
+    <lastmod>2021-01-28T18:16:06+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://aomi.run/posts/java/hello-java-2-day/</loc>
     <lastmod>2021-01-27T12:37:57+08:00</lastmod>
   </url>
   
@@ -164,11 +189,6 @@
   
   <url>
     <loc>https://aomi.run/series/javascript/</loc>
-    <lastmod>2021-01-20T23:42:51+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://aomi.run/series/</loc>
     <lastmod>2021-01-20T23:42:51+08:00</lastmod>
   </url>
   
