@@ -10,11 +10,11 @@
 <meta itemprop="name" content="实现客户端同步和异步调用RPC微服务(微服务系列第三天)">
 <meta itemprop="description" content="前言  学习java的第3天 实现目标： 学习tars 客户端同步和异步调用RPC服务
  前面搞了那么多环境，主要还是为了折腾多语言微服务开发架构，这样就不用只限定某一种开发语言了，各种语言谁行谁上。今天主要目的就是把前面做的服务端程序，使用客户端来调用。
-客户端同步/单向/异步调用服务 构建客户端工程项目,提供WEB代理服务 具体种自开发环境不同，自行创建maven项目
+客户端同步/单向/异步调用服务 构建客户端工程项目,提供WEB代理服务 创建方法有很多种，具体不多说了，自行创建maven项目
 添加依赖 &lt;dependency&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-client&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;type&gt;jar&lt;/type&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-spring-boot-starter&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;/dependency&gt; 添加插件 &lt;build&gt; &lt;finalName&gt;mqwebservice&lt;/finalName&gt; &lt;plugins&gt; &lt;plugin&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt; &lt;/plugin&gt; &lt;!--tars2java plugin --&gt; &lt;plugin&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-maven-plugin&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;configuration&gt; &lt;tars2JavaConfig&gt; &lt;!-- tars文件位置 --&gt; &lt;tarsFiles&gt; &lt;tarsFile&gt;${basedir}/src/main/resources/mqserver.tars&lt;/tarsFile&gt; &lt;/tarsFiles&gt; &lt;!-- 源文件编码 --&gt; &lt;tarsFileCharset&gt;UTF-8&lt;/tarsFileCharset&gt; &lt;!-- 生成代码，PS：客户端调用，这里需要设置为false --&gt; &lt;servant&gt;false&lt;/servant&gt; &lt;!-- 生成源代码编码 --&gt; &lt;charset&gt;UTF-8&lt;/charset&gt; &lt;!-- 生成的源代码目录 --&gt; &lt;srcPath&gt;${basedir}/src/main/java&lt;/srcPath&gt; &lt;!-- 生成源代码包前缀 --&gt; &lt;packagePrefixName&gt;com.example.mqwebservice.service.&lt;/packagePrefixName&gt; &lt;/tars2JavaConfig&gt; &lt;/configuration&gt; &lt;/plugin&gt; &lt;!--package plugin--&gt; &lt;/plugins&gt; &lt;/build&gt; 注解main @SpringBootApplication @EnableTarsServer public class MqwebserviceApplication { public static void main(String[] args) { SpringApplication.">
 <meta itemprop="datePublished" content="2021-01-28T18:16:06+08:00" />
 <meta itemprop="dateModified" content="2021-01-28T18:16:06+08:00" />
-<meta itemprop="wordCount" content="904">
+<meta itemprop="wordCount" content="1040">
 
 
 
@@ -22,7 +22,7 @@
 <meta property="og:title" content="实现客户端同步和异步调用RPC微服务(微服务系列第三天)" />
 <meta property="og:description" content="前言  学习java的第3天 实现目标： 学习tars 客户端同步和异步调用RPC服务
  前面搞了那么多环境，主要还是为了折腾多语言微服务开发架构，这样就不用只限定某一种开发语言了，各种语言谁行谁上。今天主要目的就是把前面做的服务端程序，使用客户端来调用。
-客户端同步/单向/异步调用服务 构建客户端工程项目,提供WEB代理服务 具体种自开发环境不同，自行创建maven项目
+客户端同步/单向/异步调用服务 构建客户端工程项目,提供WEB代理服务 创建方法有很多种，具体不多说了，自行创建maven项目
 添加依赖 &lt;dependency&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-client&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;type&gt;jar&lt;/type&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-spring-boot-starter&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;/dependency&gt; 添加插件 &lt;build&gt; &lt;finalName&gt;mqwebservice&lt;/finalName&gt; &lt;plugins&gt; &lt;plugin&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt; &lt;/plugin&gt; &lt;!--tars2java plugin --&gt; &lt;plugin&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-maven-plugin&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;configuration&gt; &lt;tars2JavaConfig&gt; &lt;!-- tars文件位置 --&gt; &lt;tarsFiles&gt; &lt;tarsFile&gt;${basedir}/src/main/resources/mqserver.tars&lt;/tarsFile&gt; &lt;/tarsFiles&gt; &lt;!-- 源文件编码 --&gt; &lt;tarsFileCharset&gt;UTF-8&lt;/tarsFileCharset&gt; &lt;!-- 生成代码，PS：客户端调用，这里需要设置为false --&gt; &lt;servant&gt;false&lt;/servant&gt; &lt;!-- 生成源代码编码 --&gt; &lt;charset&gt;UTF-8&lt;/charset&gt; &lt;!-- 生成的源代码目录 --&gt; &lt;srcPath&gt;${basedir}/src/main/java&lt;/srcPath&gt; &lt;!-- 生成源代码包前缀 --&gt; &lt;packagePrefixName&gt;com.example.mqwebservice.service.&lt;/packagePrefixName&gt; &lt;/tars2JavaConfig&gt; &lt;/configuration&gt; &lt;/plugin&gt; &lt;!--package plugin--&gt; &lt;/plugins&gt; &lt;/build&gt; 注解main @SpringBootApplication @EnableTarsServer public class MqwebserviceApplication { public static void main(String[] args) { SpringApplication." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://aomi.run/posts/java/hello-java-3-day/" />
@@ -35,7 +35,7 @@
 <meta name="twitter:title" content="实现客户端同步和异步调用RPC微服务(微服务系列第三天)"/>
 <meta name="twitter:description" content="前言  学习java的第3天 实现目标： 学习tars 客户端同步和异步调用RPC服务
  前面搞了那么多环境，主要还是为了折腾多语言微服务开发架构，这样就不用只限定某一种开发语言了，各种语言谁行谁上。今天主要目的就是把前面做的服务端程序，使用客户端来调用。
-客户端同步/单向/异步调用服务 构建客户端工程项目,提供WEB代理服务 具体种自开发环境不同，自行创建maven项目
+客户端同步/单向/异步调用服务 构建客户端工程项目,提供WEB代理服务 创建方法有很多种，具体不多说了，自行创建maven项目
 添加依赖 &lt;dependency&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-client&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;type&gt;jar&lt;/type&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-spring-boot-starter&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;/dependency&gt; 添加插件 &lt;build&gt; &lt;finalName&gt;mqwebservice&lt;/finalName&gt; &lt;plugins&gt; &lt;plugin&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt; &lt;/plugin&gt; &lt;!--tars2java plugin --&gt; &lt;plugin&gt; &lt;groupId&gt;com.tencent.tars&lt;/groupId&gt; &lt;artifactId&gt;tars-maven-plugin&lt;/artifactId&gt; &lt;version&gt;1.7.2&lt;/version&gt; &lt;configuration&gt; &lt;tars2JavaConfig&gt; &lt;!-- tars文件位置 --&gt; &lt;tarsFiles&gt; &lt;tarsFile&gt;${basedir}/src/main/resources/mqserver.tars&lt;/tarsFile&gt; &lt;/tarsFiles&gt; &lt;!-- 源文件编码 --&gt; &lt;tarsFileCharset&gt;UTF-8&lt;/tarsFileCharset&gt; &lt;!-- 生成代码，PS：客户端调用，这里需要设置为false --&gt; &lt;servant&gt;false&lt;/servant&gt; &lt;!-- 生成源代码编码 --&gt; &lt;charset&gt;UTF-8&lt;/charset&gt; &lt;!-- 生成的源代码目录 --&gt; &lt;srcPath&gt;${basedir}/src/main/java&lt;/srcPath&gt; &lt;!-- 生成源代码包前缀 --&gt; &lt;packagePrefixName&gt;com.example.mqwebservice.service.&lt;/packagePrefixName&gt; &lt;/tars2JavaConfig&gt; &lt;/configuration&gt; &lt;/plugin&gt; &lt;!--package plugin--&gt; &lt;/plugins&gt; &lt;/build&gt; 注解main @SpringBootApplication @EnableTarsServer public class MqwebserviceApplication { public static void main(String[] args) { SpringApplication."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -100,7 +100,7 @@
 <p>前面搞了那么多环境，主要还是为了折腾多语言微服务开发架构，这样就不用只限定某一种开发语言了，各种语言谁行谁上。今天主要目的就是把前面做的服务端程序，使用客户端来调用。</p>
 <h2 id="客户端同步单向异步调用服务">客户端同步/单向/异步调用服务<a href="#客户端同步单向异步调用服务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h3 id="构建客户端工程项目提供web代理服务">构建客户端工程项目,提供WEB代理服务<a href="#构建客户端工程项目提供web代理服务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>具体种自开发环境不同，自行创建maven项目</p>
+<p>创建方法有很多种，具体不多说了，自行创建maven项目</p>
 <h3 id="添加依赖">添加依赖<a href="#添加依赖" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">		<span class="nt">&lt;dependency&gt;</span>
 			<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
@@ -337,7 +337,53 @@ mqserver</p>
 2021-01-30 14:28:30.040 INFO 27613 --- [ient-executor-2] rpc : 接收到异步返回状态: true,
 2021-01-30 14:28:30.136 INFO 27613 --- [0.5-1080-exec-1] rpc : 同步发送的报文为: abcd, 状态： true
 </code></pre><p>为了展示例子，项目代码还是比较简单的。</p>
-<h2 id="本地调试">本地调试<a href="#本地调试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h2 id="用golang给java服务发消息">用golang给java服务发消息<a href="#用golang给java服务发消息" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>后面想想加个其它语言开发的客户端来调用，体验多语言的优势，只是简要的完成，用于测试</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;log&#34;</span>
+
+	<span class="s">&#34;github.com/TarsCloud/TarsGo/tars&#34;</span>
+
+	<span class="s">&#34;aomi.run/goclient/mqserver&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">comm</span> <span class="o">:=</span> <span class="nx">tars</span><span class="p">.</span><span class="nf">NewCommunicator</span><span class="p">()</span>
+	<span class="nx">obj</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;example.mqserver.messageObj&#34;</span><span class="p">)</span>
+	<span class="nx">app</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">mqserver</span><span class="p">.</span><span class="nx">Message</span><span class="p">)</span>
+	<span class="nx">comm</span><span class="p">.</span><span class="nf">StringToProxy</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">app</span><span class="p">)</span>
+
+	<span class="nx">ret</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">app</span><span class="p">.</span><span class="nf">Send</span><span class="p">(</span><span class="s">&#34;通过golang发送的消息&#34;</span><span class="p">)</span>
+	<span class="nf">check</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+
+	<span class="nx">enStr</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+	<span class="nx">ret</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">app</span><span class="p">.</span><span class="nf">Encode</span><span class="p">(</span><span class="s">&#34;通过golang发送的加密文本&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">enStr</span><span class="p">)</span>
+	<span class="nf">check</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+
+	<span class="nx">ret</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">app</span><span class="p">.</span><span class="nf">EncodeWithSend</span><span class="p">(</span><span class="s">&#34;通过golang发送的消息&#34;</span><span class="p">,</span> <span class="s">&#34;通过golang发送的加密文本&#34;</span><span class="p">)</span>
+	<span class="nf">check</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">check</span><span class="p">(</span><span class="nx">status</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">status</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="日志消息">日志消息<a href="#日志消息" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<pre><code class="language-log" data-lang="log">onSessionDestroyed: 0
+2021-01-30 19:05:09.369 INFO 18188 --- [ageObjAdapter-3] msg : send: DEV.QUEUE.1 -&gt; 通过golang发送的消息
+2021-01-30 19:05:09.381 INFO 18188 --- [enerContainer-1] flow : Consumer收到的报文为: 通过golang发送的消息
+2021-01-30 19:05:09.381 INFO 18188 --- [ageObjAdapter-4] msg : encode: 通过golang发送的加密文本 -&gt; 123通过golang发送的加密文本456
+2021-01-30 19:05:09.383 INFO 18188 --- [ageObjAdapter-5] msg : encode: 通过golang发送的加密文本 -&gt; 123通过golang发送的加密文本456
+2021-01-30 19:05:09.383 INFO 18188 --- [ageObjAdapter-5] msg : send: DEV.QUEUE.1 -&gt; 123通过golang发送的加密文本456通过golang发送的消息
+2021-01-30 19:05:09.387 INFO 18188 --- [enerContainer-1] flow : Consumer收到的报文为: 123通过golang发送的加密文本456通过golang发送的消息
+</code></pre><h2 id="本地调试">本地调试<a href="#本地调试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>如果所有开发的项目都要打包/上传/远程调试/查看日志，无疑是非常麻烦的，所以就需要有本地调试。查看tars官方文档中有描述说明</p>
 <blockquote>
 <ul>
@@ -484,7 +530,7 @@ To make a target, <span class="k">do</span> <span class="s1">&#39;make [target]&
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://aomi.run/tags/java">java</a></span><span class="tag"><a href="https://aomi.run/tags/docker">docker</a></span><span class="tag"><a href="https://aomi.run/tags/mq">mq</a></span><span class="tag"><a href="https://aomi.run/tags/jms">jms</a></span><span class="tag"><a href="https://aomi.run/tags/tars">tars</a></span><span class="tag"><a href="https://aomi.run/tags/micro-serivce">micro serivce</a></span><span class="tag"><a href="https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>904 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1040 字</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-01-28 18:16 &#43;0800</p>
 			</footer>
 		</article>
@@ -506,6 +552,11 @@ To make a target, <span class="k">do</span> <span class="s1">&#39;make [target]&
         <li><a href="#编写restful-实现同步异步请求">编写restful 实现同步/异步请求</a></li>
         <li><a href="#tarshttpservice-用途">@TarsHttpService 用途</a></li>
         <li><a href="#部署">部署</a></li>
+      </ul>
+    </li>
+    <li><a href="#用golang给java服务发消息">用golang给java服务发消息</a>
+      <ul>
+        <li><a href="#日志消息">日志消息</a></li>
       </ul>
     </li>
     <li><a href="#本地调试">本地调试</a>

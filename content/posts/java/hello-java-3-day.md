@@ -27,7 +27,7 @@ tags:
 
 ## 客户端同步/单向/异步调用服务
 ### 构建客户端工程项目,提供WEB代理服务
-具体种自开发环境不同，自行创建maven项目
+创建方法有很多种，具体不多说了，自行创建maven项目
 ### 添加依赖
 ```xml
 		<dependency>
@@ -293,6 +293,57 @@ mqwebservice
 2021-01-30 14:28:30.136 INFO 27613 --- [0.5-1080-exec-1] rpc : 同步发送的报文为: abcd, 状态： true
 ```
 为了展示例子，项目代码还是比较简单的。
+
+## 用golang给java服务发消息
+后面想想加个其它语言开发的客户端来调用，体验多语言的优势，只是简要的完成，用于测试
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/TarsCloud/TarsGo/tars"
+
+	"aomi.run/goclient/mqserver"
+)
+
+func main() {
+	comm := tars.NewCommunicator()
+	obj := fmt.Sprintf("example.mqserver.messageObj")
+	app := new(mqserver.Message)
+	comm.StringToProxy(obj, app)
+
+	ret, err := app.Send("通过golang发送的消息")
+	check(ret, err)
+
+	enStr := ""
+	ret, err = app.Encode("通过golang发送的加密文本", &enStr)
+	check(ret, err)
+
+	ret, err = app.EncodeWithSend("通过golang发送的消息", "通过golang发送的加密文本")
+	check(ret, err)
+
+}
+
+func check(status bool, err error) {
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal(err)
+	}
+	log.Println(status)
+}
+```
+### 日志消息
+```log
+onSessionDestroyed: 0
+2021-01-30 19:05:09.369 INFO 18188 --- [ageObjAdapter-3] msg : send: DEV.QUEUE.1 -> 通过golang发送的消息
+2021-01-30 19:05:09.381 INFO 18188 --- [enerContainer-1] flow : Consumer收到的报文为: 通过golang发送的消息
+2021-01-30 19:05:09.381 INFO 18188 --- [ageObjAdapter-4] msg : encode: 通过golang发送的加密文本 -> 123通过golang发送的加密文本456
+2021-01-30 19:05:09.383 INFO 18188 --- [ageObjAdapter-5] msg : encode: 通过golang发送的加密文本 -> 123通过golang发送的加密文本456
+2021-01-30 19:05:09.383 INFO 18188 --- [ageObjAdapter-5] msg : send: DEV.QUEUE.1 -> 123通过golang发送的加密文本456通过golang发送的消息
+2021-01-30 19:05:09.387 INFO 18188 --- [enerContainer-1] flow : Consumer收到的报文为: 123通过golang发送的加密文本456通过golang发送的消息
+```
 ## 本地调试
 如果所有开发的项目都要打包/上传/远程调试/查看日志，无疑是非常麻烦的，所以就需要有本地调试。查看tars官方文档中有描述说明
 > - 首先在工程目录下执行 mvn tars:build -Dapp=TestApp -Dserver=HelloJavaServer -DjvmParams="-Xms1024m -Xmx1024m -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Xdebug -Xrunjdwp:transport=dt_socket,address=9000,server=y,suspend=n"
