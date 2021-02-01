@@ -7,7 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Thu, 28 Jan 2021 18:16:06 +0800</lastBuildDate><atom:link href="https://aomi.run/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 20 Jan 2021 23:42:51 +0800</lastBuildDate>
+    
+	<atom:link href="https://aomi.run/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)</title>
+      <link>https://aomi.run/posts/java/hello-java-4-day/</link>
+      <pubDate>Sun, 31 Jan 2021 15:40:31 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/java/hello-java-4-day/</guid>
+      <description>前言  学习java的第4天 实现目标： 实现java的rsa加解密与签名并调用RPC微服务
+ 实现RSA工具类 由于刚开始学习，本过程是边网上抄作业，边理解。
+JDK1.8 的 base64 src/main/java/com/example/rsaserver/utils/JavaBase64Util.java
+public class JavaBase64Util { public static final String UTF_8 = &amp;#34;UTF-8&amp;#34;; public static Base64.Encoder encoder; public static Base64.Encoder urlEncoder; public static Base64.Decoder decoder; public static Base64.Decoder urlDecoder; static { encoder = Base64.getEncoder(); urlEncoder = Base64.getUrlEncoder(); decoder = Base64.getDecoder(); urlDecoder = Base64.getUrlDecoder(); } /** * encode * @param bytes * @return byte[] */ public static byte[] encode(final byte[] bytes) { return encoder.</description>
+    </item>
+    
     <item>
       <title>实现客户端同步和异步调用RPC微服务(微服务系列第三天)</title>
       <link>https://aomi.run/posts/java/hello-java-3-day/</link>
@@ -85,7 +101,7 @@ NoLsp.exe C:\Windows\system32\wsl.exe  参数为 wsl 的绝对路径（默认为
 我们先看看标准库net/http如何处理一个请求。
 func main() { http.HandleFunc(&amp;#34;/&amp;#34;, handler) http.HandleFunc(&amp;#34;/count&amp;#34;, counter) log.Fatal(http.ListenAndServe(&amp;#34;localhost:8000&amp;#34;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, &amp;#34;URL.Path = %qn&amp;#34;, r.URL.Path) } net/http提供了基础的Web功能，即监听端口，映射静态路由，解析HTTP报文。一些Web开发中简单的需求并不支持，需要手工实现。
  动态路由：例如hello/:name，hello/*这类的规则。 鉴权：没有分组/统一鉴权的能力，需要在每个路由映射的handler中实现。 模板：没有统一简化的HTML机制。 …  当我们离开框架，使用基础库时，需要频繁手工处理的地方，就是框架的价值所在。但并不是每一个频繁处理的地方都适合在框架中完成。Python有一个很著名的Web框架，名叫bottle，整个框架由bottle.py一个文件构成，共4400行，可以说是一个微框架。那么理解这个微框架提供的特性，可以帮助我们理解框架的核心能力。
- 路由(Routing)：将请求映射到函数，支持动态路由。例如&#39;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
+ 路由(Routing)：将请求映射到函数，支持动态路由。例如&amp;rsquo;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
 package main import ( &amp;#34;fmt&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; ) func main() { http.HandleFunc(&amp;#34;/&amp;#34;, indexHandler) http.</description>
     </item>
     

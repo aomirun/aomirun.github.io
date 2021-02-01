@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)">
+<meta itemprop="description" content="前言  学习java的第4天 实现目标： 实现java的rsa加解密与签名并调用RPC微服务
+ 实现RSA工具类 由于刚开始学习，本过程是边网上抄作业，边理解。
+JDK1.8 的 base64 src/main/java/com/example/rsaserver/utils/JavaBase64Util.java
+public class JavaBase64Util { public static final String UTF_8 = &#34;UTF-8&#34;; public static Base64.Encoder encoder; public static Base64.Encoder urlEncoder; public static Base64.Decoder decoder; public static Base64.Decoder urlDecoder; static { encoder = Base64.getEncoder(); urlEncoder = Base64.getUrlEncoder(); decoder = Base64.getDecoder(); urlDecoder = Base64.getUrlDecoder(); } /** * encode * @param bytes * @return byte[] */ public static byte[] encode(final byte[] bytes) { return encoder.">
+<meta itemprop="datePublished" content="2021-01-31T15:40:31&#43;08:00" />
+<meta itemprop="dateModified" content="2021-01-31T15:40:31&#43;08:00" />
+<meta itemprop="wordCount" content="3197">
+
+
+
+<meta itemprop="keywords" content="java,docker,mq,jms,tars,micro serivce,微服务," /><meta property="og:title" content="实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)" />
+<meta property="og:description" content="前言  学习java的第4天 实现目标： 实现java的rsa加解密与签名并调用RPC微服务
+ 实现RSA工具类 由于刚开始学习，本过程是边网上抄作业，边理解。
+JDK1.8 的 base64 src/main/java/com/example/rsaserver/utils/JavaBase64Util.java
+public class JavaBase64Util { public static final String UTF_8 = &#34;UTF-8&#34;; public static Base64.Encoder encoder; public static Base64.Encoder urlEncoder; public static Base64.Decoder decoder; public static Base64.Decoder urlDecoder; static { encoder = Base64.getEncoder(); urlEncoder = Base64.getUrlEncoder(); decoder = Base64.getDecoder(); urlDecoder = Base64.getUrlDecoder(); } /** * encode * @param bytes * @return byte[] */ public static byte[] encode(final byte[] bytes) { return encoder." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://aomi.run/posts/java/hello-java-4-day/" />
+<meta property="article:published_time" content="2021-01-31T15:40:31+08:00" />
+<meta property="article:modified_time" content="2021-01-31T15:40:31+08:00" />
+<meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-2-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
+<meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-2-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)"/>
+<meta name="twitter:description" content="前言  学习java的第4天 实现目标： 实现java的rsa加解密与签名并调用RPC微服务
+ 实现RSA工具类 由于刚开始学习，本过程是边网上抄作业，边理解。
+JDK1.8 的 base64 src/main/java/com/example/rsaserver/utils/JavaBase64Util.java
+public class JavaBase64Util { public static final String UTF_8 = &#34;UTF-8&#34;; public static Base64.Encoder encoder; public static Base64.Encoder urlEncoder; public static Base64.Decoder decoder; public static Base64.Decoder urlDecoder; static { encoder = Base64.getEncoder(); urlEncoder = Base64.getUrlEncoder(); decoder = Base64.getDecoder(); urlDecoder = Base64.getUrlDecoder(); } /** * encode * @param bytes * @return byte[] */ public static byte[] encode(final byte[] bytes) { return encoder."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)</title>
+	<link rel="stylesheet" href="https://aomi.run/css/style.min.eac77496566fd7d5768fd650ddb0b2b181ca6a2d7c5fdd6fe6b8ba4bf47e566f.css" integrity="sha256-6sd0llZv19V2j9ZQ3bCysYHKai18X91v5ri6S/R+Vm8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://aomi.run">Aomi</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://aomi.run/about/">关于</a>
+				<a href="https://aomi.run/posts/">日志</a>
+				<a href="https://aomi.run/categories/">分类</a>
+				<a href="https://aomi.run/series">专栏</a>
+				<a href="https://aomi.run/series/hello-java">微服务</a>
+				<a href="https://aomi.run/tags/">TAGS</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://aomi.run/about/">关于</a></li>
+			<li><a href="https://aomi.run/posts/">日志</a></li>
+			<li><a href="https://aomi.run/categories/">分类</a></li>
+			<li><a href="https://aomi.run/series">专栏</a></li>
+			<li><a href="https://aomi.run/series/hello-java">微服务</a></li>
+			<li><a href="https://aomi.run/tags/">TAGS</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>2021-01-31</span></div>
+				<h1>实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)</h1>
+			</header>
+			<div class="content">
+				<h2 id="前言">前言<a href="#前言" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>学习java的第4天 实现目标： 实现java的rsa加解密与签名并调用RPC微服务</p>
+</blockquote>
+<h2 id="实现rsa工具类">实现RSA工具类<a href="#实现rsa工具类" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>由于刚开始学习，本过程是边网上抄作业，边理解。</p>
+<h3 id="jdk18-的-base64">JDK1.8 的 base64<a href="#jdk18-的-base64" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/main/java/com/example/rsaserver/utils/JavaBase64Util.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaBase64Util</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">UTF_8</span> <span class="o">=</span> <span class="s">&#34;UTF-8&#34;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Base64</span><span class="o">.</span><span class="na">Encoder</span> <span class="n">encoder</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Base64</span><span class="o">.</span><span class="na">Encoder</span> <span class="n">urlEncoder</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Base64</span><span class="o">.</span><span class="na">Decoder</span> <span class="n">decoder</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Base64</span><span class="o">.</span><span class="na">Decoder</span> <span class="n">urlDecoder</span><span class="o">;</span>
+
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="n">encoder</span> <span class="o">=</span> <span class="n">Base64</span><span class="o">.</span><span class="na">getEncoder</span><span class="o">();</span>
+        <span class="n">urlEncoder</span> <span class="o">=</span> <span class="n">Base64</span><span class="o">.</span><span class="na">getUrlEncoder</span><span class="o">();</span>
+        <span class="n">decoder</span> <span class="o">=</span> <span class="n">Base64</span><span class="o">.</span><span class="na">getDecoder</span><span class="o">();</span>
+        <span class="n">urlDecoder</span> <span class="o">=</span> <span class="n">Base64</span><span class="o">.</span><span class="na">getUrlDecoder</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * encode
+</span><span class="cm">     * @param bytes
+</span><span class="cm">     * @return byte[]
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">encode</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">encoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * encode
+</span><span class="cm">     * @param string
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">encode</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">encode</span> <span class="o">=</span> <span class="n">encode</span><span class="o">(</span><span class="n">string</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">encode</span><span class="o">,</span> <span class="n">UTF_8</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">UnsupportedEncodingException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * encode
+</span><span class="cm">     * @param bytes
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">encode2String</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">encoder</span><span class="o">.</span><span class="na">encodeToString</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * encode
+</span><span class="cm">     * @param string
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">encode2Byte</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">encode</span><span class="o">(</span><span class="n">string</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * urlEncoder
+</span><span class="cm">     * @param bytes
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">urlEncode</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">urlEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * urlEncoder
+</span><span class="cm">     * @param string
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">urlEncode</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">encode</span> <span class="o">=</span> <span class="n">urlEncode</span><span class="o">(</span><span class="n">string</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">encode</span><span class="o">,</span> <span class="n">UTF_8</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">UnsupportedEncodingException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * urlEncoder
+</span><span class="cm">     * @param bytes
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">urlEncode2String</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">urlEncoder</span><span class="o">.</span><span class="na">encodeToString</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * urlEncoder
+</span><span class="cm">     * @param string
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">urlEncode2Byte</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">urlEncode</span><span class="o">(</span><span class="n">string</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * decode
+</span><span class="cm">     * @param bytes
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">decode</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">decoder</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * decode
+</span><span class="cm">     * @param string
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">decode2Byte</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">decoder</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="n">string</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * decode
+</span><span class="cm">     * @param bytes
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">decode2String</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">decoder</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="n">bytes</span><span class="o">),</span> <span class="n">UTF_8</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">UnsupportedEncodingException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * decode
+</span><span class="cm">     * @param string
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">decode</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">decode</span> <span class="o">=</span> <span class="n">decode</span><span class="o">(</span><span class="n">string</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">decode</span><span class="o">,</span> <span class="n">UTF_8</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">UnsupportedEncodingException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * urlDecode
+</span><span class="cm">     * @param bytes
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">urlDecode</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">urlDecoder</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * urlDecode
+</span><span class="cm">     * @param string
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">urlDecode2Byte</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">urlDecode</span><span class="o">(</span><span class="n">string</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * urlDecode
+</span><span class="cm">     * @param bytes
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">urlDecode2String</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">urlDecode</span><span class="o">(</span><span class="n">bytes</span><span class="o">),</span> <span class="n">UTF_8</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">UnsupportedEncodingException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * urlDecode
+</span><span class="cm">     * @param string
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">urlDecode</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">decode</span> <span class="o">=</span> <span class="n">urlDecode</span><span class="o">(</span><span class="n">string</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">decode</span><span class="o">,</span> <span class="n">UTF_8</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">UnsupportedEncodingException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="生成公私钥">生成公私钥<a href="#生成公私钥" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/main/java/com/example/rsaserver/utils/RSAUtils.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RSAUtils</span> <span class="o">{</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 加密算法RSA
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">KEY_ALGORITHM</span> <span class="o">=</span> <span class="s">&#34;RSA&#34;</span><span class="o">;</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 签名算法
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">SIGNATURE_ALGORITHM</span> <span class="o">=</span> <span class="s">&#34;MD5withRSA&#34;</span><span class="o">;</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 获取公钥的key
+</span><span class="cm">     */</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">PUBLIC_KEY</span> <span class="o">=</span> <span class="s">&#34;RSAPublicKey&#34;</span><span class="o">;</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 获取私钥的key
+</span><span class="cm">     */</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">PRIVATE_KEY</span> <span class="o">=</span> <span class="s">&#34;RSAPrivateKey&#34;</span><span class="o">;</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * RSA最大加密明文大小
+</span><span class="cm">     */</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">MAX_ENCRYPT_BLOCK</span> <span class="o">=</span> <span class="n">117</span><span class="o">;</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * RSA最大解密密文大小
+</span><span class="cm">     */</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">MAX_DECRYPT_BLOCK</span> <span class="o">=</span> <span class="n">128</span><span class="o">;</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * RSA 位数 如果采用2048 上面最大加密和最大解密则须填写: 245 256
+</span><span class="cm">     */</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">INITIALIZE_LENGTH</span> <span class="o">=</span> <span class="n">1024</span><span class="o">;</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * &lt;p&gt;
+</span><span class="cm">     * 生成密钥对(公钥和私钥)
+</span><span class="cm">     * &lt;/p&gt;
+</span><span class="cm">     * 
+</span><span class="cm">     * @return
+</span><span class="cm">     * @throws Exception
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="nf">genKeyPair</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">KeyPairGenerator</span> <span class="n">keyPairGen</span> <span class="o">=</span> <span class="n">KeyPairGenerator</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">KEY_ALGORITHM</span><span class="o">);</span>
+        <span class="n">keyPairGen</span><span class="o">.</span><span class="na">initialize</span><span class="o">(</span><span class="n">INITIALIZE_LENGTH</span><span class="o">);</span>
+        <span class="n">KeyPair</span> <span class="n">keyPair</span> <span class="o">=</span> <span class="n">keyPairGen</span><span class="o">.</span><span class="na">generateKeyPair</span><span class="o">();</span>
+        <span class="n">RSAPublicKey</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">RSAPublicKey</span><span class="o">)</span> <span class="n">keyPair</span><span class="o">.</span><span class="na">getPublic</span><span class="o">();</span>
+        <span class="n">RSAPrivateKey</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">RSAPrivateKey</span><span class="o">)</span> <span class="n">keyPair</span><span class="o">.</span><span class="na">getPrivate</span><span class="o">();</span>
+        <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">keyMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;(</span><span class="n">2</span><span class="o">);</span>
+        <span class="n">keyMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">PUBLIC_KEY</span><span class="o">,</span> <span class="n">publicKey</span><span class="o">);</span>
+        <span class="n">keyMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">PRIVATE_KEY</span><span class="o">,</span> <span class="n">privateKey</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">keyMap</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * &lt;p&gt;
+</span><span class="cm">     * 获取私钥
+</span><span class="cm">     * &lt;/p&gt;
+</span><span class="cm">     * 
+</span><span class="cm">     * @param keyMap 密钥对
+</span><span class="cm">     * @return
+</span><span class="cm">     * @throws Exception
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">getPrivateKey</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">keyMap</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">Key</span> <span class="n">key</span> <span class="o">=</span> <span class="o">(</span><span class="n">Key</span><span class="o">)</span> <span class="n">keyMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">PRIVATE_KEY</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">encode2String</span><span class="o">(</span><span class="n">key</span><span class="o">.</span><span class="na">getEncoded</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * &lt;p&gt;
+</span><span class="cm">     * 获取公钥
+</span><span class="cm">     * &lt;/p&gt;
+</span><span class="cm">     * 
+</span><span class="cm">     * @param keyMap 密钥对
+</span><span class="cm">     * @return
+</span><span class="cm">     * @throws Exception
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">getPublicKey</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">keyMap</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">Key</span> <span class="n">key</span> <span class="o">=</span> <span class="o">(</span><span class="n">Key</span><span class="o">)</span> <span class="n">keyMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">PUBLIC_KEY</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">encode2String</span><span class="o">(</span><span class="n">key</span><span class="o">.</span><span class="na">getEncoded</span><span class="o">());</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><h3 id="测试-公私钥生成">测试 公私钥生成<a href="#测试-公私钥生成" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/test/java/com/example/rsaserver/RsaserverApplicationTests.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootTest</span>
+<span class="kd">class</span> <span class="nc">RsaserverApplicationTests</span> <span class="o">{</span>
+
+	<span class="nd">@Test</span>
+	<span class="kt">void</span> <span class="nf">genKeyPair</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">keyPair</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">genKeyPair</span><span class="o">();</span>
+			<span class="n">assertNotNull</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+
+			<span class="n">String</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+			<span class="n">String</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">getPrivateKey</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+			<span class="n">assertNotNull</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
+			<span class="n">assertNotNull</span><span class="o">(</span><span class="n">privateKey</span><span class="o">);</span>
+
+			<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;RSAPublicKey base64 string is %s\n&#34;</span><span class="o">,</span> <span class="n">publicKey</span><span class="o">);</span>
+			<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;RSAPrivateKey base64 string is %s\n&#34;</span><span class="o">,</span> <span class="n">privateKey</span><span class="o">);</span>
+
+			<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;RSAPublicKey byte is %s&#34;</span><span class="o">,</span> <span class="n">keyPair</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;RSAPublicKey&#34;</span><span class="o">));</span>
+			<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;RSAPublicKey byte is %s&#34;</span><span class="o">,</span> <span class="n">keyPair</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;RSAPrivateKey&#34;</span><span class="o">));</span>
+
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">fail</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><p>运行测试代码</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn <span class="nb">test</span>
+067509788673<span class="o">[</span>INFO<span class="o">]</span> Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.126 s - in com.example.rsaserver.RsaserverApplicationTests
+</code></pre></div><p>测试通过，观看测试的输出，byte和base64的公私钥都已正常输出</p>
+<h3 id="基于-byte-的加解密">基于 byte 的加解密<a href="#基于-byte-的加解密" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">	<span class="cm">/**
+</span><span class="cm">	 * &lt;P&gt;
+</span><span class="cm">	 * 私钥解密
+</span><span class="cm">	 * &lt;/p&gt;
+</span><span class="cm">	 * 
+</span><span class="cm">	 * @param encryptedData
+</span><span class="cm">	 *            已加密数据
+</span><span class="cm">	 * @param privateKey
+</span><span class="cm">	 *            私钥(BASE64编码)
+</span><span class="cm">	 * @return
+</span><span class="cm">	 * @throws Exception
+</span><span class="cm">	 */</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">decryptByPrivateKey</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">encryptedData</span><span class="o">,</span> <span class="n">String</span> <span class="n">privateKey</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">keyBytes</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">decode2Byte</span><span class="o">(</span><span class="n">privateKey</span><span class="o">);</span>
+		<span class="n">PKCS8EncodedKeySpec</span> <span class="n">pkcs8KeySpec</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PKCS8EncodedKeySpec</span><span class="o">(</span><span class="n">keyBytes</span><span class="o">);</span>
+		<span class="n">KeyFactory</span> <span class="n">keyFactory</span> <span class="o">=</span> <span class="n">KeyFactory</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">KEY_ALGORITHM</span><span class="o">);</span>
+		<span class="n">Key</span> <span class="n">privateK</span> <span class="o">=</span> <span class="n">keyFactory</span><span class="o">.</span><span class="na">generatePrivate</span><span class="o">(</span><span class="n">pkcs8KeySpec</span><span class="o">);</span>
+		<span class="n">Cipher</span> <span class="n">cipher</span> <span class="o">=</span> <span class="n">Cipher</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">keyFactory</span><span class="o">.</span><span class="na">getAlgorithm</span><span class="o">());</span>
+		<span class="n">cipher</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">Cipher</span><span class="o">.</span><span class="na">DECRYPT_MODE</span><span class="o">,</span> <span class="n">privateK</span><span class="o">);</span>
+		<span class="kt">int</span> <span class="n">inputLen</span> <span class="o">=</span> <span class="n">encryptedData</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+		<span class="n">ByteArrayOutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+		<span class="kt">int</span> <span class="n">offSet</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">cache</span><span class="o">;</span>
+		<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+		<span class="c1">// 对数据分段解密
+</span><span class="c1"></span>		<span class="k">while</span> <span class="o">(</span><span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span> <span class="o">&gt;</span> <span class="n">MAX_DECRYPT_BLOCK</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">cache</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="na">doFinal</span><span class="o">(</span><span class="n">encryptedData</span><span class="o">,</span> <span class="n">offSet</span><span class="o">,</span> <span class="n">MAX_DECRYPT_BLOCK</span><span class="o">);</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">cache</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="na">doFinal</span><span class="o">(</span><span class="n">encryptedData</span><span class="o">,</span> <span class="n">offSet</span><span class="o">,</span> <span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="n">out</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">cache</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">cache</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+			<span class="n">i</span><span class="o">++;</span>
+			<span class="n">offSet</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">MAX_DECRYPT_BLOCK</span><span class="o">;</span>
+		<span class="o">}</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">decryptedData</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">();</span>
+		<span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+		<span class="k">return</span> <span class="n">decryptedData</span><span class="o">;</span>
+	<span class="o">}</span>
+ 
+	<span class="cm">/**
+</span><span class="cm">	 * &lt;p&gt;
+</span><span class="cm">	 * 公钥解密
+</span><span class="cm">	 * &lt;/p&gt;
+</span><span class="cm">	 * 
+</span><span class="cm">	 * @param encryptedData
+</span><span class="cm">	 *            已加密数据
+</span><span class="cm">	 * @param publicKey
+</span><span class="cm">	 *            公钥(BASE64编码)
+</span><span class="cm">	 * @return
+</span><span class="cm">	 * @throws Exception
+</span><span class="cm">	 */</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">decryptByPublicKey</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">encryptedData</span><span class="o">,</span> <span class="n">String</span> <span class="n">publicKey</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">keyBytes</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">decode2Byte</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
+		<span class="n">X509EncodedKeySpec</span> <span class="n">x509KeySpec</span> <span class="o">=</span> <span class="k">new</span> <span class="n">X509EncodedKeySpec</span><span class="o">(</span><span class="n">keyBytes</span><span class="o">);</span>
+		<span class="n">KeyFactory</span> <span class="n">keyFactory</span> <span class="o">=</span> <span class="n">KeyFactory</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">KEY_ALGORITHM</span><span class="o">);</span>
+		<span class="n">Key</span> <span class="n">publicK</span> <span class="o">=</span> <span class="n">keyFactory</span><span class="o">.</span><span class="na">generatePublic</span><span class="o">(</span><span class="n">x509KeySpec</span><span class="o">);</span>
+		<span class="n">Cipher</span> <span class="n">cipher</span> <span class="o">=</span> <span class="n">Cipher</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">keyFactory</span><span class="o">.</span><span class="na">getAlgorithm</span><span class="o">());</span>
+		<span class="n">cipher</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">Cipher</span><span class="o">.</span><span class="na">DECRYPT_MODE</span><span class="o">,</span> <span class="n">publicK</span><span class="o">);</span>
+		<span class="kt">int</span> <span class="n">inputLen</span> <span class="o">=</span> <span class="n">encryptedData</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+		<span class="n">ByteArrayOutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+		<span class="kt">int</span> <span class="n">offSet</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">cache</span><span class="o">;</span>
+		<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+		<span class="c1">// 对数据分段解密
+</span><span class="c1"></span>		<span class="k">while</span> <span class="o">(</span><span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span> <span class="o">&gt;</span> <span class="n">MAX_DECRYPT_BLOCK</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">cache</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="na">doFinal</span><span class="o">(</span><span class="n">encryptedData</span><span class="o">,</span> <span class="n">offSet</span><span class="o">,</span> <span class="n">MAX_DECRYPT_BLOCK</span><span class="o">);</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">cache</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="na">doFinal</span><span class="o">(</span><span class="n">encryptedData</span><span class="o">,</span> <span class="n">offSet</span><span class="o">,</span> <span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="n">out</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">cache</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">cache</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+			<span class="n">i</span><span class="o">++;</span>
+			<span class="n">offSet</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">MAX_DECRYPT_BLOCK</span><span class="o">;</span>
+		<span class="o">}</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">decryptedData</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">();</span>
+		<span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+		<span class="k">return</span> <span class="n">decryptedData</span><span class="o">;</span>
+	<span class="o">}</span>
+ 
+	<span class="cm">/**
+</span><span class="cm">	 * &lt;p&gt;
+</span><span class="cm">	 * 公钥加密
+</span><span class="cm">	 * &lt;/p&gt;
+</span><span class="cm">	 * 
+</span><span class="cm">	 * @param data
+</span><span class="cm">	 *            源数据
+</span><span class="cm">	 * @param publicKey
+</span><span class="cm">	 *            公钥(BASE64编码)
+</span><span class="cm">	 * @return
+</span><span class="cm">	 * @throws Exception
+</span><span class="cm">	 */</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">encryptByPublicKey</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">publicKey</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">keyBytes</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">decode2Byte</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
+		<span class="n">X509EncodedKeySpec</span> <span class="n">x509KeySpec</span> <span class="o">=</span> <span class="k">new</span> <span class="n">X509EncodedKeySpec</span><span class="o">(</span><span class="n">keyBytes</span><span class="o">);</span>
+		<span class="n">KeyFactory</span> <span class="n">keyFactory</span> <span class="o">=</span> <span class="n">KeyFactory</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">KEY_ALGORITHM</span><span class="o">);</span>
+		<span class="n">Key</span> <span class="n">publicK</span> <span class="o">=</span> <span class="n">keyFactory</span><span class="o">.</span><span class="na">generatePublic</span><span class="o">(</span><span class="n">x509KeySpec</span><span class="o">);</span>
+		<span class="c1">// 对数据加密
+</span><span class="c1"></span>		<span class="n">Cipher</span> <span class="n">cipher</span> <span class="o">=</span> <span class="n">Cipher</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">keyFactory</span><span class="o">.</span><span class="na">getAlgorithm</span><span class="o">());</span>
+		<span class="n">cipher</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">Cipher</span><span class="o">.</span><span class="na">ENCRYPT_MODE</span><span class="o">,</span> <span class="n">publicK</span><span class="o">);</span>
+		<span class="kt">int</span> <span class="n">inputLen</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+		<span class="n">ByteArrayOutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+		<span class="kt">int</span> <span class="n">offSet</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">cache</span><span class="o">;</span>
+		<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+		<span class="c1">// 对数据分段加密
+</span><span class="c1"></span>		<span class="k">while</span> <span class="o">(</span><span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span> <span class="o">&gt;</span> <span class="n">MAX_ENCRYPT_BLOCK</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">cache</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="na">doFinal</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">offSet</span><span class="o">,</span> <span class="n">MAX_ENCRYPT_BLOCK</span><span class="o">);</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">cache</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="na">doFinal</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">offSet</span><span class="o">,</span> <span class="n">inputLen</span> <span class="o">-</span> <span class="n">offSet</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="n">out</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">cache</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">cache</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+			<span class="n">i</span><span class="o">++;</span>
+			<span class="n">offSet</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">MAX_ENCRYPT_BLOCK</span><span class="o">;</span>
+		<span class="o">}</span>
+		<span class="kt">byte</span><span class="o">[]</span> <span class="n">encryptedData</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">();</span>
+		<span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+		<span class="k">return</span> <span class="n">encryptedData</span><span class="o">;</span>
+	<span class="o">}</span>
+
+</code></pre></div><h3 id="基于字符串加解密-上面byte的包装">基于字符串加解密 上面byte的包装<a href="#基于字符串加解密-上面byte的包装" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="cm">/**
+</span><span class="cm">     * 公钥加密
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">encryptedDataOnJavaByPublicKey</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">PUBLICKEY</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">encode2String</span><span class="o">(</span><span class="n">encryptByPublicKey</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">PUBLICKEY</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// TODO Auto-generated catch block
+</span><span class="c1"></span>            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 私钥解密
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">decryptDataOnJavaByPrivateKey</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">PRIVATEKEY</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">temp</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">rs</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">decode2Byte</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">RSAUtils</span><span class="o">.</span><span class="na">decryptByPrivateKey</span><span class="o">(</span><span class="n">rs</span><span class="o">,</span> <span class="n">PRIVATEKEY</span><span class="o">),</span> <span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">temp</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 私钥加密
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">encryptedDataOnJavaByPrivateKey</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">PRIVATEKEY</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">encode2String</span><span class="o">(</span><span class="n">encryptByPrivateKey</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">PRIVATEKEY</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// TODO Auto-generated catch block
+</span><span class="c1"></span>            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 公钥解密
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">decryptDataOnJavaByPublicKey</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">PUBLICKEY</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">temp</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">rs</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">decode2Byte</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">RSAUtils</span><span class="o">.</span><span class="na">decryptByPublicKey</span><span class="o">(</span><span class="n">rs</span><span class="o">,</span> <span class="n">PUBLICKEY</span><span class="o">),</span> <span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">temp</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div><h3 id="测试-加密与解密">测试 加密与解密<a href="#测试-加密与解密" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>这里的字符串加密是byte加密的一个包装，所以测试字符串加密就都测试了。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">	<span class="kd">final</span> <span class="kd">private</span> <span class="n">String</span> <span class="n">plain</span> <span class="o">=</span> <span class="s">&#34;待加密字符串&#34;</span><span class="o">;</span>
+
+	<span class="nd">@Test</span>
+	<span class="kt">void</span> <span class="nf">encodeAndDecode</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">keyPair</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">genKeyPair</span><span class="o">();</span>
+			<span class="n">String</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+			<span class="n">String</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">getPrivateKey</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+
+			<span class="c1">// 公钥加密，私钥解密
+</span><span class="c1"></span>			<span class="n">String</span> <span class="n">enData</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">encryptedDataOnJavaByPublicKey</span><span class="o">(</span><span class="n">plain</span><span class="o">,</span> <span class="n">publicKey</span><span class="o">);</span>
+			<span class="n">String</span> <span class="n">deData</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">decryptDataOnJavaByPrivateKey</span><span class="o">(</span><span class="n">enData</span><span class="o">,</span> <span class="n">privateKey</span><span class="o">);</span>
+			<span class="n">assertEquals</span><span class="o">(</span><span class="n">deData</span><span class="o">,</span> <span class="n">plain</span><span class="o">);</span>
+
+			<span class="c1">// 私钥加密，公钥解密
+</span><span class="c1"></span>			<span class="n">enData</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">encryptedDataOnJavaByPrivateKey</span><span class="o">(</span><span class="n">plain</span><span class="o">,</span> <span class="n">privateKey</span><span class="o">);</span>
+			<span class="n">deData</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">decryptDataOnJavaByPublicKey</span><span class="o">(</span><span class="n">enData</span><span class="o">,</span> <span class="n">publicKey</span><span class="o">);</span>
+			<span class="n">assertEquals</span><span class="o">(</span><span class="n">deData</span><span class="o">,</span> <span class="n">plain</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">fail</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn <span class="nb">test</span>
+</code></pre></div><p>测试通过</p>
+<h3 id="签名与验签">签名与验签<a href="#签名与验签" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="cm">/**
+</span><span class="cm">     * &lt;p&gt;
+</span><span class="cm">     * 用私钥对信息生成数字签名，默认签名算法使用 MD5withRSA
+</span><span class="cm">     * &lt;/p&gt;
+</span><span class="cm">     * 
+</span><span class="cm">     * @param data       已加密数据
+</span><span class="cm">     * @param privateKey 私钥(BASE64编码)
+</span><span class="cm">     * 
+</span><span class="cm">     * @return
+</span><span class="cm">     * @throws Exception
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">sign</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">privateKey</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">sign</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">privateKey</span><span class="o">,</span> <span class="n">SIGNATURE_ALGORITHM</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 用私钥对信息生成数字签名
+</span><span class="cm">     * 
+</span><span class="cm">     * @param data
+</span><span class="cm">     * @param privateKey
+</span><span class="cm">     * @param algorithm
+</span><span class="cm">     * @return
+</span><span class="cm">     * @throws Exception
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">sign</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">privateKey</span><span class="o">,</span> <span class="n">String</span> <span class="n">algorithm</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">keyBytes</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">decode2Byte</span><span class="o">(</span><span class="n">privateKey</span><span class="o">);</span>
+        <span class="n">PKCS8EncodedKeySpec</span> <span class="n">pkcs8KeySpec</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PKCS8EncodedKeySpec</span><span class="o">(</span><span class="n">keyBytes</span><span class="o">);</span>
+        <span class="n">KeyFactory</span> <span class="n">keyFactory</span> <span class="o">=</span> <span class="n">KeyFactory</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">KEY_ALGORITHM</span><span class="o">);</span>
+        <span class="n">PrivateKey</span> <span class="n">privateK</span> <span class="o">=</span> <span class="n">keyFactory</span><span class="o">.</span><span class="na">generatePrivate</span><span class="o">(</span><span class="n">pkcs8KeySpec</span><span class="o">);</span>
+        <span class="n">Signature</span> <span class="n">signature</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">algorithm</span><span class="o">);</span>
+        <span class="n">signature</span><span class="o">.</span><span class="na">initSign</span><span class="o">(</span><span class="n">privateK</span><span class="o">);</span>
+        <span class="n">signature</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">encode2String</span><span class="o">(</span><span class="n">signature</span><span class="o">.</span><span class="na">sign</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * &lt;p&gt;
+</span><span class="cm">     * 校验数字签名，默认使用 MD5withRSA
+</span><span class="cm">     * &lt;/p&gt;
+</span><span class="cm">     * 
+</span><span class="cm">     * @param data      已加密数据
+</span><span class="cm">     * @param publicKey 公钥(BASE64编码)
+</span><span class="cm">     * @param sign      数字签名
+</span><span class="cm">     * 
+</span><span class="cm">     * @return
+</span><span class="cm">     * @throws Exception
+</span><span class="cm">     * 
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">verify</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">publicKey</span><span class="o">,</span> <span class="n">String</span> <span class="n">sign</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">verify</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">publicKey</span><span class="o">,</span> <span class="n">sign</span><span class="o">,</span> <span class="n">SIGNATURE_ALGORITHM</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 校验数字签名
+</span><span class="cm">     * 
+</span><span class="cm">     * @param data
+</span><span class="cm">     * @param publicKey
+</span><span class="cm">     * @param sign
+</span><span class="cm">     * @param algorithm
+</span><span class="cm">     * @return
+</span><span class="cm">     * @throws Exception
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">verify</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span><span class="o">,</span> <span class="n">String</span> <span class="n">publicKey</span><span class="o">,</span> <span class="n">String</span> <span class="n">sign</span><span class="o">,</span> <span class="n">String</span> <span class="n">algorithm</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">keyBytes</span> <span class="o">=</span> <span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">decode2Byte</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
+        <span class="n">X509EncodedKeySpec</span> <span class="n">keySpec</span> <span class="o">=</span> <span class="k">new</span> <span class="n">X509EncodedKeySpec</span><span class="o">(</span><span class="n">keyBytes</span><span class="o">);</span>
+        <span class="n">KeyFactory</span> <span class="n">keyFactory</span> <span class="o">=</span> <span class="n">KeyFactory</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">KEY_ALGORITHM</span><span class="o">);</span>
+        <span class="n">PublicKey</span> <span class="n">publicK</span> <span class="o">=</span> <span class="n">keyFactory</span><span class="o">.</span><span class="na">generatePublic</span><span class="o">(</span><span class="n">keySpec</span><span class="o">);</span>
+        <span class="n">Signature</span> <span class="n">signature</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">algorithm</span><span class="o">);</span>
+        <span class="n">signature</span><span class="o">.</span><span class="na">initVerify</span><span class="o">(</span><span class="n">publicK</span><span class="o">);</span>
+        <span class="n">signature</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">signature</span><span class="o">.</span><span class="na">verify</span><span class="o">(</span><span class="n">JavaBase64Util</span><span class="o">.</span><span class="na">decode2Byte</span><span class="o">(</span><span class="n">sign</span><span class="o">));</span>
+    <span class="o">}</span>
+</code></pre></div><h3 id="测试-签名与验签">测试 签名与验签<a href="#测试-签名与验签" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">	<span class="nd">@Test</span>
+	<span class="kt">void</span> <span class="nf">signAndVerify</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">keyPair</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">genKeyPair</span><span class="o">();</span>
+			<span class="n">String</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+			<span class="n">String</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">getPrivateKey</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+
+			<span class="c1">// 正确的签名测试，签名内容与验证签名的内容相符
+</span><span class="c1"></span>			<span class="n">String</span> <span class="n">enSign</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">sign</span><span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">privateKey</span><span class="o">);</span>
+			<span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">verify</span><span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">publicKey</span><span class="o">,</span> <span class="n">enSign</span><span class="o">);</span>
+			<span class="n">assertTrue</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+
+			<span class="c1">// 错误的签名测试，签名内容与验证签名的内容不符合
+</span><span class="c1"></span>			<span class="n">String</span> <span class="n">errPlain</span> <span class="o">=</span> <span class="n">plain</span> <span class="o">+</span> <span class="s">&#34;asdfasf&#34;</span><span class="o">;</span>
+			<span class="n">enSign</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">sign</span><span class="o">(</span><span class="n">errPlain</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">privateKey</span><span class="o">);</span>
+			<span class="n">ok</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">verify</span><span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">publicKey</span><span class="o">,</span> <span class="n">enSign</span><span class="o">);</span>
+			<span class="n">assertFalse</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+
+			<span class="c1">// 使用其它签名算法
+</span><span class="c1"></span>			<span class="n">String</span> <span class="n">algorithm</span> <span class="o">=</span> <span class="s">&#34;SHA256withRSA&#34;</span><span class="o">;</span>
+			<span class="n">enSign</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">sign</span><span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">privateKey</span><span class="o">,</span>  <span class="n">algorithm</span><span class="o">);</span>
+			<span class="n">ok</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">verify</span><span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">publicKey</span><span class="o">,</span> <span class="n">enSign</span><span class="o">,</span>  <span class="n">algorithm</span><span class="o">);</span>
+			<span class="n">assertTrue</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">fail</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+		<span class="o">}</span>
+
+	<span class="o">}</span>
+</code></pre></div><p>运行测试</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn <span class="nb">test</span>
+</code></pre></div><p>看到可以测试通过了。</p>
+<h3 id="bouncycastle-包">bouncycastle 包<a href="#bouncycastle-包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>网上查找资料，发现这个包针对加解密这一块有相当多的功能，但example很旧，很多API都有变化了，示例学习价值不大了，改天研究。</p>
+<h2 id="把rsa加入到tars项目中">把RSA加入到tars项目中<a href="#把rsa加入到tars项目中" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="tars-接口">tars 接口<a href="#tars-接口" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>今天接口加入了枚举，可以比较有效的控制输出参数
+src/main/resources/rsaserver.tars</p>
+<div class="highlight"><pre class="chroma"><code class="language-nginx" data-lang="nginx"><span class="k">module</span> <span class="s">rsaserver</span>
+<span class="p">{</span>
+        <span class="kn">//</span> <span class="s">公钥类型，不同功能可能都需要到公钥，如果不想统一使用同一个公钥，可以添加多种类型，供使用。</span>
+        <span class="s">enum</span> <span class="s">KeyType</span>
+        <span class="p">{</span>
+                <span class="kn">PASSWORD,</span>
+                <span class="s">PLAIN,</span>
+                <span class="s">SIGN,</span>
+                <span class="s">JWT</span>
+        <span class="err">}</span><span class="p">;</span>
+
+        <span class="kn">//</span> <span class="s">签名类型</span>
+        <span class="s">enum</span> <span class="s">SignType</span>
+        <span class="p">{</span>
+                <span class="kn">MD5withRSA,</span>
+                <span class="s">SHA1withRSA,</span>
+                <span class="s">SHA256withRSA</span>
+        <span class="err">}</span><span class="p">;</span>
+
+	<span class="kn">interface</span> <span class="s">Cipher</span>
+	<span class="p">{</span>
+                <span class="kn">//</span> <span class="s">获取公钥</span> <span class="s">用于各应用需要公钥做加解密或签名使用</span>
+                <span class="s">//</span> <span class="s">为了网络安全，私钥是不允许外部获取的，只能调用远程服务间接使用私钥。</span>
+                <span class="s">bool</span> <span class="s">getPublicKey(KeyType</span> <span class="s">typ,</span> <span class="s">out</span> <span class="s">string</span> <span class="s">pubKey)</span><span class="p">;</span>
+
+                <span class="kn">//</span> <span class="s">生成一对新的公私钥，客户端获取后用于其它用途</span>
+                <span class="s">//</span> <span class="s">默认生成的是长度1024</span> <span class="s">RSA的密钥对，有其它需要这个功能可以再加入参数就可以扩展了</span>
+                <span class="s">//</span> <span class="s">为了简单，目前就不加参数了</span>
+                <span class="s">bool</span> <span class="s">genKey(out</span> <span class="s">string</span> <span class="s">priKey,</span> <span class="s">out</span> <span class="s">string</span> <span class="s">pubKey)</span><span class="p">;</span>
+
+                <span class="kn">//</span> <span class="s">使用私钥加密</span>
+                <span class="s">bool</span> <span class="s">encodeByPrivateKey(string</span> <span class="s">data,</span> <span class="s">out</span> <span class="s">string</span> <span class="s">enStr)</span><span class="p">;</span>
+
+                <span class="kn">//</span> <span class="s">使用公钥加密</span>
+                <span class="s">bool</span> <span class="s">encodeByPublicKey(string</span> <span class="s">data,</span> <span class="s">out</span> <span class="s">string</span> <span class="s">enStr)</span><span class="p">;</span>
+
+                <span class="kn">//</span> <span class="s">使用私钥解密</span>
+                <span class="s">bool</span> <span class="s">decodeByPrivateKey(string</span> <span class="s">data,</span> <span class="s">out</span> <span class="s">string</span> <span class="s">plain)</span><span class="p">;</span>
+
+                <span class="kn">//</span> <span class="s">使用公钥解密</span>
+                <span class="s">bool</span> <span class="s">decodeByPublicKey(string</span> <span class="s">data,</span> <span class="s">out</span> <span class="s">string</span> <span class="s">plain)</span><span class="p">;</span>
+
+                <span class="kn">//</span> <span class="s">生成数字签名</span>
+                <span class="s">bool</span> <span class="s">sign(string</span> <span class="s">data,</span> <span class="s">SignType</span> <span class="s">typ,</span> <span class="s">out</span> <span class="s">string</span> <span class="s">signStr)</span><span class="p">;</span>
+
+                <span class="kn">//</span> <span class="s">验证数字签名</span>
+                <span class="s">bool</span> <span class="s">verify(string</span> <span class="s">plain,</span> <span class="s">string</span> <span class="s">signStr,</span> <span class="s">SignType</span> <span class="s">typ)</span><span class="p">;</span>
+	<span class="p">}</span>;
+<span class="p">}</span>;
+</code></pre></div><h3 id="pomxml">pom.xml<a href="#pomxml" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="添加依赖">添加依赖<a href="#添加依赖" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>tars-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
+		<span class="nt">&lt;dependency&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>org.apache.commons<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>commons-lang3<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;version&gt;</span>3.11<span class="nt">&lt;/version&gt;</span>
+		<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div><h4 id="添加插件">添加插件<a href="#添加插件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">		<span class="c">&lt;!--tars2java plugin --&gt;</span>
+		<span class="nt">&lt;plugin&gt;</span>
+			<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
+			<span class="nt">&lt;artifactId&gt;</span>tars-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+			<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
+			<span class="nt">&lt;configuration&gt;</span>
+				<span class="nt">&lt;tars2JavaConfig&gt;</span>
+					<span class="c">&lt;!-- tars file location --&gt;</span>
+					<span class="nt">&lt;tarsFiles&gt;</span>
+						<span class="nt">&lt;tarsFile&gt;</span>${basedir}/src/main/resources/rsaserver.tars<span class="nt">&lt;/tarsFile&gt;</span>
+					<span class="nt">&lt;/tarsFiles&gt;</span>
+					<span class="c">&lt;!-- Source file encoding --&gt;</span>
+					<span class="nt">&lt;tarsFileCharset&gt;</span>UTF-8<span class="nt">&lt;/tarsFileCharset&gt;</span>
+					<span class="c">&lt;!-- Generate server code --&gt;</span>
+					<span class="nt">&lt;servant&gt;</span>true<span class="nt">&lt;/servant&gt;</span>
+					<span class="c">&lt;!-- Generated source code encoding --&gt;</span>
+					<span class="nt">&lt;charset&gt;</span>UTF-8<span class="nt">&lt;/charset&gt;</span>
+					<span class="c">&lt;!-- Generated source code directory --&gt;</span>
+					<span class="nt">&lt;srcPath&gt;</span>${basedir}/src/main/java<span class="nt">&lt;/srcPath&gt;</span>
+					<span class="c">&lt;!-- Generated source code package prefix --&gt;</span>
+					<span class="nt">&lt;packagePrefixName&gt;</span>com.example.rsaserver.service.<span class="nt">&lt;/packagePrefixName&gt;</span>
+				<span class="nt">&lt;/tars2JavaConfig&gt;</span>
+			<span class="nt">&lt;/configuration&gt;</span>
+		<span class="nt">&lt;/plugin&gt;</span>
+		<span class="c">&lt;!--package plugin--&gt;</span>
+</code></pre></div><h4 id="指定jar名称">指定jar名称<a href="#指定jar名称" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">		<span class="nt">&lt;finalName&gt;</span>rsaserver<span class="nt">&lt;/finalName&gt;</span>
+</code></pre></div><h3 id="配置文件">配置文件<a href="#配置文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>这是我为了测试生成的一对公私钥，图方便直接把公私钥都放本地配置文件中进行测试。
+src/main/resources/application.properties</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">#</span> <span class="n">rsa</span> <span class="n">pub</span> <span class="n">pri</span> <span class="n">key</span> <span class="n">config</span>
+<span class="n">test</span><span class="o">.</span><span class="na">key</span><span class="o">.</span><span class="na">public</span><span class="o">=</span><span class="n">MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCOGU7lIbniqiI4WjoF3FmY9NAMr6VYrD</span><span class="o">+</span><span class="n">V0O</span><span class="o">/</span><span class="n">TShrSmaObYbYLHZ</span><span class="o">/</span><span class="n">NcIscCpV1ibdbhCylK77O</span><span class="o">+</span><span class="n">jEtBMAh</span><span class="o">+</span><span class="n">jR8lCVMcfNUtHBWkakiMXTMBnI5ddDOmU</span><span class="o">/</span><span class="n">J4jdQxhjlqfjvhjBzEMvUx0</span><span class="o">/</span><span class="n">16HuqfwEGolr1Zs6tBTjQ0TrsYDwSJQIDAQAB</span>
+<span class="n">test</span><span class="o">.</span><span class="na">key</span><span class="o">.</span><span class="na">private</span><span class="o">=</span><span class="n">MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAI4ZTuUhueKqIjhaOgXcWZj00AyvpVisP5XQ79NKGtKZo5thtgsdn81wixwKlXWJt1uELKUrvs76MS0EwCH6NHyUJUxx81S0cFaRqSIxdMwGcjl10M6ZT8niN1DGGOWp</span><span class="o">+</span><span class="n">O</span><span class="o">+</span><span class="n">GMHMQy9THT</span><span class="o">/</span><span class="n">Xoe6p</span><span class="o">/</span><span class="n">AQaiWvVmzq0FONDROuxgPBIlAgMBAAECgYBic9h82twu1o</span><span class="o">/</span><span class="n">1GVaAPwZ4</span><span class="o">+</span><span class="n">o23bG8UO</span><span class="o">+</span><span class="n">umQmgXrY1eAwMfIhj</span><span class="o">+</span><span class="n">JJ1WurY3TIH3ON6ocrB4FBIU17YAqfzwzalU4doFrmwk5WCpLm6xgSlhAkAMj0TDOz0irinVpS8RcYIQLWKvnl391NNIP9l2cataCnDh4lA15yzrTiSVRWrzAQJBAPgQGYvwnWZUErk4f3QvqwFvxEJyPQCUfxvYp3B</span><span class="o">/</span><span class="n">aAS9fHVjFZOUUr2W</span><span class="o">/</span><span class="n">pcVJnWlPkeTdMRs7AHjJhPt2KFSf</span><span class="o">+</span><span class="n">UCQQCSpT</span><span class="o">/</span><span class="n">uSEqht6AafooDKHcHHLnRVflIfbFglf4sYHuERp6zT0pe52</span><span class="o">/</span><span class="n">7F28sXHBuztkeA7UvHVB2JVG7zsNqv6VBAkEAuxLpMS</span><span class="o">/</span><span class="n">0hAdDV4vUErsgK6UuTS3580YJ1eY94Ak1WN3Nznk6</span><span class="o">/</span><span class="n">GEPRQtqVGYO6woDPddmZ</span><span class="o">/</span><span class="n">v8wC</span><span class="o">+</span><span class="n">dt8nXZVHiQQJAJq</span><span class="o">+</span><span class="n">Tev</span><span class="o">/</span><span class="n">1OE5h3Ttum0CsjeLFHnVoyvfluE45fGmDjDS5HyKWwwyZHQtkl7ZXLtRAsMtXm</span><span class="o">/</span><span class="n">NGy7QyqLH2GY4vQQJAJagMRmIV0AlIr1UyZk2vVU9n3LDWO57a3VMxAMQ6Hi6R3yqZb2Stgo62djYCtjoqE25gAUAs2jJ8Bk7uyRbW</span><span class="o">/</span><span class="n">A</span><span class="o">==</span>
+</code></pre></div><h3 id="main">main<a href="#main" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/main/java/com/example/rsaserver/RsaserverApplication.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableTarsServer</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RsaserverApplication</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="c1">// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
+</span><span class="c1"></span>		<span class="n">SpringApplication</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpringApplication</span><span class="o">(</span><span class="n">RsaserverApplication</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+		<span class="n">app</span><span class="o">.</span><span class="na">setWebApplicationType</span><span class="o">(</span><span class="n">WebApplicationType</span><span class="o">.</span><span class="na">NONE</span><span class="o">);</span>
+		<span class="n">app</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><h3 id="配置类">配置类<a href="#配置类" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/main/java/com/example/tarsmqserver/domain/RSAConfig.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RSAConfig</span> <span class="o">{</span>
+    <span class="nd">@Value</span><span class="o">(</span><span class="s">&#34;${test.key.public}&#34;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">publicKey</span><span class="o">;</span>
+
+    <span class="nd">@Value</span><span class="o">(</span><span class="s">&#34;${test.key.private}&#34;</span><span class="o">)</span>
+    <span class="kd">private</span>  <span class="n">String</span> <span class="n">privateKey</span><span class="o">;</span>
+
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getPublicKey</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">publicKey</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getPrivateKey</span><span class="o">(){</span>
+        <span class="k">return</span> <span class="n">privateKey</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><h3 id="tar2java-生成代码">tar2java 生成代码<a href="#tar2java-生成代码" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn tars:tars2java
+</code></pre></div><h3 id="生成好的接口文件">生成好的接口文件<a href="#生成好的接口文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/main/java/com/example/rsaserver/service/rsaserver/CipherServant.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Servant</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">CipherServant</span> <span class="o">{</span>
+
+	 <span class="kt">boolean</span> <span class="nf">getPublicKey</span><span class="o">(</span><span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;typ&#34;</span><span class="o">)</span><span class="kt">int</span> <span class="n">typ</span><span class="o">,</span> <span class="nd">@TarsHolder</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;pubKey&#34;</span><span class="o">)</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">pubKey</span><span class="o">);</span>
+
+	 <span class="kt">boolean</span> <span class="nf">genKey</span><span class="o">(</span><span class="nd">@TarsHolder</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;priKey&#34;</span><span class="o">)</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">priKey</span><span class="o">,</span> <span class="nd">@TarsHolder</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;pubKey&#34;</span><span class="o">)</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">pubKey</span><span class="o">);</span>
+
+	 <span class="kt">boolean</span> <span class="nf">encodeByPrivateKey</span><span class="o">(</span><span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;data&#34;</span><span class="o">)</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="nd">@TarsHolder</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;enStr&#34;</span><span class="o">)</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span><span class="o">);</span>
+
+	 <span class="kt">boolean</span> <span class="nf">encodeByPublicKey</span><span class="o">(</span><span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;data&#34;</span><span class="o">)</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="nd">@TarsHolder</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;enStr&#34;</span><span class="o">)</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span><span class="o">);</span>
+
+	 <span class="kt">boolean</span> <span class="nf">decodeByPrivateKey</span><span class="o">(</span><span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;data&#34;</span><span class="o">)</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="nd">@TarsHolder</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;plain&#34;</span><span class="o">)</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">plain</span><span class="o">);</span>
+
+	 <span class="kt">boolean</span> <span class="nf">decodeByPublicKey</span><span class="o">(</span><span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;data&#34;</span><span class="o">)</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="nd">@TarsHolder</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;plain&#34;</span><span class="o">)</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">plain</span><span class="o">);</span>
+
+	 <span class="kt">boolean</span> <span class="nf">sign</span><span class="o">(</span><span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;data&#34;</span><span class="o">)</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;typ&#34;</span><span class="o">)</span><span class="kt">int</span> <span class="n">typ</span><span class="o">,</span> <span class="nd">@TarsHolder</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;signStr&#34;</span><span class="o">)</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">signStr</span><span class="o">);</span>
+
+	 <span class="kt">boolean</span> <span class="nf">verify</span><span class="o">(</span><span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;plain&#34;</span><span class="o">)</span><span class="n">String</span> <span class="n">plain</span><span class="o">,</span> <span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;signStr&#34;</span><span class="o">)</span><span class="n">String</span> <span class="n">signStr</span><span class="o">,</span> <span class="nd">@TarsMethodParameter</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#34;typ&#34;</span><span class="o">)</span><span class="kt">int</span> <span class="n">typ</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="tars-服务接口实现">tars 服务接口实现<a href="#tars-服务接口实现" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/main/java/com/example/rsaserver/service/rsaserver/impl/CipherServantImpl.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@TarsServant</span><span class="o">(</span><span class="s">&#34;cipherObj&#34;</span><span class="o">)</span>
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CipherServantImpl</span> <span class="kd">implements</span> <span class="n">CipherServant</span> <span class="o">{</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">RSAConfig</span> <span class="n">rsaConfig</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">RSA_LOGGER</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">&#34;RSA_SERVER&#34;</span><span class="o">);</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">genKey</span><span class="o">(</span><span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">priKey</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">pubKey</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">keyPair</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">genKeyPair</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">publickey</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+            <span class="n">String</span> <span class="n">privatekey</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">getPrivateKey</span><span class="o">(</span><span class="n">keyPair</span><span class="o">);</span>
+            <span class="n">priKey</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">privatekey</span><span class="o">);</span>
+            <span class="n">pubKey</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">publickey</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;genKey&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">RSA_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;genkey() successfully call&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">getPublicKey</span><span class="o">(</span><span class="kt">int</span> <span class="n">typ</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">pubKey</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="n">rsaConfig</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">();</span>
+        <span class="n">KeyType</span> <span class="n">convert</span> <span class="o">=</span> <span class="n">KeyType</span><span class="o">.</span><span class="na">convert</span><span class="o">(</span><span class="n">typ</span><span class="o">);</span>
+
+        <span class="c1">// TODO 这里目前没有往下扩展，后续可以扩展完善
+</span><span class="c1"></span>        <span class="c1">// 目前所有都返回统一的公钥
+</span><span class="c1"></span>        <span class="k">switch</span> <span class="o">(</span><span class="n">convert</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="n">PASSWORD</span><span class="o">:</span>
+                <span class="n">pubKey</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+
+            <span class="k">case</span> <span class="n">PLAIN</span><span class="o">:</span>
+                <span class="n">pubKey</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+
+            <span class="k">case</span> <span class="n">SIGN</span><span class="o">:</span>
+                <span class="n">pubKey</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+
+            <span class="k">case</span> <span class="n">JWT</span><span class="o">:</span>
+                <span class="n">pubKey</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+<span class="nl">
+</span><span class="nl">            default:</span>
+                <span class="n">pubKey</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">pubKey</span><span class="o">.</span><span class="na">getValue</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">encodeByPrivateKey</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">data</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="n">rsaConfig</span><span class="o">.</span><span class="na">getPrivateKey</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">enData</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">encryptedDataOnJavaByPrivateKey</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">privateKey</span><span class="o">);</span>
+            <span class="n">enStr</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">enData</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;encodeByPrivateKey&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">RSA_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;encodeByPrivateKey() successfully call&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">encodeByPublicKey</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">data</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="n">rsaConfig</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">enData</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">encryptedDataOnJavaByPublicKey</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">publicKey</span><span class="o">);</span>
+            <span class="n">enStr</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">enData</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;encodeByPublicKey&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">RSA_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;encodeByPublicKey() successfully call&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">decodeByPrivateKey</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">plain</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">data</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="n">rsaConfig</span><span class="o">.</span><span class="na">getPrivateKey</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">deData</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">decryptDataOnJavaByPrivateKey</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">privateKey</span><span class="o">);</span>
+            <span class="n">plain</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">deData</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;decodeByPrivateKey&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">RSA_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;decodeByPrivateKey() successfully call&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">decodeByPublicKey</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">plain</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">data</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="n">rsaConfig</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">deData</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">decryptDataOnJavaByPublicKey</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">publicKey</span><span class="o">);</span>
+            <span class="n">plain</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">deData</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;decodeByPublicKey&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">RSA_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;decodeByPublicKey() successfully call&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">sign</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="kt">int</span> <span class="n">typ</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">signStr</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">data</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// TODO 目前只使用了默认的 MD5withRSA 需要其它的功能,后续可以添加,通过入参typ来调用不同的方法
+</span><span class="c1"></span>            <span class="n">String</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="n">rsaConfig</span><span class="o">.</span><span class="na">getPrivateKey</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">enSign</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">sign</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">privateKey</span><span class="o">);</span>
+            <span class="n">signStr</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">enSign</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;sign&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">RSA_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;sign() successfully call&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">verify</span><span class="o">(</span><span class="n">String</span> <span class="n">plain</span><span class="o">,</span> <span class="n">String</span> <span class="n">signStr</span><span class="o">,</span> <span class="kt">int</span> <span class="n">typ</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">plain</span><span class="o">)</span> <span class="o">||</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">signStr</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="c1">// TODO 目前只使用了默认的 MD5withRSA 需要其它的功能,后续可以添加,通过入参typ来调用不同的方法
+</span><span class="c1"></span>        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="n">rsaConfig</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">();</span>
+            <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">RSAUtils</span><span class="o">.</span><span class="na">verify</span><span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="n">publicKey</span><span class="o">,</span> <span class="n">signStr</span><span class="o">);</span>
+            <span class="n">RSA_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;verify() successfully call&#34;</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">ok</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;verify&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">exHandler</span><span class="o">(</span><span class="n">String</span> <span class="n">funcname</span><span class="o">,</span> <span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="n">RSA_LOGGER</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;{}(): {}&#34;</span><span class="o">,</span> <span class="n">funcname</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><h3 id="测试代码">测试代码<a href="#测试代码" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/test/java/com/example/rsaserver/CipherServantImplTest.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootTest</span>
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CipherServantImplTest</span> <span class="o">{</span>
+
+    <span class="c1">// 因CipherServantImpl中有 @Autowired 所以测试的时候不能使用new，
+</span><span class="c1"></span>    <span class="c1">// 必须使用 @Autowired来装载类才能读取到配置，要不然会出现空指针对错误
+</span><span class="c1"></span>    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">CipherServantImpl</span> <span class="n">imp</span><span class="o">;</span>
+
+    <span class="nd">@Test</span>
+    <span class="kt">void</span> <span class="nf">genKey</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">priKey</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">pubKey</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="na">genKey</span><span class="o">(</span><span class="n">priKey</span><span class="o">,</span> <span class="n">pubKey</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getPublicKey</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">KeyType</span> <span class="n">convert</span> <span class="o">=</span> <span class="n">KeyType</span><span class="o">.</span><span class="na">convert</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">convert</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">pubKey</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="na">getPublicKey</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">pubKey</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">encodeByPrivateKeyWithDecodeByPublicKey</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">data</span> <span class="o">=</span> <span class="s">&#34;as65df4656a4sd6fa&#34;</span><span class="o">;</span>
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="na">encodeByPrivateKey</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">enStr</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">plain</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="n">imp</span><span class="o">.</span><span class="na">decodeByPublicKey</span><span class="o">(</span><span class="n">enStr</span><span class="o">.</span><span class="na">getValue</span><span class="o">(),</span> <span class="n">plain</span><span class="o">);</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">value</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">encodeByPublicKeyWithDecodeByPrivateKey</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">data</span> <span class="o">=</span> <span class="s">&#34;as65df4656a4sd6fa&#34;</span><span class="o">;</span>
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="na">encodeByPublicKey</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">enStr</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">plain</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="n">imp</span><span class="o">.</span><span class="na">decodeByPrivateKey</span><span class="o">(</span><span class="n">enStr</span><span class="o">.</span><span class="na">getValue</span><span class="o">(),</span> <span class="n">plain</span><span class="o">);</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">plain</span><span class="o">.</span><span class="na">value</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">signWithVerify</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">data</span> <span class="o">=</span> <span class="s">&#34;as65df4656a4sd6fa&#34;</span><span class="o">;</span>
+        <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">signStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="na">sign</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">signStr</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+
+        <span class="n">ok</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="na">verify</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">signStr</span><span class="o">.</span><span class="na">getValue</span><span class="o">(),</span> <span class="n">0</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">ok</span><span class="o">);</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="tars-配置文件">tars 配置文件<a href="#tars-配置文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/main/resources/example.rsaserver.config.conf</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;tars&gt;</span>
+	<span class="nt">&lt;application&gt;</span>
+		enableset=N
+		setdivision=NULL
+		<span class="nt">&lt;client&gt;</span>
+			locator=
+			sync-invoke-timeout=20000
+			async-invoke-timeout=20000
+			refresh-endpoint-interval=60000
+			stat=tars.tarsstat.StatObj
+			property=tars.tarsproperty.PropertyObj
+			report-interval=60000
+			modulename=rsaserver.cipherJavaServer
+		<span class="nt">&lt;/client&gt;</span>
+		<span class="nt">&lt;server&gt;</span>
+			node=
+			app=rsaserver
+			server=Cipher
+			localip=127.0.0.1
+			local=tcp -h 127.0.0.1 -p 18601 -t 3000
+			basepath=.
+			datapath=.
+			logpath=.
+			loglevel=DEBUG
+			logsize=15M
+			log=
+			config=tars.tarsconfig.ConfigObj
+			notify=tars.tarsnotify.NotifyObj
+			mainclass=com.qq.tars.server.startup.Main
+			jvmparams=-Xms1024m -Xmx1024m
+			sessiontimeout=120000
+			sessioncheckinterval=60000
+			tcpnodelay=true
+			udpbuffersize=8192
+			charsetname=UTF-8
+			<span class="nt">&lt;rsaserver.Cipher.cipherObjAdapter&gt;</span>
+				allow
+				endpoint=tcp -h 127.0.0.1 -p 18600 -t 60000
+				handlegroup=rsaserver.Cipher.cipherObjAdapter
+				maxconns=200000
+				protocol=tars
+				queuecap=10000
+				queuetimeout=60000
+				servant=rsaserver.Cipher.cipherObj
+				shmcap=0
+				shmkey=0
+				threads=100
+			<span class="nt">&lt;/rsaserver.Cipher.cipherObjAdapter&gt;</span>
+		<span class="nt">&lt;/server&gt;</span>
+	<span class="nt">&lt;/application&gt;</span>
+<span class="nt">&lt;/tars&gt;</span>
+</code></pre></div><h3 id="运行测试">运行测试<a href="#运行测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn <span class="nb">test</span> -Dconfig<span class="o">=</span>src/main/resources/example.rsaserver.config.conf
+</code></pre></div><p>或用我提供的Makefile来测试 <a href="https://github.com/aomirun/demo/blob/main/day-4/rsaserver/Makefile">传送门</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ make <span class="nb">test</span>
+</code></pre></div><h3 id="测试结果">测试结果<a href="#测试结果" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>INFO<span class="o">]</span> Tests run: 8, Failures: 0, Errors: 0, Skipped: <span class="m">0</span>
+<span class="o">[</span>INFO<span class="o">]</span> 
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> BUILD SUCCESS
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+</code></pre></div><h3 id="tars-web-上传及发布">tars-web 上传及发布<a href="#tars-web-上传及发布" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ make build-upload
+</code></pre></div><p>或者手动上传</p>
+<h3 id="上传tars接口定义文件">上传tars接口定义文件<a href="#上传tars接口定义文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>手动上传<code>src/main/resources/rsaserver.tars</code>
+手动测试
+查看结果
+一切正常</p>
+<h2 id="修改day2的mqserver项目">修改day2的mqserver项目<a href="#修改day2的mqserver项目" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="修改mqservertars">修改mqserver.tars<a href="#修改mqservertars" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>因tars插件多个tars文件,共有是否生成服务接口选项,本例中同是有服务端和客户端,需要分别生成才行
+src/main/resources/mqserver.tars</p>
+<pre><code>module mqserver
+{
+	interface Message
+	{
+                // msg 字符串内容原样发送
+                bool send(string msg);
+
+                // 用私钥对字符串进行加密,返回加密后的字符串
+                bool encode(string sign, out string enStr);
+
+                // 用私钥对字符串进行加密,并发送加密后的内容
+                bool encodeWithSend(string msg);
+
+                // 具体字符串拼接可能自己定义,是否在字符串中传输是否加密字符,或者默认约定哪些服务发送密文,哪些服务发送明文
+                // if isEncode = false then
+                // 对发送的原内容进行签名,之后签名字符串与原内容字符串使用 | 拼接为一个字符串后发送
+                // e.g: msg = abc, signStr = AF@FSDafe23 最后发送的字符串 msg = AF@FSDafe23|abc
+                // if isEncode = true then
+                // 对发送的原内容先进行签名并对原内容进行加密,之后使用 | 拼接为一个字符串后发送
+                // e.g: msg = abc signStr = AF@FSDafe23 enStr = ASFDHFHSGGG233f2f2fadfAGAF 最后发送的字符串 msg = AF@FSDafe23|ASFDHFHSGGG233f2f2fadfAGAF
+                bool signWithSend(string msg, bool isEncode);
+	};
+};
+</code></pre><h3 id="生成服务接口">生成服务接口<a href="#生成服务接口" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn tars:tars2java
+</code></pre></div><p>复制rsaserver.tars到mqserver项目中</p>
+<h3 id="pomxml-修改">pom.xml 修改<a href="#pomxml-修改" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">			<span class="c">&lt;!--tars2java plugin --&gt;</span>
+			<span class="nt">&lt;plugin&gt;</span>
+				<span class="nt">&lt;groupId&gt;</span>com.tencent.tars<span class="nt">&lt;/groupId&gt;</span>
+				<span class="nt">&lt;artifactId&gt;</span>tars-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+				<span class="nt">&lt;version&gt;</span>1.7.2<span class="nt">&lt;/version&gt;</span>
+				<span class="nt">&lt;configuration&gt;</span>
+					<span class="nt">&lt;tars2JavaConfig&gt;</span>
+						<span class="c">&lt;!-- tars file location --&gt;</span>
+						<span class="nt">&lt;tarsFiles&gt;</span>
+							<span class="nt">&lt;tarsFile&gt;</span>${basedir}/src/main/resources/mqserver.tars<span class="nt">&lt;/tarsFile&gt;</span>
+						<span class="nt">&lt;/tarsFiles&gt;</span>
+						<span class="c">&lt;!-- Source file encoding --&gt;</span>
+						<span class="nt">&lt;tarsFileCharset&gt;</span>UTF-8<span class="nt">&lt;/tarsFileCharset&gt;</span>
+						<span class="c">&lt;!-- Generate server code --&gt;</span>
+						<span class="nt">&lt;servant&gt;</span>true<span class="nt">&lt;/servant&gt;</span>
+						<span class="c">&lt;!-- Generated source code encoding --&gt;</span>
+						<span class="nt">&lt;charset&gt;</span>UTF-8<span class="nt">&lt;/charset&gt;</span>
+						<span class="c">&lt;!-- Generated source code directory --&gt;</span>
+						<span class="nt">&lt;srcPath&gt;</span>${basedir}/src/main/java<span class="nt">&lt;/srcPath&gt;</span>
+						<span class="c">&lt;!-- Generated source code package prefix --&gt;</span>
+						<span class="nt">&lt;packagePrefixName&gt;</span>com.example.tarsmqserver.service.<span class="nt">&lt;/packagePrefixName&gt;</span>
+					<span class="nt">&lt;/tars2JavaConfig&gt;</span>
+					<span class="nt">&lt;tars2JavaConfig&gt;</span>
+						<span class="c">&lt;!-- tars file location --&gt;</span>
+						<span class="nt">&lt;tarsFiles&gt;</span>
+							<span class="nt">&lt;tarsFile&gt;</span>${basedir}/src/main/resources/rsaserver.tars<span class="nt">&lt;/tarsFile&gt;</span>
+						<span class="nt">&lt;/tarsFiles&gt;</span>
+						<span class="c">&lt;!-- Source file encoding --&gt;</span>
+						<span class="nt">&lt;tarsFileCharset&gt;</span>UTF-8<span class="nt">&lt;/tarsFileCharset&gt;</span>
+						<span class="c">&lt;!-- Generate server code --&gt;</span>
+						<span class="nt">&lt;servant&gt;</span>false<span class="nt">&lt;/servant&gt;</span>
+						<span class="c">&lt;!-- Generated source code encoding --&gt;</span>
+						<span class="nt">&lt;charset&gt;</span>UTF-8<span class="nt">&lt;/charset&gt;</span>
+						<span class="c">&lt;!-- Generated source code directory --&gt;</span>
+						<span class="nt">&lt;srcPath&gt;</span>${basedir}/src/main/java<span class="nt">&lt;/srcPath&gt;</span>
+						<span class="c">&lt;!-- Generated source code package prefix --&gt;</span>
+						<span class="nt">&lt;packagePrefixName&gt;</span>com.example.tarsmqserver.service.<span class="nt">&lt;/packagePrefixName&gt;</span>
+					<span class="nt">&lt;/tars2JavaConfig&gt;</span>
+				<span class="nt">&lt;/configuration&gt;</span>
+			<span class="nt">&lt;/plugin&gt;</span>
+			<span class="c">&lt;!--package plugin--&gt;</span>
+</code></pre></div><p>生成tars客户端代码</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mvn tars:tars2java
+</code></pre></div><p>新生成的代码存放在
+src/main/java/com/example/tarsmqserver/service/rsaserver</p>
+<h3 id="修改接口实现">修改接口实现<a href="#修改接口实现" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>src/main/java/com/example/tarsmqserver/service/mqserver/impl/MessageServantImpl.java</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@TarsServant</span><span class="o">(</span><span class="s">&#34;messageObj&#34;</span><span class="o">)</span>
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MessageServantImpl</span> <span class="kd">implements</span> <span class="n">MessageServant</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">Producer</span> <span class="n">producer</span><span class="o">;</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">JmqConfig</span> <span class="n">jmqConfig</span><span class="o">;</span>
+
+    <span class="nd">@TarsClient</span><span class="o">(</span><span class="s">&#34;example.rsaserver.cipherObj&#34;</span><span class="o">)</span>
+    <span class="n">CipherPrx</span> <span class="n">cipherPrx</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">MQSERVER_LOGGER</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">&#34;MQSERVER&#34;</span><span class="o">);</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 发送消息到IBM MQ
+</span><span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">send</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">queueName</span> <span class="o">=</span> <span class="n">jmqConfig</span><span class="o">.</span><span class="na">getSendQueueName</span><span class="o">();</span>
+            <span class="n">MQSERVER_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;send: {} -&gt; {}&#34;</span><span class="o">,</span> <span class="n">queueName</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">producer</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">(</span><span class="n">queueName</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+                
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;send&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">encode</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">,</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">cipherPrx</span><span class="o">.</span><span class="na">encodeByPrivateKey</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">enStr</span><span class="o">);</span>
+            <span class="n">MQSERVER_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;encode: {} -&gt; {}&#34;</span><span class="o">,</span> <span class="n">msg</span><span class="o">,</span> <span class="n">enStr</span><span class="o">.</span><span class="na">value</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">ok</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;encode&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">encodeWithSend</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+            <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">encode</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">enStr</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">ok</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">send</span><span class="o">(</span><span class="n">enStr</span><span class="o">.</span><span class="na">value</span><span class="o">);</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;encodeWithSend&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">signWithSend</span><span class="o">(</span><span class="n">String</span> <span class="n">msg</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isEncode</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// 原内容去生成签名
+</span><span class="c1"></span>            <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">signStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+            <span class="kt">boolean</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">cipherPrx</span><span class="o">.</span><span class="na">sign</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">SignType</span><span class="o">.</span><span class="na">MD5withRSA</span><span class="o">.</span><span class="na">value</span><span class="o">(),</span> <span class="n">signStr</span><span class="o">);</span>
+            <span class="n">MQSERVER_LOGGER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;signWithSend: {} -&gt; {}&#34;</span><span class="o">,</span> <span class="n">msg</span><span class="o">,</span> <span class="n">signStr</span><span class="o">.</span><span class="na">value</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">ok</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">String</span> <span class="n">content</span> <span class="o">=</span> <span class="n">signStr</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;|&#34;</span><span class="o">;</span>
+
+            <span class="c1">// 是否需要对发送的内容进行加密
+</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">isEncode</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">enStr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Holder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+
+                <span class="n">ok</span> <span class="o">=</span> <span class="n">encode</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">enStr</span><span class="o">);</span>
+                <span class="c1">// 加密失败处理逻辑,根据业务需求不同,可以采用返回失败或不加密,直接发送明文
+</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(!</span><span class="n">ok</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="c1">// 这里选择直接发送明文
+</span><span class="c1"></span>                    <span class="n">content</span> <span class="o">+=</span> <span class="n">msg</span><span class="o">;</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="c1">// 加密成功,发送密文
+</span><span class="c1"></span>                    <span class="n">content</span> <span class="o">+=</span> <span class="n">enStr</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+                <span class="o">}</span>
+
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="c1">// 不加密,发送明文
+</span><span class="c1"></span>                <span class="n">content</span> <span class="o">+=</span> <span class="n">msg</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">send</span><span class="o">(</span><span class="n">content</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">exHandler</span><span class="o">(</span><span class="s">&#34;signWithSend&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 错误处理器 类里面统一一下,有空再研究一下统一错误机制
+</span><span class="cm">     * @param funcname
+</span><span class="cm">     * @param e
+</span><span class="cm">     * @return
+</span><span class="cm">     */</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">exHandler</span><span class="o">(</span><span class="n">String</span> <span class="n">funcname</span><span class="o">,</span> <span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="n">MQSERVER_LOGGER</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;{}() fail call. cause: {}&#34;</span><span class="o">,</span> <span class="n">funcname</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><h3 id="优化消息监听者服务">优化消息监听者服务<a href="#优化消息监听者服务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConsumerListener</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">JMS_LISTENER</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">&#34;JMS_LISTENER&#34;</span><span class="o">);</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 使用JmsListener配置消费者监听的队列
+</span><span class="cm">     * 
+</span><span class="cm">     * @param receivedMsg 接收到的消息
+</span><span class="cm">     */</span>
+
+    <span class="c1">// @JmsListener(destination = &#34;DEV.QUEUE.1&#34;)
+</span><span class="c1"></span>    <span class="nd">@JmsListener</span><span class="o">(</span><span class="n">destination</span> <span class="o">=</span> <span class="s">&#34;#{@conf.recvQueueName}&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">receiveQueue</span><span class="o">(</span><span class="n">String</span> <span class="n">receivedMsg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">JMS_LISTENER</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;RECEIVE: {}&#34;</span><span class="o">,</span> <span class="n">receivedMsg</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">DefaultJmsListenerContainerFactory</span> <span class="nf">jmsListenerContainerFactory</span><span class="o">(</span><span class="n">ConnectionFactory</span> <span class="n">connectionFactory</span><span class="o">,</span>
+            <span class="n">ExampleErrorHandler</span> <span class="n">errorHandler</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">DefaultJmsListenerContainerFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultJmsListenerContainerFactory</span><span class="o">();</span>
+        <span class="n">factory</span><span class="o">.</span><span class="na">setConnectionFactory</span><span class="o">(</span><span class="n">connectionFactory</span><span class="o">);</span>
+        <span class="n">factory</span><span class="o">.</span><span class="na">setErrorHandler</span><span class="o">(</span><span class="n">errorHandler</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">factory</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Service</span>
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleErrorHandler</span> <span class="kd">implements</span> <span class="n">ErrorHandler</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleError</span><span class="o">(</span><span class="n">Throwable</span> <span class="n">t</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// handle exception here
+</span><span class="c1"></span>            <span class="n">JMS_LISTENER</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">JmqConfig</span> <span class="nf">conf</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">JmqConfig</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="打包上传测试观察">打包/上传/测试/观察<a href="#打包上传测试观察" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>我使用 Makefile 打包上传 <a href="https://github.com/aomirun/demo/blob/main/day-4/rsaserver/Makefile">Makefile 代码 传送门</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ make build-upload
+</code></pre></div><p>一切正常,加密和签名都测试成功了</p>
+<h2 id="源代码">源代码<a href="#源代码" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://github.com/aomirun/demo/tree/main/day-4">实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)</a></p>
+<h2 id="结语">结语<a href="#结语" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>经过几天的折腾,虽然代码没写多少行,但碰到的问题确实很多,还好都基本上解决了.这次使用了一个服务调用另外一个服务的方式,体现了分布式微服务的一些开发与使用.
+今天的rsaserver进展扩展,很快就可以弄出一个密钥服务中心,专门针对加解密进行处理,又单独保存了公私钥,扩展一下还可以搞密钥链.
+私钥越少人掌握就越安全.</p>
+
+			</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/java/hello-java-3-day/">实现客户端同步和异步调用RPC微服务(微服务系列第三天)</a></li>
+	
+	<li><a href="/posts/java/hello-java-2-day/">实现tars-springboot-ibm-mq的微服务(微服务系列第二天)</a></li>
+	
+	<li><a href="/posts/java/hello-java-1-day/">通过docker-springboot-tars构建微服务环境(微服务系列第一天)</a></li>
+	
+	<li><a href="/posts/wsl2-vscode-openjdk-install/">Wsl2 Vscode Openjdk Install</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://aomi.run/tags/java">java</a></span><span class="tag"><a href="https://aomi.run/tags/docker">docker</a></span><span class="tag"><a href="https://aomi.run/tags/mq">mq</a></span><span class="tag"><a href="https://aomi.run/tags/jms">jms</a></span><span class="tag"><a href="https://aomi.run/tags/tars">tars</a></span><span class="tag"><a href="https://aomi.run/tags/micro-serivce">micro serivce</a></span><span class="tag"><a href="https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3197 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-01-31 15:40 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#实现rsa工具类">实现RSA工具类</a>
+      <ul>
+        <li><a href="#jdk18-的-base64">JDK1.8 的 base64</a></li>
+        <li><a href="#生成公私钥">生成公私钥</a></li>
+        <li><a href="#测试-公私钥生成">测试 公私钥生成</a></li>
+        <li><a href="#基于-byte-的加解密">基于 byte 的加解密</a></li>
+        <li><a href="#基于字符串加解密-上面byte的包装">基于字符串加解密 上面byte的包装</a></li>
+        <li><a href="#测试-加密与解密">测试 加密与解密</a></li>
+        <li><a href="#签名与验签">签名与验签</a></li>
+        <li><a href="#测试-签名与验签">测试 签名与验签</a></li>
+        <li><a href="#bouncycastle-包">bouncycastle 包</a></li>
+      </ul>
+    </li>
+    <li><a href="#把rsa加入到tars项目中">把RSA加入到tars项目中</a>
+      <ul>
+        <li><a href="#tars-接口">tars 接口</a></li>
+        <li><a href="#pomxml">pom.xml</a></li>
+        <li><a href="#配置文件">配置文件</a></li>
+        <li><a href="#main">main</a></li>
+        <li><a href="#配置类">配置类</a></li>
+        <li><a href="#tar2java-生成代码">tar2java 生成代码</a></li>
+        <li><a href="#生成好的接口文件">生成好的接口文件</a></li>
+        <li><a href="#tars-服务接口实现">tars 服务接口实现</a></li>
+        <li><a href="#测试代码">测试代码</a></li>
+        <li><a href="#tars-配置文件">tars 配置文件</a></li>
+        <li><a href="#运行测试">运行测试</a></li>
+        <li><a href="#测试结果">测试结果</a></li>
+        <li><a href="#tars-web-上传及发布">tars-web 上传及发布</a></li>
+        <li><a href="#上传tars接口定义文件">上传tars接口定义文件</a></li>
+      </ul>
+    </li>
+    <li><a href="#修改day2的mqserver项目">修改day2的mqserver项目</a>
+      <ul>
+        <li><a href="#修改mqservertars">修改mqserver.tars</a></li>
+        <li><a href="#生成服务接口">生成服务接口</a></li>
+        <li><a href="#pomxml-修改">pom.xml 修改</a></li>
+        <li><a href="#修改接口实现">修改接口实现</a></li>
+        <li><a href="#优化消息监听者服务">优化消息监听者服务</a></li>
+        <li><a href="#打包上传测试观察">打包/上传/测试/观察</a></li>
+      </ul>
+    </li>
+    <li><a href="#源代码">源代码</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://aomi.run/posts/java/hello-java-3-day/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>实现客户端同步和异步调用RPC微服务(微服务系列第三天)</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+
+<script src="https://utteranc.es/client.js"
+        repo="aomirun/aomirun.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+<style>
+    .utterances {
+        max-width:none
+    }
+</style>
+
+
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://aomi.run">Aomi</a> &#183; <a href="https://aomi.run/about/" target="_blank" rel="noopener">run</a></p>
+		<p> &#183; <a href="https://aomi.run/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://aomi.run/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

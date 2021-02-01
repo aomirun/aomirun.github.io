@@ -7,7 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Thu, 28 Jan 2021 18:16:06 +0800</lastBuildDate><atom:link href="https://aomi.run/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 31 Jan 2021 15:40:31 +0800</lastBuildDate>
+    
+	<atom:link href="https://aomi.run/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)</title>
+      <link>https://aomi.run/posts/java/hello-java-4-day/</link>
+      <pubDate>Sun, 31 Jan 2021 15:40:31 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/java/hello-java-4-day/</guid>
+      <description>前言  学习java的第4天 实现目标： 实现java的rsa加解密与签名并调用RPC微服务
+ 实现RSA工具类 由于刚开始学习，本过程是边网上抄作业，边理解。
+JDK1.8 的 base64 src/main/java/com/example/rsaserver/utils/JavaBase64Util.java
+public class JavaBase64Util { public static final String UTF_8 = &amp;#34;UTF-8&amp;#34;; public static Base64.Encoder encoder; public static Base64.Encoder urlEncoder; public static Base64.Decoder decoder; public static Base64.Decoder urlDecoder; static { encoder = Base64.getEncoder(); urlEncoder = Base64.getUrlEncoder(); decoder = Base64.getDecoder(); urlDecoder = Base64.getUrlDecoder(); } /** * encode * @param bytes * @return byte[] */ public static byte[] encode(final byte[] bytes) { return encoder.</description>
+    </item>
+    
     <item>
       <title>实现客户端同步和异步调用RPC微服务(微服务系列第三天)</title>
       <link>https://aomi.run/posts/java/hello-java-3-day/</link>

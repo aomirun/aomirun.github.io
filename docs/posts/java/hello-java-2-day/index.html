@@ -17,14 +17,13 @@ node:# image: tarscloud/tars-node:stableimage:tarscloud/tars-node:latestcontaine
 $ docker-compose up -d Creating tars-mysql ... done Creating ibmmq ... done Creating tars-framework ... done Creating tars-node ... done 打开浏览器访问一下，并做相应的配置 https://localhost:9443 重要！！！ 9443是SSL端口，一定需要使用https来访问,好像ibmmq这个版本的web服务有bug,重启Docker后，会占用端口，之后就启动不了了，原因没有深究，测试的话，默认创建好后就可以使用，要不要Web管理端都无所谓。
 IBM MQ登录页 输入账号密码登录，默认账号密码是： admin/passw0rd
 IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂亮的">
-<meta itemprop="datePublished" content="2021-01-27T12:37:57+08:00" />
-<meta itemprop="dateModified" content="2021-01-27T12:37:57+08:00" />
+<meta itemprop="datePublished" content="2021-01-27T12:37:57&#43;08:00" />
+<meta itemprop="dateModified" content="2021-01-27T12:37:57&#43;08:00" />
 <meta itemprop="wordCount" content="642">
 
 
 
-<meta itemprop="keywords" content="java,docker,mq,jms,tars,micro serivce,微服务," />
-<meta property="og:title" content="实现tars-springboot-ibm-mq的微服务(微服务系列第二天)" />
+<meta itemprop="keywords" content="java,docker,mq,jms,tars,micro serivce,微服务," /><meta property="og:title" content="实现tars-springboot-ibm-mq的微服务(微服务系列第二天)" />
 <meta property="og:description" content="前言  学习JAVA第2天 目标实现： 基于tars springboot ibm mq的微服务
  第1天学习了java的项目创建，打包，上传到tars中，收获良多，今天折腾一下项目中需要用到的IBM MQ消息服务,于是就实现了基于tars springboot ibm mq的微服务.
 搭建IBM MQ 同样还是使用docker来创建，添加ibmmq
@@ -37,9 +36,9 @@ IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://aomi.run/posts/java/hello-java-2-day/" />
 <meta property="article:published_time" content="2021-01-27T12:37:57+08:00" />
-<meta property="article:modified_time" content="2021-01-27T12:37:57+08:00" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
-
-<meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
+<meta property="article:modified_time" content="2021-01-27T12:37:57+08:00" />
+<meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-4-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
+<meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-4-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="实现tars-springboot-ibm-mq的微服务(微服务系列第二天)"/>
@@ -117,44 +116,44 @@ IBM MQ登录后的欢迎页 版本信息 新版本的IBM MQ的界面还是很漂
 <p>同样还是使用docker来创建，添加ibmmq</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker volume create qm1data  <span class="c1"># ibm mq 有些权限要求，配置不当有可能启动不了，所以使用卷的方式比较简单</span>
 </code></pre></div><p>docker-compose.yml 中添加内容如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="w">  </span><span class="nt">ibmmq</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ibmcom/mq</span><span class="w">
-</span><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">ibmmq</span><span class="w">
-</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="l">qm1data:/mnt/mqm</span><span class="w">
-</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">LICENSE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;accept&#34;</span><span class="w">
-</span><span class="w">      </span><span class="nt">MQ_QMGR_NAME</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;QM1&#34;</span><span class="w">
-</span><span class="w">      </span><span class="nt">MQ_APP_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;abcd1234&#34;</span><span class="w">
-</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="w">  </span><span class="k">ibmmq</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>ibmcom/mq<span class="w">
+</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>ibmmq<span class="w">
+</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- qm1data<span class="p">:</span>/mnt/mqm<span class="w">
+</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">LICENSE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;accept&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">MQ_QMGR_NAME</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;QM1&#34;</span><span class="w">
+</span><span class="w">      </span><span class="k">MQ_APP_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;abcd1234&#34;</span><span class="w">
+</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;1414:1414&#34;</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;9443:9443&#34;</span><span class="w">
-</span><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.201</span><span class="w">
+</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.201</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span><span class="nt">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">qm1data</span><span class="p">:</span><span class="w">
+</span><span class="w"></span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">qm1data</span><span class="p">:</span><span class="w">
 </span><span class="w">   
 </span></code></pre></div><p>另外给node一个web服务端口，后续会用上</p>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="w">  </span><span class="nt">node</span><span class="p">:</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="w">  </span><span class="k">node</span><span class="p">:</span><span class="w">
 </span><span class="w">    </span><span class="c"># image: tarscloud/tars-node:stable</span><span class="w">
-</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">tarscloud/tars-node:latest</span><span class="w">
-</span><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">tars-node</span><span class="w">
+</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>tarscloud/tars-node<span class="p">:</span>latest<span class="w">
+</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-node<span class="w">
 </span><span class="w">    </span><span class="c"># restart: always</span><span class="w">
-</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;1080:1080&#34;</span><span class="w">
-</span><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.5</span><span class="w">
-</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="l">./node/data:/data/tars:rw</span><span class="w">
-</span><span class="w">      </span>- <span class="l">/etc/localtime:/etc/localtime</span><span class="w">
-</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">INET</span><span class="p">:</span><span class="w"> </span><span class="l">eth0</span><span class="w">
-</span><span class="w">      </span><span class="nt">WEB_HOST</span><span class="p">:</span><span class="w"> </span><span class="l">http://172.25.0.3:3000</span><span class="w">
-</span><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="l">framework</span><span class="w">
+</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.5</span><span class="w">
+</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- ./node/data<span class="p">:</span>/data/tars<span class="p">:</span>rw<span class="w">
+</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
+</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">INET</span><span class="p">:</span><span class="w"> </span>eth0<span class="w">
+</span><span class="w">      </span><span class="k">WEB_HOST</span><span class="p">:</span><span class="w"> </span>http<span class="p">:</span>//<span class="m">172.25.0.3</span><span class="p">:</span><span class="m">3000</span><span class="w">
+</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- framework<span class="w">
 </span></code></pre></div><p>运行起来</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker-compose up -d
 

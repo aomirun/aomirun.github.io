@@ -7,11 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Thu, 28 Jan 2021 18:16:06 +0800</lastBuildDate><atom:link href="https://aomi.run/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 31 Jan 2021 15:40:31 +0800</lastBuildDate>
+    
+	<atom:link href="https://aomi.run/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
     <item>
       <title>java</title>
       <link>https://aomi.run/categories/java/</link>
-      <pubDate>Thu, 28 Jan 2021 18:16:06 +0800</pubDate>
+      <pubDate>Sun, 31 Jan 2021 15:40:31 +0800</pubDate>
       
       <guid>https://aomi.run/categories/java/</guid>
       <description></description>
