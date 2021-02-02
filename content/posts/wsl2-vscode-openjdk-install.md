@@ -21,19 +21,43 @@ $ sudo apt upgrade -y
 ```
 
 ## 安装JDK
+### 安装 JDK 8
 ```shell
 $ sudo apt install openjdk-8-jdk -y
+
+/usr/lib/jvm/java-8-openjdk-amd64 #我电脑安装的位置
 
 $ java -version
 openjdk version "1.8.0_275"
 OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01)
 OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode)
 ```
-再安装个 JDK 11
+### 装个 JDK 11
 ```sh
 $ sudo apt install openjdk-11-jdk -y
-```
 
+/usr/lib/jvm/java-11-openjdk-amd64 #我电脑安装的位置
+```
+### JDK版本切换
+```sh
+$ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-8-openjdk-amd64 8
+$ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-11-openjdk-amd64 11
+
+$ sudo update-alternatives --config jdk
+
+There are 2 choices for the alternative jdk (providing /usr/local/jdk).
+
+  Selection    Path                                Priority   Status
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-11-openjdk-amd64   11        auto mode
+  1            /usr/lib/jvm/java-11-openjdk-amd64   11        manual mode
+* 2            /usr/lib/jvm/java-8-openjdk-amd64    8         manual mode
+
+Press <enter> to keep the current choice[*], or type selection number:
+```
+最后的8和11是优先级的意思，数字越大优先级就越高，默认最大值，我这里最大是11 默认就是JDK 11，输入数字选择
+选择 0=auto 自动选择数值最大的 选择 1=jdk11 选择 2=jdk8
+根据项目需要，随时可以切换版本
 ## 安装maven
 安装maven
 ```sh
@@ -147,39 +171,77 @@ OS name: "linux", version: "4.19.104-microsoft-standard", arch: "amd64", family:
      -->
   </mirrors>
 ```
-
 ## 添加环境变量
-我使用的是zsh，不同shell环境更新对应的文件，如zsh更新的是 ~/.zshrc
-```shell
+```sh
+$ echo export MAVEN_HOME=/usr/share/maven >> ~/.bash_profile # zsh 是 ~/.zshrc
+$ echo export PATH=$PATH:$MAVEN_HOME/bin >> ~/.bash_profile # zsh 是 ~/.zshrc
 
-##################### JDK config #####################
-# java 11 config
-# export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-# export JRE_HOME=/usr/lib/jvm/java-11-openjdk-amd64/jre
+$ echo export JAVA_HOME=/usr/local/jdk >> ~/.bash_profile # zsh 是 ~/.zshrc
+$ echo export PATH=$PATH:$JAVA_HOME/bin >> ~/.bash_profile # zsh 是 ~/.zshrc
+$ source ~/.bash_profile # zsh 是 ~/.zshrc
 
-# java 8 config  jdk8和11 自己在配置文件中定义，方便应对不同的环境
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
-
-export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
-export PATH=${JAVA_HOME}/bin:$PATH
-##################### JDK config #####################
-
-
-# maven config
-export MAVEN_HOME=/usr/share/maven
-export PATH=$MAVEN_HOME/bin:$PATH
-```
-保存文件后
-```shell
-$ source ~/.zshrc
 $ echo $JAVA_HOME
-/usr/lib/jvm/java-8-openjdk-amd64
+/usr/local/jdk
 
-$ echo $JRE_HOME
-/usr/lib/jvm/java-8-openjdk-amd64/jre
+$ echo $MAVEN_HOME
+/usr/share/maven
 ```
-看到有环境变量输出，就配置成功了。
+## 测试切换不同环境
+```sh
+$ sudo update-alternatives --config jdk
+There are 2 choices for the alternative jdk (providing /usr/local/jdk).
+
+  Selection    Path                                Priority   Status
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-11-openjdk-amd64   11        auto mode
+  1            /usr/lib/jvm/java-11-openjdk-amd64   11        manual mode
+* 2            /usr/lib/jvm/java-8-openjdk-amd64    8         manual mode
+Press <enter> to keep the current choice[*], or type selection number: 0
+update-alternatives: using /usr/lib/jvm/java-11-openjdk-amd64 to provide /usr/local/jdk (jdk) in auto mode
+
+$ java -version
+openjdk version "11.0.9.1" 2020-11-04
+OpenJDK Runtime Environment (build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04)
+OpenJDK 64-Bit Server VM (build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04, mixed mode, sharing)
+
+$ javac -version
+javac 11.0.9.1
+
+$ mvn -v
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Java version: 11.0.9.1, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "4.19.128-microsoft-standard", arch: "amd64", family: "unix"
+
+$ sudo update-alternatives --config jdk
+There are 2 choices for the alternative jdk (providing /usr/local/jdk).
+
+  Selection    Path                                Priority   Status
+------------------------------------------------------------
+* 0            /usr/lib/jvm/java-11-openjdk-amd64   11        auto mode
+  1            /usr/lib/jvm/java-11-openjdk-amd64   11        manual mode
+  2            /usr/lib/jvm/java-8-openjdk-amd64    8         manual mode
+
+Press <enter> to keep the current choice[*], or type selection number: 2
+update-alternatives: using /usr/lib/jvm/java-8-openjdk-amd64 to provide /usr/local/jdk (jdk) in manual mode
+
+$ javac -version
+javac 1.8.0_275
+
+$ java -version
+openjdk version "1.8.0_275"
+OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01)
+OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode)
+
+$ mvn -v
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Java version: 1.8.0_275, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "4.19.128-microsoft-standard", arch: "amd64", family: "unix"
+```
+可以正常切换环境，相对应的软件也会跟着切换环境，很美好。
 
 ## 使用vscode调试java
 新建一个用于Java开发的项目文件夹
