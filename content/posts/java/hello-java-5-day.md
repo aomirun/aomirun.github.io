@@ -1,7 +1,7 @@
 ---
-title: "实现NSQ的pub/sub模式，监听者把数据存储到数据库(微服务系列第五天)"
+title: "实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)"
 date: 2021-02-01T18:14:10+08:00
-draft: true
+draft: false
 toc: true
 categories: 
   - java
@@ -21,131 +21,10 @@ tags:
 ---
 
 ## 前言
-今天的目标是： 实现收到MQ队列消息，转发到NSQ topic上面，由topic消费者把数据保存到数据库中。为啥要这么做呢，因为这样MQ消息服务可以和数据库服务解耦，功能都可以独立部署，互不影响。再则IBM MQ确实不便宜，也比较重，我自己则更偏爱轻量点的服务，所以就再做一个基于大名鼎鼎的nsq的服务。
+今天的目标是： 实现收到MQ队列消息，实现收到IBMMQ的数据之后存储到数据库。
+> 注意!!! 这是个学习使用mybatis的示例工程,正式项目则不应该如此做,耦合很严重.正确的做法是把消息发送到topic上面,由存储服务去topic上面取数据再做保存,这样就可以解耦了.
 
-## docker
-### 添加nsq服务
-docker-compose.yml
-```yml
-  nsqlookupd:
-    image: nsqio/nsq
-    command: /nsqlookupd
-    networks:
-      tars:
-        ipv4_address: 172.25.0.211
-    ports:
-      - "4160"
-      - "4161"
-  nsqd:
-    image: nsqio/nsq
-    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
-    networks:
-      tars:
-        ipv4_address: 172.25.0.213
-    depends_on:
-      - nsqlookupd
-    ports:
-      - "4150"
-      - "4151"
-  nsqadmin:
-    image: nsqio/nsq
-    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
-    networks:
-      tars:
-        ipv4_address: 172.25.0.210
-    depends_on:
-      - nsqlookupd  
-    ports:
-      - "4171:4171"
-```
-### 启动服务
-```sh
-$ docker-compose up -d
-```
 ## 修改mqserver项目
-### pom.xml 添加依赖
-```xml
-		<dependency>
-			<groupId>com.sproutsocial</groupId>
-			<artifactId>nsq-j</artifactId>
-			<version>1.2</version>
-		</dependency>
-```
-### 添加配置文件
-```ini
-# nsq config
-nsq.nsqlookupd-host=172.25.0.211
-nsq.nsqlookupd-slave-host=172.25.0.212
-nsq.node=172.25.0.213:4150
-```
-### 添加配置类
-src/main/java/com/example/tarsmqserver/domain/NsqConfig.java
-```java
-@Component
-public class NsqConfig {
-    
-    @Value("${nsq.nsqlookupd-host}")
-    private String nsqlookupd;
-
-    @Value("${nsq.nsqlookupd-slave-host}")
-    private String nsqlookupdSlave;
-
-    @Value("${nsq.node}")
-    private String node;
-
-    private List<String> host;
-
-    public List<String> getHost() {
-        return host;
-    }
-
-    public String getNsqlookupd() {
-        return nsqlookupd;
-    }
-
-    public String getNsqlookupdSlave() {
-        return nsqlookupdSlave;
-    }
-
-    public String getNode() {
-        return node;
-    }
-}
-```
-### 修改 mqserver
-src/main/java/com/example/tarsmqserver/service/mqserver/ConsumerListener.java
-```java
-    @Autowired
-    private NsqConfig nsqConfig;
-
-    /**
-     * 使用JmsListener配置消费者监听的队列
-     * 
-     * @param receivedMsg 接收到的消息
-     */
-    @JmsListener(destination = "#{@conf.recvQueueName}")
-    public void receiveQueue(String receivedMsg) {
-        JMS_LISTENER.info("RECEIVE: {}", receivedMsg);
-        Publisher publisher = new Publisher(nsqConfig.getNode()); 
-
-        byte[] data = "Hello nsq".getBytes();
-        publisher.publishBuffered("example_topic", data);
-
-    }
-```
-### 打包/上传/测试/观察
-```sh
-$ make build-upload
-```
-随意发了一个消息，返回如下
-```log
-2021-02-01 19:38:57.002 INFO 3376 --- [ageObjAdapter-1] MQSERVER : send: DEV.QUEUE.1 -> qqqqqqqqqq
-2021-02-01 19:38:57.148 INFO 3376 --- [enerContainer-1] JMS_LISTENER : RECEIVE: qqqqqqqqqq
-2021-02-01 19:38:57.465 INFO 3376 --- [ nsq-batch-0] com.sproutsocial.nsq.Connection : connected 172.25.0.213:4150 msgTimeout:60000 heartbeatInterval:30000 maxRdyCount:2500
-2021-02-01 19:38:57.467 INFO 3376 --- [ nsq-batch-0] com.sproutsocial.nsq.Publisher : publisher connected:172.25.0.213:4150
-```
-代表已发布成功
-## 新建项目 dbserver
 ### pom.xml
 #### 添加依赖
 此处用的是阿里的连接池 druid
@@ -171,7 +50,7 @@ $ make build-upload
 ```ini
 
 # 只有下面三个是必填项（使用内嵌数据库的话这三个也可以不用填，会使用默认配置），其他配置不是必须的
-spring.datasource.url=jdbc:mysql://127.0.0.1:3306/db1
+spring.datasource.url=jdbc:mysql://172.25.0.2:3306/db1
 spring.datasource.username=root
 spring.datasource.password=123456
 # driver-class-name 非必填可根据url推断
@@ -240,7 +119,7 @@ public class DruidConfig {
 
     @Test
     public void testDataSourcePropertiesOverridden() throws Exception {
-        assertThat(dataSource.getUrl()).isEqualTo("jdbc:mysql://127.0.0.1:3306/db1");
+        assertThat(dataSource.getUrl()).isEqualTo("jdbc:mysql://172.25.0.2:3306/db1");
         assertThat(dataSource.getInitialSize()).isEqualTo(2);
         assertThat(dataSource.getMaxActive()).isEqualTo(30);
         assertThat(dataSource.getMinIdle()).isEqualTo(2);
@@ -258,17 +137,12 @@ public class DruidConfig {
         assertThat(dataSource.isAsyncCloseConnectionEnable()).isEqualTo(true);
     }
 ```
-#### 运行测试
-```sh
-$ mvn test
-```
-运行后可见测试成功,证明配置数据都能正常读取到。
 ### 创建消息实体
 这个写法，有点把类当结构体用的感觉
-src/main/java/com/example/dbserver/Message.java
+src/main/java/com/example/tarsmqserver/domain/MessageModel.java
 #### 正常写法
 ```java
-public class Message {
+public class MessageModel {
     /**
      * 消息ID
      */
@@ -333,8 +207,7 @@ public class MessageData {
 ```
 两种方法都能通过测试
 ### 创建 mapper
-这里建了一个dao目录，主要是测试启动类的@MapperScan("com.example.dbserver.dao")效果
-src/main/java/com/example/dbserver/dao/MessageMapper.java
+src/main/java/com/example/tarsmqserver/dao/MessageMapper.java
 ```java
 @Repository
 public interface MessageMapper {
@@ -355,7 +228,7 @@ public interface MessageMapper {
 ```
 ### 创建服务
 #### 服务接口
-src/main/java/com/example/dbserver/MessageService.java
+src/main/java/com/example/tarsmqserver/service/MessageService.java
 ```java
 public interface MessageService {
     /**
@@ -366,7 +239,7 @@ public interface MessageService {
 }
 ```
 #### 接口实现
-src/main/java/com/example/dbserver/MessageServiceImpl.java
+src/main/java/com/example/tarsmqserver/service/MessageServiceImpl.java
 ```java
 @Component
 public class MessageServiceImpl implements MessageService {
@@ -391,16 +264,20 @@ public class MessageServiceImpl implements MessageService {
 主要是添加注解 `@MapperScan("com.example.dbserver.dao")` 意思是让 mybatis 怎么去找到这个文件，然后产生绑定关系
 ```java
 @SpringBootApplication
-@MapperScan("com.example.dbserver.dao")
-public class DbserverApplication {
+@EnableTarsServer
+@MapperScan("com.example.tarsmqserver.dao")
+public class TarsMqServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DbserverApplication.class, args);
+		// 关闭 spring boot 自带的web服务 目前场景只用到了rpc服务
+		SpringApplication app = new SpringApplication(TarsMqServerApplication.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		app.run(args);
 	}
 
 }
 ```
-### 添加测试用例
+### 测试用例
 ```java
     @Autowired
     MessageServiceImpl imp;
@@ -413,30 +290,50 @@ public class DbserverApplication {
         imp.save(message);
     }
 ```
-### 运行测试
-```sh
-$ mvn test
-
-2021-02-03 01:47:34.014  INFO 14285 --- [           main] c.e.dbserver.DbserverApplicationTests    : Started DbserverApplicationTests in 1.239 seconds (JVM running for 1.97)
-2021-02-03 01:47:34.460  INFO 14285 --- [           main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
-[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.107 s - in com.example.dbserver.DbserverApplicationTests
-2021-02-03 01:47:34.567  INFO 14285 --- [extShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closing ...
-2021-02-03 01:47:34.573  INFO 14285 --- [extShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
-[INFO] 
-[INFO] Results:
-[INFO] 
-[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
-```
-测试通过，然后去数据库查看，则能看到添加了两条消息，接下来就是要给服务添加订阅nsq消息和整合到tars平台中了
-### 订阅消息
-#### pom.xml 添加依赖
-```xml
-		<dependency>
-			<groupId>com.sproutsocial</groupId>
-			<artifactId>nsq-j</artifactId>
-			<version>1.2</version>
-		</dependency>
-```
-#### 修改服务接口
-src/main/java/com/example/dbserver/MessageService.java
+### 修改 mqserver
+src/main/java/com/example/tarsmqserver/service/mqserver/ConsumerListener.java
 ```java
+    @Autowired
+    private NsqConfig nsqConfig;
+
+    /**
+     * 使用JmsListener配置消费者监听的队列
+     * 
+     * @param receivedMsg 接收到的消息
+     */
+    @JmsListener(destination = "#{@conf.recvQueueName}")
+    public void receiveQueue(String receivedMsg) {
+        JMS_LISTENER.info("RECEIVE: {}", receivedMsg);
+
+        MessageModel messagObject = new MessageModel();
+        messagObject.setContent(receivedMsg);
+        messagObject.setCreated(System.currentTimeMillis());
+
+        try {
+            imp.save(messagObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JMS_LISTENER.error(e.toString());
+            //TODO: handle exception
+        }
+    }
+```
+### 打包/上传/测试/观察
+```sh
+$ make build-upload
+```
+随意发了一个消息，返回如下
+```log
+2021-02-01 19:38:57.002 INFO 3376 --- [ageObjAdapter-1] MQSERVER : send: DEV.QUEUE.1 -> qqqqqqqqqq
+2021-02-01 19:38:57.148 INFO 3376 --- [enerContainer-1] JMS_LISTENER : RECEIVE: qqqqqqqqqq
+2021-02-01 19:38:57.465 INFO 3376 --- [ nsq-batch-0] com.sproutsocial.nsq.Connection : connected 172.25.0.213:4150 msgTimeout:60000 heartbeatInterval:30000 maxRdyCount:2500
+2021-02-01 19:38:57.467 INFO 3376 --- [ nsq-batch-0] com.sproutsocial.nsq.Publisher : publisher connected:172.25.0.213:4150
+```
+服务正常收到消息,查看数据库,也能看到数据正常被添加上,数据库表自行创建即可.
+
+## 源代码
+[实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)](https://github.com/aomirun/demo/tree/main/day-5/tars-mq-server)
+
+## 结语
+spring boot 2.x 对于快餐使用,还是很友好的,封装了很多东西,很多东西拿来就可以直接用.但对于真正去掌控,估计会很复杂.这个只有等技术深入后,再慢慢探究.
+不过Java是真的吃内存,可能是用spring boot的原因吧,方便了,但得付出相应的代价.这个时候我就比较想念GO了,相同的功能,对资源占用少得多.
