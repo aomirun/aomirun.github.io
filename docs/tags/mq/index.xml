@@ -7,10 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Sun, 31 Jan 2021 15:40:31 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 01 Feb 2021 18:14:10 +0800</lastBuildDate>
     
 	<atom:link href="https://aomi.run/tags/mq/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)</title>
+      <link>https://aomi.run/posts/java/hello-java-5-day/</link>
+      <pubDate>Mon, 01 Feb 2021 18:14:10 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/java/hello-java-5-day/</guid>
+      <description>前言 今天的目标是： 实现收到MQ队列消息，实现收到IBMMQ的数据之后存储到数据库。
+ 注意!!! 这是个学习使用mybatis的示例工程,正式项目则不应该如此做,耦合很严重.正确的做法是把消息发送到topic上面,由存储服务去topic上面取数据再做保存,这样就可以解耦了.
+ 修改mqserver项目 pom.xml 添加依赖 此处用的是阿里的连接池 druid
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.mybatis.spring.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;mybatis-spring-boot-starter&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.1.4&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;mysql&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;mysql-connector-java&amp;lt;/artifactId&amp;gt; &amp;lt;scope&amp;gt;runtime&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.alibaba&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;druid&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.2.4&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; JDBC 配置 这个是从官网例子上拿来的配置数据
+# 只有下面三个是必填项（使用内嵌数据库的话这三个也可以不用填，会使用默认配置），其他配置不是必须的 spring.datasource.url=jdbc:mysql://172.25.0.2:3306/db1 spring.datasource.username=root spring.datasource.password=123456 # driver-class-name 非必填可根据url推断 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver # Druid 数据源配置，继承spring.datasource.* 配置，相同则覆盖 spring.datasource.initial-size=2 spring.datasource.max-active=30 spring.datasource.min-idle=2 spring.datasource.max-wait=1234 spring.datasource.pool-prepared-statements=true spring.datasource.max-pool-prepared-statement-per-connection-size=5 # spring.datasource.max-open-prepared-statements= #等价于上面的max-pool-prepared-statement-per-connection-size spring.datasource.validation-query=select 1 spring.datasource.validation-query-timeout=1 spring.datasource.test-on-borrow=true spring.datasource.test-on-return=true spring.datasource.test-while-idle=true spring.datasource.time-between-eviction-runs-millis=10000 spring.datasource.min-evictable-idle-time-millis=30001 spring.datasource.async-close-connection-enable=true # spring.datasource.aop-patterns=com.alibaba.spring.boot.demo.service.* # 自定义StatFilter 配置 其他 Filter 不再演示 spring.datasource.filter.stat.db-type=h2 spring.</description>
+    </item>
     
     <item>
       <title>实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)</title>

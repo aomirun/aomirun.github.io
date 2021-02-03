@@ -9,20 +9,16 @@
 	<meta name="msapplication-TileColor" content="#494f5c">
 <meta itemprop="name" content="Wsl2 Vscode Openjdk Install">
 <meta itemprop="description" content="准备 进入wsl命令行，先更新系统,更新慢的可以换apt源处理，换源自行搜索。
-$ sudo apt update -y $ sudo apt upgrade -y 安装JDK $ sudo apt install openjdk-8-jdk -y $ java -version openjdk version &#34;1.8.0_275&#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 再安装个 JDK 11
-$ sudo apt install openjdk-11-jdk -y 安装maven 安装maven
-$ sudo apt install maven -y $ mvn -v Apache Maven 3.6.3 Maven home: /usr/share/maven Java version: 1.8.0_275, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre Default locale: en, platform encoding: UTF-8 OS name: &#34;linux&#34;, version: &#34;4.">
+$ sudo apt update -y $ sudo apt upgrade -y 安装JDK 安装 JDK 8 $ sudo apt install openjdk-8-jdk -y /usr/lib/jvm/java-8-openjdk-amd64 #我电脑安装的位置 $ java -version openjdk version &#34;1.8.0_275&#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 装个 JDK 11 $ sudo apt install openjdk-11-jdk -y /usr/lib/jvm/java-11-openjdk-amd64 #我电脑安装的位置 JDK版本切换 $ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-8-openjdk-amd64 8 $ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-11-openjdk-amd64 11 $ sudo update-alternatives --config jdk There are 2 choices for the alternative jdk (providing /usr/local/jdk).">
 <meta itemprop="datePublished" content="2021-01-25T11:46:59&#43;08:00" />
 <meta itemprop="dateModified" content="2021-01-25T11:46:59&#43;08:00" />
-<meta itemprop="wordCount" content="708">
+<meta itemprop="wordCount" content="1022">
 
 
 
 <meta itemprop="keywords" content="java,openjdk,vscode,wsl," /><meta property="og:title" content="Wsl2 Vscode Openjdk Install" />
 <meta property="og:description" content="准备 进入wsl命令行，先更新系统,更新慢的可以换apt源处理，换源自行搜索。
-$ sudo apt update -y $ sudo apt upgrade -y 安装JDK $ sudo apt install openjdk-8-jdk -y $ java -version openjdk version &#34;1.8.0_275&#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 再安装个 JDK 11
-$ sudo apt install openjdk-11-jdk -y 安装maven 安装maven
-$ sudo apt install maven -y $ mvn -v Apache Maven 3.6.3 Maven home: /usr/share/maven Java version: 1.8.0_275, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre Default locale: en, platform encoding: UTF-8 OS name: &#34;linux&#34;, version: &#34;4." />
+$ sudo apt update -y $ sudo apt upgrade -y 安装JDK 安装 JDK 8 $ sudo apt install openjdk-8-jdk -y /usr/lib/jvm/java-8-openjdk-amd64 #我电脑安装的位置 $ java -version openjdk version &#34;1.8.0_275&#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 装个 JDK 11 $ sudo apt install openjdk-11-jdk -y /usr/lib/jvm/java-11-openjdk-amd64 #我电脑安装的位置 JDK版本切换 $ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-8-openjdk-amd64 8 $ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-11-openjdk-amd64 11 $ sudo update-alternatives --config jdk There are 2 choices for the alternative jdk (providing /usr/local/jdk)." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://aomi.run/posts/wsl2-vscode-openjdk-install/" />
 <meta property="article:published_time" content="2021-01-25T11:46:59+08:00" />
@@ -30,9 +26,7 @@ $ sudo apt install maven -y $ mvn -v Apache Maven 3.6.3 Maven home: /usr/share/m
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Wsl2 Vscode Openjdk Install"/>
 <meta name="twitter:description" content="准备 进入wsl命令行，先更新系统,更新慢的可以换apt源处理，换源自行搜索。
-$ sudo apt update -y $ sudo apt upgrade -y 安装JDK $ sudo apt install openjdk-8-jdk -y $ java -version openjdk version &#34;1.8.0_275&#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 再安装个 JDK 11
-$ sudo apt install openjdk-11-jdk -y 安装maven 安装maven
-$ sudo apt install maven -y $ mvn -v Apache Maven 3.6.3 Maven home: /usr/share/maven Java version: 1.8.0_275, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre Default locale: en, platform encoding: UTF-8 OS name: &#34;linux&#34;, version: &#34;4."/>
+$ sudo apt update -y $ sudo apt upgrade -y 安装JDK 安装 JDK 8 $ sudo apt install openjdk-8-jdk -y /usr/lib/jvm/java-8-openjdk-amd64 #我电脑安装的位置 $ java -version openjdk version &#34;1.8.0_275&#34; OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01) OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode) 装个 JDK 11 $ sudo apt install openjdk-11-jdk -y /usr/lib/jvm/java-11-openjdk-amd64 #我电脑安装的位置 JDK版本切换 $ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-8-openjdk-amd64 8 $ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-11-openjdk-amd64 11 $ sudo update-alternatives --config jdk There are 2 choices for the alternative jdk (providing /usr/local/jdk)."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -94,15 +88,38 @@ $ sudo apt install maven -y $ mvn -v Apache Maven 3.6.3 Maven home: /usr/share/m
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ sudo apt update -y
 $ sudo apt upgrade -y
 </code></pre></div><h2 id="安装jdk">安装JDK<a href="#安装jdk" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="安装-jdk-8">安装 JDK 8<a href="#安装-jdk-8" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ sudo apt install openjdk-8-jdk -y
+
+/usr/lib/jvm/java-8-openjdk-amd64 <span class="c1">#我电脑安装的位置</span>
 
 $ java -version
 openjdk version <span class="s2">&#34;1.8.0_275&#34;</span>
 OpenJDK Runtime Environment <span class="o">(</span>build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01<span class="o">)</span>
 OpenJDK 64-Bit Server VM <span class="o">(</span>build 25.275-b01, mixed mode<span class="o">)</span>
-</code></pre></div><p>再安装个 JDK 11</p>
+</code></pre></div><h3 id="装个-jdk-11">装个 JDK 11<a href="#装个-jdk-11" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sudo apt install openjdk-11-jdk -y
-</code></pre></div><h2 id="安装maven">安装maven<a href="#安装maven" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+/usr/lib/jvm/java-11-openjdk-amd64 <span class="c1">#我电脑安装的位置</span>
+</code></pre></div><h3 id="jdk版本切换">JDK版本切换<a href="#jdk版本切换" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-8-openjdk-amd64 <span class="m">8</span>
+$ sudo update-alternatives --install /usr/local/jdk jdk /usr/lib/jvm/java-11-openjdk-amd64 <span class="m">11</span>
+
+$ sudo update-alternatives --config jdk
+
+There are <span class="m">2</span> choices <span class="k">for</span> the alternative jdk <span class="o">(</span>providing /usr/local/jdk<span class="o">)</span>.
+
+  Selection    Path                                Priority   Status
+------------------------------------------------------------
+  <span class="m">0</span>            /usr/lib/jvm/java-11-openjdk-amd64   <span class="m">11</span>        auto mode
+  <span class="m">1</span>            /usr/lib/jvm/java-11-openjdk-amd64   <span class="m">11</span>        manual mode
+* <span class="m">2</span>            /usr/lib/jvm/java-8-openjdk-amd64    <span class="m">8</span>         manual mode
+
+Press &lt;enter&gt; to keep the current choice<span class="o">[</span>*<span class="o">]</span>, or <span class="nb">type</span> selection number:
+</code></pre></div><p>最后的8和11是优先级的意思，数字越大优先级就越高，默认最大值，我这里最大是11 默认就是JDK 11，输入数字选择
+选择 0=auto 自动选择数值最大的 选择 1=jdk11 选择 2=jdk8
+根据项目需要，随时可以切换版本</p>
+<h2 id="安装maven">安装maven<a href="#安装maven" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>安装maven</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sudo apt install maven -y
 
@@ -211,33 +228,72 @@ OS name: <span class="s2">&#34;linux&#34;</span>, version: <span class="s2">&#34
 </span><span class="c">     --&gt;</span>
   <span class="nt">&lt;/mirrors&gt;</span>
 </code></pre></div><h2 id="添加环境变量">添加环境变量<a href="#添加环境变量" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<p>我使用的是zsh，不同shell环境更新对应的文件，如zsh更新的是 ~/.zshrc</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">
-<span class="c1">##################### JDK config #####################</span>
-<span class="c1"># java 11 config</span>
-<span class="c1"># export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64</span>
-<span class="c1"># export JRE_HOME=/usr/lib/jvm/java-11-openjdk-amd64/jre</span>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ <span class="nb">echo</span> <span class="nb">export</span> <span class="nv">MAVEN_HOME</span><span class="o">=</span>/usr/share/maven &gt;&gt; ~/.bash_profile <span class="c1"># zsh 是 ~/.zshrc</span>
+$ <span class="nb">echo</span> <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$MAVEN_HOME</span>/bin &gt;&gt; ~/.bash_profile <span class="c1"># zsh 是 ~/.zshrc</span>
 
-<span class="c1"># java 8 config  jdk8和11 自己在配置文件中定义，方便应对不同的环境</span>
-<span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/lib/jvm/java-8-openjdk-amd64
-<span class="nb">export</span> <span class="nv">JRE_HOME</span><span class="o">=</span>/usr/lib/jvm/java-8-openjdk-amd64/jre
+$ <span class="nb">echo</span> <span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/local/jdk &gt;&gt; ~/.bash_profile <span class="c1"># zsh 是 ~/.zshrc</span>
+$ <span class="nb">echo</span> <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$JAVA_HOME</span>/bin &gt;&gt; ~/.bash_profile <span class="c1"># zsh 是 ~/.zshrc</span>
+$ <span class="nb">source</span> ~/.bash_profile <span class="c1"># zsh 是 ~/.zshrc</span>
 
-<span class="nb">export</span> <span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
-<span class="c1">##################### JDK config #####################</span>
-
-
-<span class="c1"># maven config</span>
-<span class="nb">export</span> <span class="nv">MAVEN_HOME</span><span class="o">=</span>/usr/share/maven
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$MAVEN_HOME</span>/bin:<span class="nv">$PATH</span>
-</code></pre></div><p>保存文件后</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nb">source</span> ~/.zshrc
 $ <span class="nb">echo</span> <span class="nv">$JAVA_HOME</span>
-/usr/lib/jvm/java-8-openjdk-amd64
+/usr/local/jdk
 
-$ <span class="nb">echo</span> <span class="nv">$JRE_HOME</span>
-/usr/lib/jvm/java-8-openjdk-amd64/jre
-</code></pre></div><p>看到有环境变量输出，就配置成功了。</p>
+$ <span class="nb">echo</span> <span class="nv">$MAVEN_HOME</span>
+/usr/share/maven
+</code></pre></div><h2 id="测试切换不同环境">测试切换不同环境<a href="#测试切换不同环境" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sudo update-alternatives --config jdk
+There are <span class="m">2</span> choices <span class="k">for</span> the alternative jdk <span class="o">(</span>providing /usr/local/jdk<span class="o">)</span>.
+
+  Selection    Path                                Priority   Status
+------------------------------------------------------------
+  <span class="m">0</span>            /usr/lib/jvm/java-11-openjdk-amd64   <span class="m">11</span>        auto mode
+  <span class="m">1</span>            /usr/lib/jvm/java-11-openjdk-amd64   <span class="m">11</span>        manual mode
+* <span class="m">2</span>            /usr/lib/jvm/java-8-openjdk-amd64    <span class="m">8</span>         manual mode
+Press &lt;enter&gt; to keep the current choice<span class="o">[</span>*<span class="o">]</span>, or <span class="nb">type</span> selection number: <span class="m">0</span>
+update-alternatives: using /usr/lib/jvm/java-11-openjdk-amd64 to provide /usr/local/jdk <span class="o">(</span>jdk<span class="o">)</span> in auto mode
+
+$ java -version
+openjdk version <span class="s2">&#34;11.0.9.1&#34;</span> 2020-11-04
+OpenJDK Runtime Environment <span class="o">(</span>build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04<span class="o">)</span>
+OpenJDK 64-Bit Server VM <span class="o">(</span>build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04, mixed mode, sharing<span class="o">)</span>
+
+$ javac -version
+javac 11.0.9.1
+
+$ mvn -v
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Java version: 11.0.9.1, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+Default locale: en, platform encoding: UTF-8
+OS name: <span class="s2">&#34;linux&#34;</span>, version: <span class="s2">&#34;4.19.128-microsoft-standard&#34;</span>, arch: <span class="s2">&#34;amd64&#34;</span>, family: <span class="s2">&#34;unix&#34;</span>
+
+$ sudo update-alternatives --config jdk
+There are <span class="m">2</span> choices <span class="k">for</span> the alternative jdk <span class="o">(</span>providing /usr/local/jdk<span class="o">)</span>.
+
+  Selection    Path                                Priority   Status
+------------------------------------------------------------
+* <span class="m">0</span>            /usr/lib/jvm/java-11-openjdk-amd64   <span class="m">11</span>        auto mode
+  <span class="m">1</span>            /usr/lib/jvm/java-11-openjdk-amd64   <span class="m">11</span>        manual mode
+  <span class="m">2</span>            /usr/lib/jvm/java-8-openjdk-amd64    <span class="m">8</span>         manual mode
+
+Press &lt;enter&gt; to keep the current choice<span class="o">[</span>*<span class="o">]</span>, or <span class="nb">type</span> selection number: <span class="m">2</span>
+update-alternatives: using /usr/lib/jvm/java-8-openjdk-amd64 to provide /usr/local/jdk <span class="o">(</span>jdk<span class="o">)</span> in manual mode
+
+$ javac -version
+javac 1.8.0_275
+
+$ java -version
+openjdk version <span class="s2">&#34;1.8.0_275&#34;</span>
+OpenJDK Runtime Environment <span class="o">(</span>build 1.8.0_275-8u275-b01-0ubuntu1~20.04-b01<span class="o">)</span>
+OpenJDK 64-Bit Server VM <span class="o">(</span>build 25.275-b01, mixed mode<span class="o">)</span>
+
+$ mvn -v
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Java version: 1.8.0_275, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en, platform encoding: UTF-8
+OS name: <span class="s2">&#34;linux&#34;</span>, version: <span class="s2">&#34;4.19.128-microsoft-standard&#34;</span>, arch: <span class="s2">&#34;amd64&#34;</span>, family: <span class="s2">&#34;unix&#34;</span>
+</code></pre></div><p>可以正常切换环境，相对应的软件也会跟着切换环境，很美好。</p>
 <h2 id="使用vscode调试java">使用vscode调试java<a href="#使用vscode调试java" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>新建一个用于Java开发的项目文件夹</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mkdir ~/projects/java/test -p
@@ -371,7 +427,7 @@ $ java -jar target/demo-0.0.1-SNAPSHOT.jar
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://aomi.run/tags/java">java</a></span><span class="tag"><a href="https://aomi.run/tags/openjdk">openjdk</a></span><span class="tag"><a href="https://aomi.run/tags/vscode">vscode</a></span><span class="tag"><a href="https://aomi.run/tags/wsl">wsl</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>708 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1022 字</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-01-25 11:46 &#43;0800</p>
 			</footer>
 		</article>
@@ -380,9 +436,16 @@ $ java -jar target/demo-0.0.1-SNAPSHOT.jar
 			<nav id="TableOfContents">
   <ul>
     <li><a href="#准备">准备</a></li>
-    <li><a href="#安装jdk">安装JDK</a></li>
+    <li><a href="#安装jdk">安装JDK</a>
+      <ul>
+        <li><a href="#安装-jdk-8">安装 JDK 8</a></li>
+        <li><a href="#装个-jdk-11">装个 JDK 11</a></li>
+        <li><a href="#jdk版本切换">JDK版本切换</a></li>
+      </ul>
+    </li>
     <li><a href="#安装maven">安装maven</a></li>
     <li><a href="#添加环境变量">添加环境变量</a></li>
+    <li><a href="#测试切换不同环境">测试切换不同环境</a></li>
     <li><a href="#使用vscode调试java">使用vscode调试java</a></li>
     <li><a href="#使用maven来创建springboot项目">使用maven来创建Springboot项目</a></li>
     <li><a href="#maven-打包">maven 打包</a></li>
