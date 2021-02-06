@@ -21,7 +21,7 @@ tags:
 
 ## 安装istio
 在此之前请把本地的kuberneters部署好,没有部署好的请看 [基于Wsl Ubuntu20.04上安装Kuberneters](/posts/micro/kind-k8s-ubuntu2004-wsl)
-使用wget或直接浏览器下载istio安装文件
+使用wget或直接浏览器下载istio安装文件 [istio-1.8.2](https://github.com/istio/istio/releases/tag/1.8.2)
 ```sh
 $ curl -L https://istio.io/downloadIstio | sh -
 ```
@@ -31,19 +31,33 @@ $ curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.8.2 TARGET_ARCH=x86_6
 ```
 我自己安装的是1.8.2版本
 我是把压缩包下载回来了,之后解压,并移动目录
+### 安装目录包含如下内容：
+install/kubernetes 目录下，有 Kubernetes 相关的 YAML 安装文件
+samples/ 目录下，有示例应用程序
+bin/ 目录下，包含 istioctl 的客户端文件。istioctl 工具用于手动注入 Envoy sidecar 代理。
 ```sh
 $ tar zxvf istio-1.8.2-linux-amd64.tar.gz
-$ sudo cp -R istio-1.8.2 /usr/local
-$ sudo ln -s /usr/local/istio-1.8.2/bin/istioctl /usr/bin/istioctl # 软链接
+$ mv istio-1.8.2 ~/.local/
+$ mkdir ~/.bin
+$ ln -s ~/.local/istio-1.8.2/bin/istioctl ~/.bin/istioctl # 软链接
+$ echo export PATH=$PATH:$HOME/.bin >> ~/.zshrc
+$ source ~/.zshrc
 $ istioctl version
-client version: 1.8.2
-control plane version: 1.8.2
-data plane version: 1.8.2 (8 proxies)
+no running Istio pods in "istio-system"
+1.8.2
 ```
 这样,就把istioctl工具安装好了.
 ### 安装demo到k8s
+![](/images/posts/k8s/istio-profile.webp)
 ```sh
-$ istioctl manifest apply --set profile=demo
+$ istioctl install
+```
+or
+```sh
+$ istioctl install --set profile=demo
+```
+安装需要等一段时间，由于都是在国外网站下载，有可能会超时失败
+```
 ✔ Istio core installed
 ✔ Istiod installed
 ✔ Egress gateways installed

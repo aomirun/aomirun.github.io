@@ -75,11 +75,13 @@ kind delete cluster --name=k8s-cluster1
 
 ## kubectl 安装
 ```sh
-$ sudo apt-get update && apt-get install -y apt-transport-https
+$ sudo apt update 
+$ sudo apt upgrade
+$ sudo apt install -y apt-transport-https
 $ curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add -
 $ echo "deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-$ sudo apt-get update
-$ sudo apt-get install -y kubelet kubeadm kubectl
+$ sudo apt update
+$ sudo apt install -y kubelet kubeadm kubectl
 ```
 创建集群成功之后，就可以使用 kubectl 来操作 k8s 集群了
 ## 查看集群信息
