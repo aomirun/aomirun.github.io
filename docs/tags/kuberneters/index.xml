@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kuberneters on Aomi</title>
+    <link>https://aomi.run/tags/kuberneters/</link>
+    <description>Recent content in kuberneters on Aomi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh_CN</language>
+    <copyright>aomi.run</copyright>
+    <lastBuildDate>Thu, 04 Feb 2021 13:50:02 +0800</lastBuildDate><atom:link href="https://aomi.run/tags/kuberneters/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>基于Wsl Ubuntu20.04上安装Kuberneters</title>
+      <link>https://aomi.run/posts/micro/kind-k8s-ubuntu2004-wsl/</link>
+      <pubDate>Thu, 04 Feb 2021 13:50:02 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/micro/kind-k8s-ubuntu2004-wsl/</guid>
+      <description>前言 win10可谓windows系统对开发人员最友好的版本了,linux命令行加win的桌面系统,强强联合,正因为这个Linux子系统,让本地测试环境搭建与开发起飞. 下面就针对在wsl2下面的ubuntu20.04上面安装k8s开发环境做点说明. 创建本地k8s开发环境,主要是通过kind来实现
+kind 安装 kind（Kubernetes IN Docker） 是一个基于 docker 构建 Kubernetes 集群的工具，非常适合用来在本地搭建基于 Kubernetes 的开发/测试环境。所以在安装kind前,最好把wsl,docker,国内镜像这些前置工作准备好. 通过 https://github.com/kubernetes-sigs/kind/releases/latest 获取最新的 release，根据自己的系统类型选择相应的系统 release，下载 release 之后重命名为 kind（Windows 系统 release 重命名为 kind.exe)，然后将其放在某一个目录下，并要确保这个目录在系统 PATH 中以方便的使用，可以放在 usr/bin 目录下（默认已经在系统 PATH 中），linux 系统中可能需要配置文件权限
+$ sudo chmod +x kind or 需要本地有golang环境,并且GOPATH/bin在PATH中,如果不在,需要 export PATH=&amp;quot;$(go env GOPATH)/bin:${PATH}&amp;quot;
+$ GO111MODULE=on go get sigs.k8s.io/kind@v0.10.0 拉取镜像 kindest/node 最新的 v0.20.2/v0.19.7 我测试时有bug,后来测试到v.19.1是正常的,所以这里我就采用了v1.19.1
+$ docker pull kindest/node:v1.19.1 操作 Kuberneters 集群 使用 kind 创建 Kubernetes 集群非常的方便，只需要一行命令即可
+$ kind create cluster #这里默认是使用kind的默认最新版本,我测试新版本有问题,故我测试的时候指定了下面的版本 or 特定版本</description>
+    </item>
+    
+  </channel>
+</rss>

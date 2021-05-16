@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Mon, 01 Feb 2021 18:14:10 +0800</lastBuildDate>
-    
-	<atom:link href="https://aomi.run/tags/jms/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 01 Feb 2021 18:14:10 +0800</lastBuildDate><atom:link href="https://aomi.run/tags/jms/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)</title>
       <link>https://aomi.run/posts/java/hello-java-5-day/</link>

@@ -202,5 +202,23 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 ```
 输入刚刚获取到的token,点登录,即可进入.
 ![](/images/posts/k8s/k8s-dashboard.png)
+## 安装helm
+```sh
+$ curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -   
+$ sudo apt install apt-transport-https --yes
+$ echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+$ sudo apt update
+$ sudo apt install helm
+$ helm version
+version.BuildInfo{Version:"v3.5.2", GitCommit:"167aac70832d3a384f65f9745335e9fb40169dc2", GitTreeState:"dirty", GoVersion:"go1.15.7"}
+```
+## 安装ingress-nginx
+这里会用到k8s.gcr.io的docker镜像，请用中科大镜像加速
+```sh
+$ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+$ helm repo update
+
+$ helm install ingress-nginx ingress-nginx/ingress-nginx
+```
 ## 结语
 至此，k8s的本地开发环境就创建好了，后续就是往里加东西了。

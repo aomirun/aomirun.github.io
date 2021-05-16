@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="基于Wsl Ubuntu20.04上安装Kuberneters">
+<meta itemprop="description" content="前言 win10可谓windows系统对开发人员最友好的版本了,linux命令行加win的桌面系统,强强联合,正因为这个Linux子系统,让本地测试环境搭建与开发起飞. 下面就针对在wsl2下面的ubuntu20.04上面安装k8s开发环境做点说明. 创建本地k8s开发环境,主要是通过kind来实现
+kind 安装 kind（Kubernetes IN Docker） 是一个基于 docker 构建 Kubernetes 集群的工具，非常适合用来在本地搭建基于 Kubernetes 的开发/测试环境。所以在安装kind前,最好把wsl,docker,国内镜像这些前置工作准备好. 通过 https://github.com/kubernetes-sigs/kind/releases/latest 获取最新的 release，根据自己的系统类型选择相应的系统 release，下载 release 之后重命名为 kind（Windows 系统 release 重命名为 kind.exe)，然后将其放在某一个目录下，并要确保这个目录在系统 PATH 中以方便的使用，可以放在 usr/bin 目录下（默认已经在系统 PATH 中），linux 系统中可能需要配置文件权限
+$ sudo chmod &#43;x kind or 需要本地有golang环境,并且GOPATH/bin在PATH中,如果不在,需要 export PATH=&quot;$(go env GOPATH)/bin:${PATH}&quot;
+$ GO111MODULE=on go get sigs.k8s.io/kind@v0.10.0 拉取镜像 kindest/node 最新的 v0.20.2/v0.19.7 我测试时有bug,后来测试到v.19.1是正常的,所以这里我就采用了v1.19.1
+$ docker pull kindest/node:v1.19.1 操作 Kuberneters 集群 使用 kind 创建 Kubernetes 集群非常的方便，只需要一行命令即可
+$ kind create cluster #这里默认是使用kind的默认最新版本,我测试新版本有问题,故我测试的时候指定了下面的版本 or 特定版本">
+<meta itemprop="datePublished" content="2021-02-04T13:50:02+08:00" />
+<meta itemprop="dateModified" content="2021-02-04T13:50:02+08:00" />
+<meta itemprop="wordCount" content="672">
+
+
+
+<meta itemprop="keywords" content="docker,wsl,ubuntu,kind,kuberneters," />
+<meta property="og:title" content="基于Wsl Ubuntu20.04上安装Kuberneters" />
+<meta property="og:description" content="前言 win10可谓windows系统对开发人员最友好的版本了,linux命令行加win的桌面系统,强强联合,正因为这个Linux子系统,让本地测试环境搭建与开发起飞. 下面就针对在wsl2下面的ubuntu20.04上面安装k8s开发环境做点说明. 创建本地k8s开发环境,主要是通过kind来实现
+kind 安装 kind（Kubernetes IN Docker） 是一个基于 docker 构建 Kubernetes 集群的工具，非常适合用来在本地搭建基于 Kubernetes 的开发/测试环境。所以在安装kind前,最好把wsl,docker,国内镜像这些前置工作准备好. 通过 https://github.com/kubernetes-sigs/kind/releases/latest 获取最新的 release，根据自己的系统类型选择相应的系统 release，下载 release 之后重命名为 kind（Windows 系统 release 重命名为 kind.exe)，然后将其放在某一个目录下，并要确保这个目录在系统 PATH 中以方便的使用，可以放在 usr/bin 目录下（默认已经在系统 PATH 中），linux 系统中可能需要配置文件权限
+$ sudo chmod &#43;x kind or 需要本地有golang环境,并且GOPATH/bin在PATH中,如果不在,需要 export PATH=&quot;$(go env GOPATH)/bin:${PATH}&quot;
+$ GO111MODULE=on go get sigs.k8s.io/kind@v0.10.0 拉取镜像 kindest/node 最新的 v0.20.2/v0.19.7 我测试时有bug,后来测试到v.19.1是正常的,所以这里我就采用了v1.19.1
+$ docker pull kindest/node:v1.19.1 操作 Kuberneters 集群 使用 kind 创建 Kubernetes 集群非常的方便，只需要一行命令即可
+$ kind create cluster #这里默认是使用kind的默认最新版本,我测试新版本有问题,故我测试的时候指定了下面的版本 or 特定版本" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://aomi.run/posts/micro/kind-k8s-ubuntu2004-wsl/" />
+<meta property="article:published_time" content="2021-02-04T13:50:02+08:00" />
+<meta property="article:modified_time" content="2021-02-04T13:50:02+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="基于Wsl Ubuntu20.04上安装Kuberneters"/>
+<meta name="twitter:description" content="前言 win10可谓windows系统对开发人员最友好的版本了,linux命令行加win的桌面系统,强强联合,正因为这个Linux子系统,让本地测试环境搭建与开发起飞. 下面就针对在wsl2下面的ubuntu20.04上面安装k8s开发环境做点说明. 创建本地k8s开发环境,主要是通过kind来实现
+kind 安装 kind（Kubernetes IN Docker） 是一个基于 docker 构建 Kubernetes 集群的工具，非常适合用来在本地搭建基于 Kubernetes 的开发/测试环境。所以在安装kind前,最好把wsl,docker,国内镜像这些前置工作准备好. 通过 https://github.com/kubernetes-sigs/kind/releases/latest 获取最新的 release，根据自己的系统类型选择相应的系统 release，下载 release 之后重命名为 kind（Windows 系统 release 重命名为 kind.exe)，然后将其放在某一个目录下，并要确保这个目录在系统 PATH 中以方便的使用，可以放在 usr/bin 目录下（默认已经在系统 PATH 中），linux 系统中可能需要配置文件权限
+$ sudo chmod &#43;x kind or 需要本地有golang环境,并且GOPATH/bin在PATH中,如果不在,需要 export PATH=&quot;$(go env GOPATH)/bin:${PATH}&quot;
+$ GO111MODULE=on go get sigs.k8s.io/kind@v0.10.0 拉取镜像 kindest/node 最新的 v0.20.2/v0.19.7 我测试时有bug,后来测试到v.19.1是正常的,所以这里我就采用了v1.19.1
+$ docker pull kindest/node:v1.19.1 操作 Kuberneters 集群 使用 kind 创建 Kubernetes 集群非常的方便，只需要一行命令即可
+$ kind create cluster #这里默认是使用kind的默认最新版本,我测试新版本有问题,故我测试的时候指定了下面的版本 or 特定版本"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>基于Wsl Ubuntu20.04上安装Kuberneters</title>
+	<link rel="stylesheet" href="https://aomi.run/css/style.min.eac77496566fd7d5768fd650ddb0b2b181ca6a2d7c5fdd6fe6b8ba4bf47e566f.css" integrity="sha256-6sd0llZv19V2j9ZQ3bCysYHKai18X91v5ri6S/R+Vm8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://aomi.run">Aomi</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://aomi.run/about/">关于</a>
+				<a href="https://aomi.run/posts/">日志</a>
+				<a href="https://aomi.run/categories/">分类</a>
+				<a href="https://aomi.run/series">专栏</a>
+				<a href="https://aomi.run/series/hello-java">微服务</a>
+				<a href="https://aomi.run/tags/">TAGS</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://aomi.run/about/">关于</a></li>
+			<li><a href="https://aomi.run/posts/">日志</a></li>
+			<li><a href="https://aomi.run/categories/">分类</a></li>
+			<li><a href="https://aomi.run/series">专栏</a></li>
+			<li><a href="https://aomi.run/series/hello-java">微服务</a></li>
+			<li><a href="https://aomi.run/tags/">TAGS</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>2021-02-04</span></div>
+				<h1>基于Wsl Ubuntu20.04上安装Kuberneters</h1>
+			</header>
+			<div class="content">
+				<h2 id="前言">前言<a href="#前言" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>win10可谓windows系统对开发人员最友好的版本了,linux命令行加win的桌面系统,强强联合,正因为这个Linux子系统,让本地测试环境搭建与开发起飞.
+下面就针对在wsl2下面的ubuntu20.04上面安装k8s开发环境做点说明.
+创建本地k8s开发环境,主要是通过kind来实现</p>
+<h2 id="kind-安装">kind 安装<a href="#kind-安装" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>kind（Kubernetes IN Docker） 是一个基于 docker 构建 Kubernetes 集群的工具，非常适合用来在本地搭建基于 Kubernetes 的开发/测试环境。所以在安装kind前,最好把wsl,docker,国内镜像这些前置工作准备好.
+通过 <a href="https://github.com/kubernetes-sigs/kind/releases/latest">https://github.com/kubernetes-sigs/kind/releases/latest</a> 获取最新的 release，根据自己的系统类型选择相应的系统 release，下载 release 之后重命名为 kind（Windows 系统 release 重命名为 kind.exe)，然后将其放在某一个目录下，并要确保这个目录在系统 PATH 中以方便的使用，可以放在 usr/bin 目录下（默认已经在系统 PATH 中），linux 系统中可能需要配置文件权限</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sudo chmod +x kind
+</code></pre></div><p>or
+需要本地有golang环境,并且GOPATH/bin在PATH中,如果不在,需要 <code>export PATH=&quot;$(go env GOPATH)/bin:${PATH}&quot;</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ <span class="nv">GO111MODULE</span><span class="o">=</span>on go get sigs.k8s.io/kind@v0.10.0
+</code></pre></div><h2 id="拉取镜像--kindestnode">拉取镜像  kindest/node<a href="#拉取镜像--kindestnode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>最新的 v0.20.2/v0.19.7 我测试时有bug,后来测试到v.19.1是正常的,所以这里我就采用了v1.19.1</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker pull kindest/node:v1.19.1
+</code></pre></div><h2 id="操作-kuberneters-集群">操作 Kuberneters 集群<a href="#操作-kuberneters-集群" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>使用 kind 创建 Kubernetes 集群非常的方便，只需要一行命令即可</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kind create cluster <span class="c1">#这里默认是使用kind的默认最新版本,我测试新版本有问题,故我测试的时候指定了下面的版本</span>
+</code></pre></div><p>or 特定版本</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kind create cluster --image kindest/node:v1.19.1
+</code></pre></div><h3 id="成功的返回">成功的返回<a href="#成功的返回" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">Creating cluster <span class="s2">&#34;kind&#34;</span> ...
+ ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.19.1<span class="o">)</span> 🖼 
+ ✓ Preparing nodes 📦  
+ ✓ Writing configuration 📜 
+ ✓ Starting control-plane 🕹️ 
+ ✓ Installing CNI 🔌 
+ ✓ Installing StorageClass 💾 
+Set kubectl context to <span class="s2">&#34;kind-kind&#34;</span>
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-kind
+
+Have a question, bug, or feature request? Let us know! https://kind.sigs.k8s.io/#community 🙂
+</code></pre></div><p>删除集群</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kind delete cluster
+</code></pre></div><p>默认集群名称是 &ldquo;kind&rdquo;，如果要创建多个或者指定集群名称，可以指定 name 参数：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kind create cluster --name<span class="o">=</span>k8s-cluster1
+</code></pre></div><p>删除集群</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">kind delete cluster --name<span class="o">=</span>k8s-cluster1
+</code></pre></div><h2 id="kubectl-安装">kubectl 安装<a href="#kubectl-安装" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ sudo apt update 
+$ sudo apt upgrade
+$ sudo apt install -y apt-transport-https
+$ curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg <span class="p">|</span> sudo apt-key add -
+$ <span class="nb">echo</span> <span class="s2">&#34;deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main&#34;</span> <span class="p">|</span> sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+$ sudo apt update
+$ sudo apt install -y kubelet kubeadm kubectl
+</code></pre></div><p>创建集群成功之后，就可以使用 kubectl 来操作 k8s 集群了</p>
+<h2 id="查看集群信息">查看集群信息<a href="#查看集群信息" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl get all --all-namespaces
+NAMESPACE            NAME                                             READY   STATUS    RESTARTS   AGE
+kube-system          pod/coredns-f9fd979d6-sg289                      1/1     Running   <span class="m">0</span>          6m43s
+kube-system          pod/coredns-f9fd979d6-wjksf                      1/1     Running   <span class="m">0</span>          6m43s
+kube-system          pod/etcd-kind-control-plane                      1/1     Running   <span class="m">0</span>          6m50s
+kube-system          pod/kindnet-9jv9s                                1/1     Running   <span class="m">0</span>          6m44s
+kube-system          pod/kube-apiserver-kind-control-plane            1/1     Running   <span class="m">0</span>          6m50s
+kube-system          pod/kube-controller-manager-kind-control-plane   1/1     Running   <span class="m">0</span>          6m50s
+kube-system          pod/kube-proxy-5fmtx                             1/1     Running   <span class="m">0</span>          6m44s
+kube-system          pod/kube-scheduler-kind-control-plane            1/1     Running   <span class="m">0</span>          6m50s
+local-path-storage   pod/local-path-provisioner-78776bfc44-fqm22      1/1     Running   <span class="m">0</span>          6m43s
+
+NAMESPACE     NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                  AGE
+default       service/kubernetes   ClusterIP   10.96.0.1    &lt;none&gt;        443/TCP                  7m3s
+kube-system   service/kube-dns     ClusterIP   10.96.0.10   &lt;none&gt;        53/UDP,53/TCP,9153/TCP   7m2s
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       <span class="m">1</span>            <span class="m">1</span>           &lt;none&gt;                   7m1s
+kube-system   daemonset.apps/kube-proxy   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       <span class="m">1</span>            <span class="m">1</span>           kubernetes.io/os<span class="o">=</span>linux   7m2s
+
+NAMESPACE            NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+kube-system          deployment.apps/coredns                  2/2     <span class="m">2</span>            <span class="m">2</span>           7m2s
+local-path-storage   deployment.apps/local-path-provisioner   1/1     <span class="m">1</span>            <span class="m">1</span>           7m1s
+
+NAMESPACE            NAME                                                DESIRED   CURRENT   READY   AGE
+kube-system          replicaset.apps/coredns-f9fd979d6                   <span class="m">2</span>         <span class="m">2</span>         <span class="m">2</span>       6m44s
+local-path-storage   replicaset.apps/local-path-provisioner-78776bfc44   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       6m44s
+</code></pre></div><h2 id="查看容器内部容器列表">查看容器内部容器列表<a href="#查看容器内部容器列表" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>获取这个容器内部的运行容器列表，这个容器内部通过 crictl 来操作容器，可以参考 <a href="https://github.com/kubernetes-sigs/cri-tools">https://github.com/kubernetes-sigs/cri-tools</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker <span class="nb">exec</span> kind-control-plane crictl ps
+CONTAINER           IMAGE               CREATED             STATE               NAME                      ATTEMPT             POD ID
+03496f54d192d       bfe3a36ebd252       <span class="m">8</span> minutes ago       Running             coredns                   <span class="m">0</span>                   e170783fe655f
+f2874e6f6eba7       bfe3a36ebd252       <span class="m">8</span> minutes ago       Running             coredns                   <span class="m">0</span>                   f2d4a12df3a93
+178d427a80a68       e422121c9c5f9       <span class="m">8</span> minutes ago       Running             local-path-provisioner    <span class="m">0</span>                   1600c76f4bc03
+d019fbe2d252a       b77790820d015       <span class="m">8</span> minutes ago       Running             kindnet-cni               <span class="m">0</span>                   f94e9d590d2ea
+d8bc5b5bf64ea       47e289e332426       <span class="m">8</span> minutes ago       Running             kube-proxy                <span class="m">0</span>                   84ff49f7a0532
+a2e91623770af       0369cf4303ffd       <span class="m">8</span> minutes ago       Running             etcd                      <span class="m">0</span>                   d680864effc4a
+753ad7868585a       7dafbafe72c90       <span class="m">8</span> minutes ago       Running             kube-controller-manager   <span class="m">0</span>                   c0325d328da3d
+a246720f380f2       4d648fc900179       <span class="m">8</span> minutes ago       Running             kube-scheduler            <span class="m">0</span>                   af718164f1b76
+7a499ab5ae3f2       8cba89a89aaa8       <span class="m">8</span> minutes ago       Running             kube-apiserver            <span class="m">0</span>                   735ec1dcd8891
+</code></pre></div><p>kind 创建集群成功之后，就可以向 kubernetes 集群部署资源了，开始你的 Kubernetes 之旅吧~</p>
+<h2 id="kind创建仪表板">Kind：创建仪表板<a href="#kind创建仪表板" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+</code></pre></div><p>执行上面命令如果碰到了如下情况,就到<a href="https://github.com/kubernetes/dashboard/blob/master/aio/deploy/recommended.yaml">github</a>上面看源代码,自己本地建一个来使用.</p>
+<pre><code>The connection to the server raw.githubusercontent.com was refused - did you specify the right host or port?
+</code></pre><p>新建一个用户kind放脚本的目录</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ mkdir ~/kind <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/kind <span class="o">&amp;&amp;</span> touch recommended.yaml
+<span class="c1"># 把内容复制到recommended.yaml中,然后执行下面的命令</span>
+
+$ kubectl apply -f recommended.yaml
+namespace/kubernetes-dashboard created
+serviceaccount/kubernetes-dashboard created
+service/kubernetes-dashboard created
+secret/kubernetes-dashboard-certs created
+secret/kubernetes-dashboard-csrf created
+secret/kubernetes-dashboard-key-holder created
+configmap/kubernetes-dashboard-settings created
+role.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard created
+rolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+deployment.apps/kubernetes-dashboard created
+service/dashboard-metrics-scraper created
+deployment.apps/dashboard-metrics-scraper created
+</code></pre></div><h3 id="创建dashboard-adminuseryaml">创建dashboard-adminuser.yaml<a href="#创建dashboard-adminuseryaml" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ cat &gt; dashboard-adminuser.yaml <span class="s">&lt;&lt; EOF
+</span><span class="s">apiVersion: v1
+</span><span class="s">kind: ServiceAccount
+</span><span class="s">metadata:
+</span><span class="s">  name: admin-user
+</span><span class="s">  namespace: kubernetes-dashboard
+</span><span class="s">
+</span><span class="s">---
+</span><span class="s">apiVersion: rbac.authorization.k8s.io/v1
+</span><span class="s">kind: ClusterRoleBinding
+</span><span class="s">metadata:
+</span><span class="s">  name: admin-user
+</span><span class="s">roleRef:
+</span><span class="s">  apiGroup: rbac.authorization.k8s.io
+</span><span class="s">  kind: ClusterRole
+</span><span class="s">  name: cluster-admin
+</span><span class="s">subjects:
+</span><span class="s">- kind: ServiceAccount
+</span><span class="s">  name: admin-user
+</span><span class="s">  namespace: kubernetes-dashboard  
+</span><span class="s">EOF</span>
+</code></pre></div><h3 id="创建登录用户">创建登录用户<a href="#创建登录用户" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl apply -f dashboard-adminuser.yaml
+</code></pre></div><p>说明：上面创建了一个叫admin-user的服务账号，并放在kubernetes-dashboard 命名空间下，并将cluster-admin角色绑定到admin-user账户，这样admin-user账户就有了管理员的权限。默认情况下，kubeadm创建集群时已经创建了cluster-admin角色，我们直接绑定即可。</p>
+<h3 id="查看admin-user账户的token">查看admin-user账户的token<a href="#查看admin-user账户的token" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl -n kubernetes-dashboard describe secret <span class="k">$(</span>kubectl -n kubernetes-dashboard get secret <span class="p">|</span> grep admin-user <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+</code></pre></div><h3 id="创建本地代理">创建本地代理<a href="#创建本地代理" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl proxy
+</code></pre></div><p>现在即可使用浏览器打开</p>
+<pre><code>http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+</code></pre><p>输入刚刚获取到的token,点登录,即可进入.
+<img src="/images/posts/k8s/k8s-dashboard.png" alt=""></p>
+<h2 id="安装helm">安装helm<a href="#安装helm" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ curl https://baltocdn.com/helm/signing.asc <span class="p">|</span> sudo apt-key add -   
+$ sudo apt install apt-transport-https --yes
+$ <span class="nb">echo</span> <span class="s2">&#34;deb https://baltocdn.com/helm/stable/debian/ all main&#34;</span> <span class="p">|</span> sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+$ sudo apt update
+$ sudo apt install helm
+$ helm version
+version.BuildInfo<span class="o">{</span>Version:<span class="s2">&#34;v3.5.2&#34;</span>, GitCommit:<span class="s2">&#34;167aac70832d3a384f65f9745335e9fb40169dc2&#34;</span>, GitTreeState:<span class="s2">&#34;dirty&#34;</span>, GoVersion:<span class="s2">&#34;go1.15.7&#34;</span><span class="o">}</span>
+</code></pre></div><h2 id="安装ingress-nginx">安装ingress-nginx<a href="#安装ingress-nginx" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>这里会用到k8s.gcr.io的docker镜像，请用中科大镜像加速</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+$ helm repo update
+
+$ helm install ingress-nginx ingress-nginx/ingress-nginx
+</code></pre></div><h2 id="结语">结语<a href="#结语" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>至此，k8s的本地开发环境就创建好了，后续就是往里加东西了。</p>
+
+			</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/java/hello-java-5-day/">实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)</a></li>
+	
+	<li><a href="/posts/java/hello-java-4-day/">实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)</a></li>
+	
+	<li><a href="/posts/java/hello-java-3-day/">实现客户端同步和异步调用RPC微服务(微服务系列第三天)</a></li>
+	
+	<li><a href="/posts/java/hello-java-2-day/">实现tars-springboot-ibm-mq的微服务(微服务系列第二天)</a></li>
+	
+	<li><a href="/posts/java/hello-java-1-day/">通过docker-springboot-tars构建微服务环境(微服务系列第一天)</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://aomi.run/tags/docker">docker</a></span><span class="tag"><a href="https://aomi.run/tags/wsl">wsl</a></span><span class="tag"><a href="https://aomi.run/tags/ubuntu">ubuntu</a></span><span class="tag"><a href="https://aomi.run/tags/kind">kind</a></span><span class="tag"><a href="https://aomi.run/tags/kuberneters">kuberneters</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>672 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-02-04 13:50 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://aomi.run/posts/servicecomb/go/first_day/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>学习 servicecomb gochassis 第一天</span>
+			</a>
+			<a class="prev-post" href="https://aomi.run/posts/java/hello-java-5-day/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+
+<script src="https://utteranc.es/client.js"
+        repo="aomirun/aomirun.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+<style>
+    .utterances {
+        max-width:none
+    }
+</style>
+
+
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://aomi.run">Aomi</a> &#183; <a href="https://aomi.run/about/" target="_blank" rel="noopener">run</a></p>
+		<p> &#183; <a href="https://aomi.run/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://aomi.run/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

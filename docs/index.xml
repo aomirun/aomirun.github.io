@@ -7,10 +7,33 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Wed, 20 Jan 2021 23:42:51 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 17 May 2021 00:07:31 +0800</lastBuildDate><atom:link href="https://aomi.run/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>学习 servicecomb gochassis 第一天</title>
+      <link>https://aomi.run/posts/servicecomb/go/first_day/</link>
+      <pubDate>Mon, 17 May 2021 00:07:31 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/servicecomb/go/first_day/</guid>
+      <description>学习 servicecomb gochassis 第一天 1. 本地安装 &amp;lt;服务中心 ServiceCenter&amp;gt; 我的学习笔计是基于Docker环境,使用Docker-compose来编排,各平台如何安装Docker和docker-compose可自行搜索学习.
+创建 Docker 网络
+$ docker network create -d bridge --subnet=172.27.0.0/16 --gateway=172.27.0.1 aomi 创建 docker-compose.yml 文件
+version:&amp;#34;3&amp;#34;services:service-center:image:servicecomb/service-centercontainer_name:service-centerports:- &amp;#34;30100:30100&amp;#34;restart:alwaysvolumes:- /etc/localtime:/etc/localtimenetworks:aomi:ipv4_address:172.27.0.2service-frontend:image:servicecomb/scfrontendcontainer_name:service-frontendenvironment:SC_ADDRESS:&amp;#34;service-center&amp;#34;ports:- &amp;#34;30103:30103&amp;#34;restart:alwaysvolumes:- /etc/localtime:/etc/localtimenetworks:aomi:ipv4_address:172.27.0.3networks:aomi:external:true启动环境
+$ docker-compose up -d 访问本地Web端口 http://127.0.0.1:30103 见到如下图,即安装成功 </description>
+    </item>
     
-	<atom:link href="https://aomi.run/index.xml" rel="self" type="application/rss+xml" />
-    
+    <item>
+      <title>基于Wsl Ubuntu20.04上安装Kuberneters</title>
+      <link>https://aomi.run/posts/micro/kind-k8s-ubuntu2004-wsl/</link>
+      <pubDate>Thu, 04 Feb 2021 13:50:02 +0800</pubDate>
+      
+      <guid>https://aomi.run/posts/micro/kind-k8s-ubuntu2004-wsl/</guid>
+      <description>前言 win10可谓windows系统对开发人员最友好的版本了,linux命令行加win的桌面系统,强强联合,正因为这个Linux子系统,让本地测试环境搭建与开发起飞. 下面就针对在wsl2下面的ubuntu20.04上面安装k8s开发环境做点说明. 创建本地k8s开发环境,主要是通过kind来实现
+kind 安装 kind（Kubernetes IN Docker） 是一个基于 docker 构建 Kubernetes 集群的工具，非常适合用来在本地搭建基于 Kubernetes 的开发/测试环境。所以在安装kind前,最好把wsl,docker,国内镜像这些前置工作准备好. 通过 https://github.com/kubernetes-sigs/kind/releases/latest 获取最新的 release，根据自己的系统类型选择相应的系统 release，下载 release 之后重命名为 kind（Windows 系统 release 重命名为 kind.exe)，然后将其放在某一个目录下，并要确保这个目录在系统 PATH 中以方便的使用，可以放在 usr/bin 目录下（默认已经在系统 PATH 中），linux 系统中可能需要配置文件权限
+$ sudo chmod +x kind or 需要本地有golang环境,并且GOPATH/bin在PATH中,如果不在,需要 export PATH=&amp;quot;$(go env GOPATH)/bin:${PATH}&amp;quot;
+$ GO111MODULE=on go get sigs.k8s.io/kind@v0.10.0 拉取镜像 kindest/node 最新的 v0.20.2/v0.19.7 我测试时有bug,后来测试到v.19.1是正常的,所以这里我就采用了v1.19.1
+$ docker pull kindest/node:v1.19.1 操作 Kuberneters 集群 使用 kind 创建 Kubernetes 集群非常的方便，只需要一行命令即可
+$ kind create cluster #这里默认是使用kind的默认最新版本,我测试新版本有问题,故我测试的时候指定了下面的版本 or 特定版本</description>
+    </item>
     
     <item>
       <title>实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)</title>
@@ -112,33 +135,8 @@ NoLsp.exe C:\Windows\system32\wsl.exe  参数为 wsl 的绝对路径（默认为
 我们先看看标准库net/http如何处理一个请求。
 func main() { http.HandleFunc(&amp;#34;/&amp;#34;, handler) http.HandleFunc(&amp;#34;/count&amp;#34;, counter) log.Fatal(http.ListenAndServe(&amp;#34;localhost:8000&amp;#34;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, &amp;#34;URL.Path = %qn&amp;#34;, r.URL.Path) } net/http提供了基础的Web功能，即监听端口，映射静态路由，解析HTTP报文。一些Web开发中简单的需求并不支持，需要手工实现。
  动态路由：例如hello/:name，hello/*这类的规则。 鉴权：没有分组/统一鉴权的能力，需要在每个路由映射的handler中实现。 模板：没有统一简化的HTML机制。 …  当我们离开框架，使用基础库时，需要频繁手工处理的地方，就是框架的价值所在。但并不是每一个频繁处理的地方都适合在框架中完成。Python有一个很著名的Web框架，名叫bottle，整个框架由bottle.py一个文件构成，共4400行，可以说是一个微框架。那么理解这个微框架提供的特性，可以帮助我们理解框架的核心能力。
- 路由(Routing)：将请求映射到函数，支持动态路由。例如&amp;rsquo;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
+ 路由(Routing)：将请求映射到函数，支持动态路由。例如&#39;/hello/:name。 模板(Templates)：使用内置模板引擎提供模板渲染机制。 工具集(Utilites)：提供对 cookies，headers 等处理机制。 插件(Plugin)：Bottle本身功能有限，但提供了插件机制。可以选择安装到全局，也可以只针对某几个路由生效。 …  HTTP 基础 标准库启动Web服务 Go语言内置了 net/http库，封装了HTTP网络编程的基础的接口，我们实现的Gee Web 框架便是基于net/http的。我们接下来通过一个例子，简单介绍下这个库的使用。
 package main import ( &amp;#34;fmt&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; ) func main() { http.HandleFunc(&amp;#34;/&amp;#34;, indexHandler) http.</description>
-    </item>
-    
-    <item>
-      <title>Markdown 中文说明</title>
-      <link>https://aomi.run/posts/document/markdown-readme/</link>
-      <pubDate>Thu, 21 Jan 2021 14:33:04 +0800</pubDate>
-      
-      <guid>https://aomi.run/posts/document/markdown-readme/</guid>
-      <description>NOTE: This is Simplelified Chinese Edition Document of Markdown Syntax. If you are seeking for English Edition Document. Please refer to Markdown: Syntax.
- 概述 宗旨 Markdown 的目标是实现「易读易写」。
-可读性，无论如何，都是最重要的。一份使用 Markdown 格式撰写的文件应该可以直接以纯文本发布，并且看起来不会像是由许多标签或是格式指令所构成。Markdown 语法受到一些既有 text-to-HTML 格式的影响，包括 Setext、atx、Textile、reStructuredText、Grutatext 和 EtText，而最大灵感来源其实是纯文本电子邮件的格式。
-总之， Markdown 的语法全由一些符号所组成，这些符号经过精挑细选，其作用一目了然。比如：在文字两旁加上星号，看起来就像_强调_。Markdown 的列表看起来，嗯，就是列表。Markdown 的区块引用看起来就真的像是引用一段文字，就像你曾在电子邮件中见过的那样。
-兼容 HTML Markdown 语法的目标是：成为一种适用于网络的_书写_语言。
-Markdown 不是想要取代 HTML，甚至也没有要和它相近，它的语法种类很少，只对应 HTML 标记的一小部分。Markdown 的构想_不是_要使得 HTML 文档更容易书写。在我看来， HTML 已经很容易写了。Markdown 的理念是，能让文档更容易读、写和随意改。HTML 是一种_发布_的格式，Markdown 是一种_书写_的格式。就这样，Markdown 的格式语法只涵盖纯文本可以涵盖的范围。
-不在 Markdown 涵盖范围之内的标签，都可以直接在文档里面用 HTML 撰写。不需要额外标注这是 HTML 或是 Markdown；只要直接加标签就可以了。
-要制约的只有一些 HTML 区块元素――比如 、、、 等标签，必须在前后加上空行与其它内容区隔开，还要求它们的开始标签与结尾标签不能用制表符或空格来缩进。Markdown 的生成器有足够智能，不会在 HTML 区块标签外加上不必要的 `` 标签。</description>
-    </item>
-    
-    <item>
-      <title>edge如何解决跨域问题</title>
-      <link>https://aomi.run/posts/edge-cors-error/</link>
-      <pubDate>Wed, 20 Jan 2021 23:42:51 +0800</pubDate>
-      
-      <guid>https://aomi.run/posts/edge-cors-error/</guid>
-      <description>找了一个比较简单的解决办法 去应用商店直接下载一个插件 Access-Control-Allow-Origin,装好了之后点图标，点击toggle把上面的logo点成彩色，然后刷新一下需要跨域的页面，完成 </description>
     </item>
     
   </channel>

@@ -12,13 +12,14 @@
  先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
 tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
 创建 Docker 网络 $ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars 创建 docker 目录 $ mkdir ~/docker-app/tars/framework/data -p $ mkdir ~/docker-app/tars/framework-slave/data -p $ mkdir ~/docker-app/tars/node/data -p $ mkdir ~/docker-app/tars/mysql/data -p $ mkdir ~/docker-app/tars/mysql/conf -p 创建 ~/docker-app/tars/mysql/conf/my.cnf 文件 [mysqld] user=root default-storage-engine=INNODB character-set-server=utf8 [client] default-character-set=utf8 [mysql] default-character-set=utf8 创建 ~/docker-app/tars/docker-compose.yml 文件 version:&#34;3&#34;services:mysql:image:mysql:5.6container_name:tars-mysqlports:- &#34;3307:3306&#34;# restart: alwaysprivileged:trueenvironment:MYSQL_ROOT_PASSWORD:&#34;123456&#34;volumes:- ./mysql/data:/var/lib/mysql- ./mysql/conf/my.cnf:/etc/my.cnf- /etc/localtime:/etc/localtimenetworks:tars:ipv4_address:172.25.0.2framework:# image: tarscloud/framework:stableimage:tarscloud/framework:latestcontainer_name:tars-frameworkports:- &#34;3000:3000&#34;- &#34;3001:3001&#34;# restart: alwaysnetworks:tars:ipv4_address:172.">
-<meta itemprop="datePublished" content="2021-01-26T11:39:02&#43;08:00" />
-<meta itemprop="dateModified" content="2021-01-26T11:39:02&#43;08:00" />
+<meta itemprop="datePublished" content="2021-01-26T11:39:02+08:00" />
+<meta itemprop="dateModified" content="2021-01-26T11:39:02+08:00" />
 <meta itemprop="wordCount" content="685">
 
 
 
-<meta itemprop="keywords" content="java,tars,docker,micro serivce,微服务," /><meta property="og:title" content="通过docker-springboot-tars构建微服务环境(微服务系列第一天)" />
+<meta itemprop="keywords" content="java,tars,docker,micro serivce,微服务," />
+<meta property="og:title" content="通过docker-springboot-tars构建微服务环境(微服务系列第一天)" />
 <meta property="og:description" content="前言  学习JAVA第1天,实现目标：通过docker整合springboot和tars
  先花了些时间折腾了一下Java的开发环境，平常主要用vscode做开发，就在VScode上弄了一套Java的开发环境，基于win10 wsl2 vscode 的，具体环境折腾可以看我那篇环境搭建的文章。然后花了几个小时时间学习一下Java的基本语法，有哪些保留字，变量的作用域。包、接口、类还有继承关系，和其它语言参照学习一下。打算使用Java做一些项目的补充，则需要多语言混合开发，我选了较熟的Tars来做。Tars原生支持SpringBoot，OK开始折腾。
 tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Docker的安装及使用搜索网络文章介绍即可。
@@ -26,8 +27,8 @@ tars 环境搭建 为了快速开始，我使用Docker来搭建开发环境,Dock
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://aomi.run/posts/java/hello-java-1-day/" />
 <meta property="article:published_time" content="2021-01-26T11:39:02+08:00" />
-<meta property="article:modified_time" content="2021-01-26T11:39:02+08:00" />
-<meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-5-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-4-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-2-day/" />
+<meta property="article:modified_time" content="2021-01-26T11:39:02+08:00" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-5-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-4-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-2-day/" />
+
 <meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-5-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-4-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-2-day/" />
 
 <meta name="twitter:card" content="summary"/>
@@ -117,89 +118,89 @@ $ mkdir ~/docker-app/tars/mysql/conf -p
 <span class="k">[mysql]</span>
 <span class="na">default-character-set</span><span class="o">=</span><span class="s">utf8</span>
 </code></pre></div><h3 id="创建-docker-apptarsdocker-composeyml-文件">创建 ~/docker-app/tars/docker-compose.yml 文件<a href="#创建-docker-apptarsdocker-composeyml-文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span><span class="k">services</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">mysql</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>mysql<span class="p">:</span><span class="m">5.6</span><span class="w">
-</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-mysql<span class="w">
-</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
+</span><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">mysql</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">mysql:5.6</span><span class="w">
+</span><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">tars-mysql</span><span class="w">
+</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;3307:3306&#34;</span><span class="w">
 </span><span class="w">    </span><span class="c"># restart: always</span><span class="w">
-</span><span class="w">    </span><span class="k">privileged</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- ./mysql/data<span class="p">:</span>/var/lib/mysql<span class="w">
-</span><span class="w">      </span>- ./mysql/conf/my.cnf<span class="p">:</span>/etc/my.cnf<span class="w">
-</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.2</span><span class="w">
-</span><span class="w">  </span><span class="k">framework</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">privileged</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">./mysql/data:/var/lib/mysql</span><span class="w">
+</span><span class="w">      </span>- <span class="l">./mysql/conf/my.cnf:/etc/my.cnf</span><span class="w">
+</span><span class="w">      </span>- <span class="l">/etc/localtime:/etc/localtime</span><span class="w">
+</span><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.2</span><span class="w">
+</span><span class="w">  </span><span class="nt">framework</span><span class="p">:</span><span class="w">
 </span><span class="w">    </span><span class="c"># image: tarscloud/framework:stable</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>tarscloud/framework<span class="p">:</span>latest<span class="w">
-</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-framework<span class="w">
-</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">tarscloud/framework:latest</span><span class="w">
+</span><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">tars-framework</span><span class="w">
+</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;3000:3000&#34;</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;3001:3001&#34;</span><span class="w">
 </span><span class="w">    </span><span class="c"># restart: always</span><span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.3</span><span class="w">
-</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_HOST</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.25.0.2&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;root&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_PORT</span><span class="p">:</span><span class="w"> </span><span class="m">3306</span><span class="w">
-</span><span class="w">      </span><span class="k">REBUILD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">INET</span><span class="p">:</span><span class="w"> </span>eth0<span class="w">
-</span><span class="w">      </span><span class="k">SLAVE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- ./framework/data<span class="p">:</span>/data/tars<span class="p">:</span>rw<span class="w">
-</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
-</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- mysql<span class="w">
-</span><span class="w">  </span><span class="k">framework-slave</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.3</span><span class="w">
+</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_HOST</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.25.0.2&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;root&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_PORT</span><span class="p">:</span><span class="w"> </span><span class="m">3306</span><span class="w">
+</span><span class="w">      </span><span class="nt">REBUILD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">INET</span><span class="p">:</span><span class="w"> </span><span class="l">eth0</span><span class="w">
+</span><span class="w">      </span><span class="nt">SLAVE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">./framework/data:/data/tars:rw</span><span class="w">
+</span><span class="w">      </span>- <span class="l">/etc/localtime:/etc/localtime</span><span class="w">
+</span><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">mysql</span><span class="w">
+</span><span class="w">  </span><span class="nt">framework-slave</span><span class="p">:</span><span class="w">
 </span><span class="w">    </span><span class="c"># image: tarscloud/framework:stable</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>tarscloud/framework<span class="p">:</span>latest<span class="w">
-</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-framework-slave<span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">tarscloud/framework:latest</span><span class="w">
+</span><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">tars-framework-slave</span><span class="w">
 </span><span class="w">    </span><span class="c"># restart: always</span><span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.4</span><span class="w">
-</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_HOST</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.25.0.2&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;root&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">MYSQL_PORT</span><span class="p">:</span><span class="w"> </span><span class="m">3306</span><span class="w">
-</span><span class="w">      </span><span class="k">REBUILD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
-</span><span class="w">      </span><span class="k">INET</span><span class="p">:</span><span class="w"> </span>eth0<span class="w">
-</span><span class="w">      </span><span class="k">SLAVE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;true&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- ./framework-slave/data<span class="p">:</span>/data/tars<span class="p">:</span>rw<span class="w">
-</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
-</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- mysql<span class="w">
-</span><span class="w">  </span><span class="k">node</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.4</span><span class="w">
+</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_HOST</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.25.0.2&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;root&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">MYSQL_PORT</span><span class="p">:</span><span class="w"> </span><span class="m">3306</span><span class="w">
+</span><span class="w">      </span><span class="nt">REBUILD</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
+</span><span class="w">      </span><span class="nt">INET</span><span class="p">:</span><span class="w"> </span><span class="l">eth0</span><span class="w">
+</span><span class="w">      </span><span class="nt">SLAVE</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;true&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">./framework-slave/data:/data/tars:rw</span><span class="w">
+</span><span class="w">      </span>- <span class="l">/etc/localtime:/etc/localtime</span><span class="w">
+</span><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">mysql</span><span class="w">
+</span><span class="w">  </span><span class="nt">node</span><span class="p">:</span><span class="w">
 </span><span class="w">    </span><span class="c"># image: tarscloud/tars-node:stable</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>tarscloud/tars-node<span class="p">:</span>latest<span class="w">
-</span><span class="w">    </span><span class="k">container_name</span><span class="p">:</span><span class="w"> </span>tars-node<span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">tarscloud/tars-node:latest</span><span class="w">
+</span><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">tars-node</span><span class="w">
 </span><span class="w">    </span><span class="c"># restart: always</span><span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.5</span><span class="w">
-</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- ./node/data<span class="p">:</span>/data/tars<span class="p">:</span>rw<span class="w">
-</span><span class="w">      </span>- /etc/localtime<span class="p">:</span>/etc/localtime<span class="w">
-</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">INET</span><span class="p">:</span><span class="w"> </span>eth0<span class="w">
-</span><span class="w">      </span><span class="k">WEB_HOST</span><span class="p">:</span><span class="w"> </span>http<span class="p">:</span>//<span class="m">172.25.0.3</span><span class="p">:</span><span class="m">3000</span><span class="w">
-</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- framework<span class="w">
-</span><span class="w"></span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">tars</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">external</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">ipv4_address</span><span class="p">:</span><span class="w"> </span><span class="m">172.25.0.5</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">./node/data:/data/tars:rw</span><span class="w">
+</span><span class="w">      </span>- <span class="l">/etc/localtime:/etc/localtime</span><span class="w">
+</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">INET</span><span class="p">:</span><span class="w"> </span><span class="l">eth0</span><span class="w">
+</span><span class="w">      </span><span class="nt">WEB_HOST</span><span class="p">:</span><span class="w"> </span><span class="l">http://172.25.0.3:3000</span><span class="w">
+</span><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">framework</span><span class="w">
+</span><span class="w"></span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">tars</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">external</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span></code></pre></div><h3 id="运行-docker-compose">运行 docker-compose<a href="#运行-docker-compose" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ <span class="nb">cd</span> ~/docker-app/tars
 $ docker-compose up -d

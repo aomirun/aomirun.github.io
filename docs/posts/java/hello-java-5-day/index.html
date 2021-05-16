@@ -13,13 +13,14 @@
  修改mqserver项目 pom.xml 添加依赖 此处用的是阿里的连接池 druid
 &lt;dependency&gt; &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt; &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt; &lt;version&gt;2.1.4&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;mysql&lt;/groupId&gt; &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt; &lt;scope&gt;runtime&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.alibaba&lt;/groupId&gt; &lt;artifactId&gt;druid&lt;/artifactId&gt; &lt;version&gt;1.2.4&lt;/version&gt; &lt;/dependency&gt; JDBC 配置 这个是从官网例子上拿来的配置数据
 # 只有下面三个是必填项（使用内嵌数据库的话这三个也可以不用填，会使用默认配置），其他配置不是必须的 spring.datasource.url=jdbc:mysql://172.25.0.2:3306/db1 spring.datasource.username=root spring.datasource.password=123456 # driver-class-name 非必填可根据url推断 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver # Druid 数据源配置，继承spring.datasource.* 配置，相同则覆盖 spring.datasource.initial-size=2 spring.datasource.max-active=30 spring.datasource.min-idle=2 spring.datasource.max-wait=1234 spring.datasource.pool-prepared-statements=true spring.datasource.max-pool-prepared-statement-per-connection-size=5 # spring.datasource.max-open-prepared-statements= #等价于上面的max-pool-prepared-statement-per-connection-size spring.datasource.validation-query=select 1 spring.datasource.validation-query-timeout=1 spring.datasource.test-on-borrow=true spring.datasource.test-on-return=true spring.datasource.test-while-idle=true spring.datasource.time-between-eviction-runs-millis=10000 spring.datasource.min-evictable-idle-time-millis=30001 spring.datasource.async-close-connection-enable=true # spring.datasource.aop-patterns=com.alibaba.spring.boot.demo.service.* # 自定义StatFilter 配置 其他 Filter 不再演示 spring.datasource.filter.stat.db-type=h2 spring.">
-<meta itemprop="datePublished" content="2021-02-01T18:14:10&#43;08:00" />
-<meta itemprop="dateModified" content="2021-02-01T18:14:10&#43;08:00" />
-<meta itemprop="wordCount" content="520">
+<meta itemprop="datePublished" content="2021-02-01T18:14:10+08:00" />
+<meta itemprop="dateModified" content="2021-02-01T18:14:10+08:00" />
+<meta itemprop="wordCount" content="519">
 
 
 
-<meta itemprop="keywords" content="java,docker,mq,jms,tars,micro serivce,微服务," /><meta property="og:title" content="实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)" />
+<meta itemprop="keywords" content="java,docker,mq,jms,tars,micro serivce,微服务," />
+<meta property="og:title" content="实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)" />
 <meta property="og:description" content="前言 今天的目标是： 实现收到MQ队列消息，实现收到IBMMQ的数据之后存储到数据库。
  注意!!! 这是个学习使用mybatis的示例工程,正式项目则不应该如此做,耦合很严重.正确的做法是把消息发送到topic上面,由存储服务去topic上面取数据再做保存,这样就可以解耦了.
  修改mqserver项目 pom.xml 添加依赖 此处用的是阿里的连接池 druid
@@ -28,8 +29,8 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://aomi.run/posts/java/hello-java-5-day/" />
 <meta property="article:published_time" content="2021-02-01T18:14:10+08:00" />
-<meta property="article:modified_time" content="2021-02-01T18:14:10+08:00" />
-<meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-4-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-2-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
+<meta property="article:modified_time" content="2021-02-01T18:14:10+08:00" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-4-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-2-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
+
 <meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-4-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-3-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-2-day/" /><meta property="og:see_also" content="https://aomi.run/posts/java/hello-java-1-day/" />
 
 <meta name="twitter:card" content="summary"/>
@@ -382,7 +383,7 @@ src/main/java/com/example/tarsmqserver/domain/MessageModel.java</p>
 <p><a href="https://github.com/aomirun/demo/tree/main/day-5/tars-mq-server">实现收到IBMMQ的数据之后存储到数据库(微服务系列第五天)</a></p>
 <h2 id="结语">结语<a href="#结语" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>spring boot 2.x 对于快餐使用,还是很友好的,封装了很多东西,很多东西拿来就可以直接用.但对于真正去掌控,估计会很复杂.这个只有等技术深入后,再慢慢探究.
-不过Java是真的吃内存,可能是用spring boot的原因吧,方便了,但得付出相应的代价.这个时候我就比较想念GO了,相同的功能,对资源占用少得多.</p>
+不过Java是真的吃内存,可能是用JVM的原因吧.这个时候我就比较想念GO了,相同的功能,对资源占用少得多.</p>
 
 			</div>
 
@@ -408,7 +409,7 @@ src/main/java/com/example/tarsmqserver/domain/MessageModel.java</p>
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://aomi.run/tags/java">java</a></span><span class="tag"><a href="https://aomi.run/tags/docker">docker</a></span><span class="tag"><a href="https://aomi.run/tags/mq">mq</a></span><span class="tag"><a href="https://aomi.run/tags/jms">jms</a></span><span class="tag"><a href="https://aomi.run/tags/tars">tars</a></span><span class="tag"><a href="https://aomi.run/tags/micro-serivce">micro serivce</a></span><span class="tag"><a href="https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>520 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>519 字</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-02-01 18:14 &#43;0800</p>
 			</footer>
 		</article>
@@ -437,6 +438,9 @@ src/main/java/com/example/tarsmqserver/domain/MessageModel.java</p>
 </nav>
 		</aside>
 		<div class="post-nav thin">
+			<a class="next-post" href="https://aomi.run/posts/micro/kind-k8s-ubuntu2004-wsl/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>基于Wsl Ubuntu20.04上安装Kuberneters</span>
+			</a>
 			<a class="prev-post" href="https://aomi.run/posts/java/hello-java-4-day/">
 				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>实现java的rsa加解密与签名并调用RPC微服务(微服务系列第四天)</span>
 			</a>

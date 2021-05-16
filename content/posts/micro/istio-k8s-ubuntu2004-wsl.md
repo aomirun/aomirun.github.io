@@ -54,15 +54,15 @@ $ istioctl install
 ```
 or
 ```sh
-$ istioctl install --set profile=demo
+$ istioctl install --set profile=demo -y
 ```
-安装需要等一段时间，由于都是在国外网站下载，有可能会超时失败
+安装需要等一段时间，由于都是在国外网站下载，有可能会超时失败，如果超时失败多试几次，应该会成功。
 ```
-✔ Istio core installed
-✔ Istiod installed
-✔ Egress gateways installed
-✔ Ingress gateways installed
-✔ Installation complete
+✔ Istio core installed                                                      
+✔ Istiod installed                                                          
+✔ Egress gateways installed                                                 
+✔ Ingress gateways installed                                                   
+✔ Installation complete 
 
 $ kubectl label namespace default istio-injection=enabled
 namespace/default labeled
@@ -87,20 +87,21 @@ deployment.apps/productpage-v1 created
 
 $ kubectl get services
 NAME          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-details       ClusterIP   10.96.28.157    <none>        9080/TCP   19h
-kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP    21h
-productpage   ClusterIP   10.96.112.132   <none>        9080/TCP   19h
-ratings       ClusterIP   10.96.153.247   <none>        9080/TCP   19h
-reviews       ClusterIP   10.96.1.192     <none>        9080/TCP   19h
+details       ClusterIP   10.96.233.137   <none>        9080/TCP   3m45s
+kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP    24m
+productpage   ClusterIP   10.96.234.131   <none>        9080/TCP   3m44s
+ratings       ClusterIP   10.96.216.255   <none>        9080/TCP   3m45s
+reviews       ClusterIP   10.96.166.58    <none>        9080/TCP   3m45s
 
+# 根据网速情况不同，大约等5分钟左右，pods将拉取完镜像并启动起来
 $ kubectl get pods
 NAME                              READY   STATUS    RESTARTS   AGE
-details-v1-79c697d759-nhtgc       2/2     Running   2          19h
-productpage-v1-65576bb7bf-wrb84   2/2     Running   2          19h
-ratings-v1-7d99676f7f-cp89k       2/2     Running   2          19h
-reviews-v1-987d495c-lts9l         2/2     Running   2          19h
-reviews-v2-6c5bf657cf-qmsdt       2/2     Running   2          19h
-reviews-v3-5f7b9f4f77-mhzpv       2/2     Running   2          19h
+details-v1-79c697d759-gzlmp       2/2     Running   0          4m21s
+productpage-v1-65576bb7bf-qhjqc   1/2     Running   0          4m19s
+ratings-v1-7d99676f7f-7zb5d       2/2     Running   0          4m21s
+reviews-v1-987d495c-lw5wn         2/2     Running   0          4m20s
+reviews-v2-6c5bf657cf-5jknp       2/2     Running   0          4m21s
+reviews-v3-5f7b9f4f77-625fh       2/2     Running   0          4m20s
 
 $ kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c ratings -- curl -s productpage:9080/productpage | grep -o "<title>.*</title>"
 <title>Simple Bookstore App</title>

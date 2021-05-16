@@ -7,96 +7,92 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <copyright>aomi.run</copyright>
-    <lastBuildDate>Mon, 01 Feb 2021 18:14:10 +0800</lastBuildDate>
-    
-	<atom:link href="https://aomi.run/tags/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 17 May 2021 00:07:31 +0800</lastBuildDate><atom:link href="https://aomi.run/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>docker</title>
-      <link>https://aomi.run/tags/docker/</link>
-      <pubDate>Mon, 01 Feb 2021 18:14:10 +0800</pubDate>
+      <title>go</title>
+      <link>https://aomi.run/tags/go/</link>
+      <pubDate>Mon, 17 May 2021 00:07:31 +0800</pubDate>
       
-      <guid>https://aomi.run/tags/docker/</guid>
+      <guid>https://aomi.run/tags/go/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>java</title>
-      <link>https://aomi.run/tags/java/</link>
-      <pubDate>Mon, 01 Feb 2021 18:14:10 +0800</pubDate>
+      <title>gochassis</title>
+      <link>https://aomi.run/tags/gochassis/</link>
+      <pubDate>Mon, 17 May 2021 00:07:31 +0800</pubDate>
       
-      <guid>https://aomi.run/tags/java/</guid>
+      <guid>https://aomi.run/tags/gochassis/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>jms</title>
-      <link>https://aomi.run/tags/jms/</link>
-      <pubDate>Mon, 01 Feb 2021 18:14:10 +0800</pubDate>
+      <title>micro</title>
+      <link>https://aomi.run/tags/micro/</link>
+      <pubDate>Mon, 17 May 2021 00:07:31 +0800</pubDate>
       
-      <guid>https://aomi.run/tags/jms/</guid>
+      <guid>https://aomi.run/tags/micro/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>micro serivce</title>
-      <link>https://aomi.run/tags/micro-serivce/</link>
-      <pubDate>Mon, 01 Feb 2021 18:14:10 +0800</pubDate>
+      <title>servicecomb</title>
+      <link>https://aomi.run/tags/servicecomb/</link>
+      <pubDate>Mon, 17 May 2021 00:07:31 +0800</pubDate>
       
-      <guid>https://aomi.run/tags/micro-serivce/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>mq</title>
-      <link>https://aomi.run/tags/mq/</link>
-      <pubDate>Mon, 01 Feb 2021 18:14:10 +0800</pubDate>
-      
-      <guid>https://aomi.run/tags/mq/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>tars</title>
-      <link>https://aomi.run/tags/tars/</link>
-      <pubDate>Mon, 01 Feb 2021 18:14:10 +0800</pubDate>
-      
-      <guid>https://aomi.run/tags/tars/</guid>
+      <guid>https://aomi.run/tags/servicecomb/</guid>
       <description></description>
     </item>
     
     <item>
       <title>微服务</title>
       <link>https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
-      <pubDate>Mon, 01 Feb 2021 18:14:10 +0800</pubDate>
+      <pubDate>Mon, 17 May 2021 00:07:31 +0800</pubDate>
       
       <guid>https://aomi.run/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>openjdk</title>
-      <link>https://aomi.run/tags/openjdk/</link>
-      <pubDate>Mon, 25 Jan 2021 11:46:59 +0800</pubDate>
+      <title>docker</title>
+      <link>https://aomi.run/tags/docker/</link>
+      <pubDate>Thu, 04 Feb 2021 13:50:02 +0800</pubDate>
       
-      <guid>https://aomi.run/tags/openjdk/</guid>
+      <guid>https://aomi.run/tags/docker/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>vscode</title>
-      <link>https://aomi.run/tags/vscode/</link>
-      <pubDate>Mon, 25 Jan 2021 11:46:59 +0800</pubDate>
+      <title>kind</title>
+      <link>https://aomi.run/tags/kind/</link>
+      <pubDate>Thu, 04 Feb 2021 13:50:02 +0800</pubDate>
       
-      <guid>https://aomi.run/tags/vscode/</guid>
+      <guid>https://aomi.run/tags/kind/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kuberneters</title>
+      <link>https://aomi.run/tags/kuberneters/</link>
+      <pubDate>Thu, 04 Feb 2021 13:50:02 +0800</pubDate>
+      
+      <guid>https://aomi.run/tags/kuberneters/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ubuntu</title>
+      <link>https://aomi.run/tags/ubuntu/</link>
+      <pubDate>Thu, 04 Feb 2021 13:50:02 +0800</pubDate>
+      
+      <guid>https://aomi.run/tags/ubuntu/</guid>
       <description></description>
     </item>
     
     <item>
       <title>wsl</title>
       <link>https://aomi.run/tags/wsl/</link>
-      <pubDate>Mon, 25 Jan 2021 11:46:59 +0800</pubDate>
+      <pubDate>Thu, 04 Feb 2021 13:50:02 +0800</pubDate>
       
       <guid>https://aomi.run/tags/wsl/</guid>
       <description></description>
