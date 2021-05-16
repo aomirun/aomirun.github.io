@@ -19,7 +19,9 @@
 创建 Docker 网络
 $ docker network create -d bridge --subnet=172.27.0.0/16 --gateway=172.27.0.1 aomi 创建 docker-compose.yml 文件
 version:&amp;#34;3&amp;#34;services:service-center:image:servicecomb/service-centercontainer_name:service-centerports:- &amp;#34;30100:30100&amp;#34;restart:alwaysvolumes:- /etc/localtime:/etc/localtimenetworks:aomi:ipv4_address:172.27.0.2service-frontend:image:servicecomb/scfrontendcontainer_name:service-frontendenvironment:SC_ADDRESS:&amp;#34;service-center&amp;#34;ports:- &amp;#34;30103:30103&amp;#34;restart:alwaysvolumes:- /etc/localtime:/etc/localtimenetworks:aomi:ipv4_address:172.27.0.3networks:aomi:external:true启动环境
-$ docker-compose up -d 访问本地Web端口 http://127.0.0.1:30103 见到如下图,即安装成功 </description>
+$ docker-compose up -d 访问本地Web端口 http://127.0.0.1:30103 见到如下图,即安装成功 因之前做过测试,上面跑了两个测试服务,这个不影响.
+创建项目 目录如下,项目可以去我的Github上面下载 https://github.com/aomirun/gochassis-start
+$ tree . ├── Makefile ├── README.md ├── client │ ├── Dockerfile │ ├── conf │ │ ├── chassis.yaml │ │ └── microservice.yaml │ └── main.go ├── docker-compose.yml ├── go.mod ├── go.</description>
 			<content type="html"><![CDATA[<h2 id="学习-servicecomb-gochassis-第一天">学习 servicecomb gochassis 第一天</h2>
 <h3 id="1-本地安装-服务中心-servicecenter">1. 本地安装 &lt;服务中心 ServiceCenter&gt;</h3>
 <p>我的学习笔计是基于Docker环境,使用Docker-compose来编排,各平台如何安装Docker和docker-compose可自行搜索学习.</p>
@@ -62,8 +64,48 @@ $ docker-compose up -d 访问本地Web端口 http://127.0.0.1:30103 见到如下
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker-compose up -d
 </code></pre></div><p>访问本地Web端口 http://127.0.0.1:30103
 见到如下图,即安装成功
-<img src="/images/posts/servicecomb/servicecomb_dashboard.png" alt="servicecomb_dashboard" title="servicecomb_dashboard"></p>
-]]></content>
+<img src="/images/posts/servicecomb/servicecomb_dashboard.png" alt="servicecomb_dashboard" title="servicecomb_dashboard">
+因之前做过测试,上面跑了两个测试服务,这个不影响.</p>
+<h3 id="创建项目">创建项目</h3>
+<p>目录如下,项目可以去我的Github上面下载 <a href="https://github.com/aomirun/gochassis-start">https://github.com/aomirun/gochassis-start</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ tree
+.
+├── Makefile
+├── README.md
+├── client
+│   ├── Dockerfile
+│   ├── conf
+│   │   ├── chassis.yaml
+│   │   └── microservice.yaml
+│   └── main.go
+├── docker-compose.yml
+├── go.mod
+├── go.sum
+└── server
+    ├── Dockerfile
+    ├── conf
+    │   ├── chassis.yaml
+    │   └── microservice.yaml
+    └── main.go
+
+<span class="m">4</span> directories, <span class="m">13</span> files
+
+</code></pre></div><ol>
+<li>clone</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ git clone https://github.com/aomirun/gochassis-start
+</code></pre></div><ol start="2">
+<li>start</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ <span class="nb">cd</span> gochassis-start
+$ make bd
+$ docker-compose up -d
+</code></pre></div><ol start="3">
+<li>check</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ curl http://127.0.0.1:2002/hi
+hello. go chassis
+</code></pre></div>]]></content>
 		</item>
 		
 		<item>

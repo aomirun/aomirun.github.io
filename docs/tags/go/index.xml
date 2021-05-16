@@ -18,7 +18,9 @@
 创建 Docker 网络
 $ docker network create -d bridge --subnet=172.27.0.0/16 --gateway=172.27.0.1 aomi 创建 docker-compose.yml 文件
 version:&amp;#34;3&amp;#34;services:service-center:image:servicecomb/service-centercontainer_name:service-centerports:- &amp;#34;30100:30100&amp;#34;restart:alwaysvolumes:- /etc/localtime:/etc/localtimenetworks:aomi:ipv4_address:172.27.0.2service-frontend:image:servicecomb/scfrontendcontainer_name:service-frontendenvironment:SC_ADDRESS:&amp;#34;service-center&amp;#34;ports:- &amp;#34;30103:30103&amp;#34;restart:alwaysvolumes:- /etc/localtime:/etc/localtimenetworks:aomi:ipv4_address:172.27.0.3networks:aomi:external:true启动环境
-$ docker-compose up -d 访问本地Web端口 http://127.0.0.1:30103 见到如下图,即安装成功 </description>
+$ docker-compose up -d 访问本地Web端口 http://127.0.0.1:30103 见到如下图,即安装成功 因之前做过测试,上面跑了两个测试服务,这个不影响.
+创建项目 目录如下,项目可以去我的Github上面下载 https://github.com/aomirun/gochassis-start
+$ tree . ├── Makefile ├── README.md ├── client │ ├── Dockerfile │ ├── conf │ │ ├── chassis.yaml │ │ └── microservice.yaml │ └── main.go ├── docker-compose.yml ├── go.mod ├── go.</description>
     </item>
     
     <item>
